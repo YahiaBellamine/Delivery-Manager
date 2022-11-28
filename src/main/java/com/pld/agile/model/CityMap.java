@@ -1,11 +1,15 @@
 package com.pld.agile.model;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class CityMap {
     private  double minLatitude;
     private  double maxLatitude;
     private  double minLongitude;
     private  double maxLongitude;
     private Intersection warehouse;
+    private List<Tour> tourList;
 
     public CityMap(double minLatitude, double maxLatitude, double minLongitude, double maxLongitude, Intersection warehouse) {
         this.minLatitude = minLatitude;
@@ -13,6 +17,7 @@ public class CityMap {
         this.minLongitude = minLongitude;
         this.maxLongitude = maxLongitude;
         this.warehouse = warehouse;
+        tourList = new LinkedList<>();
     }
 
     public double getMinLatitude() {
