@@ -1,12 +1,14 @@
 
 package com.pld.agile.view.map;
 
-import java.awt.Color;
+import java.awt.*;
+import java.awt.event.MouseEvent;
 
 import org.jxmapviewer.viewer.DefaultWaypoint;
 import org.jxmapviewer.viewer.GeoPosition;
 
 import javax.swing.*;
+import javax.swing.event.MouseInputListener;
 
 /**
  * A waypoint that also has a color and a label
@@ -14,8 +16,9 @@ import javax.swing.*;
  */
 public class MyWaypoint extends DefaultWaypoint
 {
-    private final String label;
-    private final Color color;
+    private final long id;
+    private Color color;
+
     private JLabel lbl;
 
     public JLabel getLbl() {
@@ -27,23 +30,18 @@ public class MyWaypoint extends DefaultWaypoint
     }
 
     /**
-     * @param label the text
+     * @param id the id
      * @param color the color
      * @param coord the coordinate
      */
-    public MyWaypoint(String label, Color color, GeoPosition coord)
+    public MyWaypoint(long id, Color color, GeoPosition coord)
     {
         super(coord);
-        this.label = label;
+        this.id = id;
         this.color = color;
-    }
+        this.lbl = new JLabel();
 
-    /**
-     * @return the label text
-     */
-    public String getLabel()
-    {
-        return label;
+        lbl.addMouseListener(new MarkerMouseListener(this));
     }
 
     /**
@@ -54,4 +52,11 @@ public class MyWaypoint extends DefaultWaypoint
         return color;
     }
 
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public long getId() {
+        return id;
+    }
 }

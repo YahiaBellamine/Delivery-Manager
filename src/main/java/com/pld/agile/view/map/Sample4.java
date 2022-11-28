@@ -66,11 +66,11 @@ public class Sample4
 
         // Create waypoints from the geo-positions
         Set<MyWaypoint> waypoints = new HashSet<MyWaypoint>(Arrays.asList(
-                new MyWaypoint("F", Color.ORANGE, frankfurt),
-                new MyWaypoint("W", Color.CYAN, wiesbaden),
-                new MyWaypoint("M", Color.GRAY, mainz),
-                new MyWaypoint("D", Color.MAGENTA, darmstadt),
-                new MyWaypoint("O", Color.GREEN, offenbach)));
+                new MyWaypoint(1, Color.ORANGE, frankfurt),
+                new MyWaypoint(2, Color.CYAN, wiesbaden),
+                new MyWaypoint(3, Color.GRAY, mainz),
+                new MyWaypoint(4, Color.MAGENTA, darmstadt),
+                new MyWaypoint(5, Color.GREEN, offenbach)));
 
         // Create a waypoint painter that takes all the waypoints
         WaypointPainter<MyWaypoint> waypointPainter = new WaypointPainter<MyWaypoint>();

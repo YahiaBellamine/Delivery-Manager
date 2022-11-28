@@ -41,9 +41,9 @@ public class Main {
 //           }
       System.out.println();
 
-      mapForm.drawPoint(entry.getValue().getLatitude(),
+      mapForm.addPoint(entry.getValue().getLatitude(),
               entry.getValue().getLongitude(),
-              ""+ entry.getValue().getId());
+               entry.getValue().getId());
     }
 
 

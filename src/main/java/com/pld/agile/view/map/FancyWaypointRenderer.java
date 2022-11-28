@@ -97,16 +97,7 @@ public class FancyWaypointRenderer implements WaypointRenderer<MyWaypoint>
 
         g.drawImage(myImg, x -myImg.getWidth() / 2, y -myImg.getHeight(), null);
 
-        String label = w.getLabel();
 
-//        g.setFont(font);
-
-        FontMetrics metrics = g.getFontMetrics();
-        int tw = metrics.stringWidth(label);
-        int th = 1 + metrics.getAscent();
-
-//        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.drawString(label, x - tw / 2, y + th - myImg.getHeight());
 
         g.dispose();
     }

@@ -6,6 +6,8 @@ import org.jxmapviewer.input.CenterMapListener;
 import org.jxmapviewer.input.PanKeyListener;
 import org.jxmapviewer.input.PanMouseInputListener;
 import org.jxmapviewer.input.ZoomMouseWheelListenerCursor;
+import org.jxmapviewer.painter.CompoundPainter;
+import org.jxmapviewer.painter.Painter;
 import org.jxmapviewer.viewer.*;
 
 import javax.swing.*;
@@ -13,9 +15,8 @@ import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.util.*;
+import java.util.List;
 
 public class MapViewer {
     public JPanel mainPanel;
@@ -30,9 +31,9 @@ public class MapViewer {
     public JXMapViewer mapViewer;
 
     private HashSet<GeoPosition> points;
+    private HashSet<MyWaypoint> wPoints;
 
     public MapViewer() {
-
 
         bottomButton.addActionListener(new ActionListener() {
             @Override
@@ -42,6 +43,7 @@ public class MapViewer {
         });
 
         points = new HashSet<>();
+        wPoints = new HashSet<>();
 
         // Add interactions
         MouseInputListener mia = new PanMouseInputListener(mapViewer);
@@ -60,8 +62,6 @@ public class MapViewer {
         mapViewer.addMouseListener(sa);
         mapViewer.addMouseMotionListener(sa);
         mapViewer.setOverlayPainter(sp);
-
-
     }
 
     private void createUIComponents() {
@@ -74,31 +74,34 @@ public class MapViewer {
 
         // Use 8 threads in parallel to load the tiles
         tileFactory.setThreadPoolSize(8);
-
+        mapViewer.setLayout(null);
         mapPanel = mapViewer;
+
     }
 
-    public void drawPoint(double x, double y, String text){
+    public void addPoint(double x, double y, long id){
         GeoPosition newPoint = new GeoPosition(x,y);
         points.add(newPoint);
+        //MyWaypoint myPoint = new MyWaypoint(text,Color.black,newPoint);
                 //Arrays.asList(new SwingWaypoint(text, newPoint)));
 
-        HashSet<MyWaypoint> wPoints = new HashSet<>();
-        for(GeoPosition gp : points){
-            wPoints.add(new MyWaypoint(text, Color.black,gp));
+        wPoints.add(new MyWaypoint(id, Color.black,newPoint));
+    }
 
-        }
-
-        // Set the overlay painter
-        WaypointPainter<MyWaypoint> waypointPainter = new WaypointPainter<MyWaypoint>();
+    public void update(){
+        MapMarkers waypointPainter = new MapMarkers();
         waypointPainter.setWaypoints(wPoints);
-        waypointPainter.setRenderer(new MapMarkers());
-        mapViewer.setOverlayPainter(waypointPainter);
+        //mapViewer.setOverlayPainter(waypointPainter);
 
-        // Add the JButtons to the map viewer
-//        for (SwingWaypoint w : waypoints) {
-//           // mapViewer.add(w.getButton());
-//        }
+
+        RoutePainter routePainter = new RoutePainter(points.stream().toList().subList(0,10));
+
+        List<Painter<JXMapViewer>> painters = new ArrayList<Painter<JXMapViewer>>();
+        painters.add(routePainter);
+        painters.add(waypointPainter);
+
+        CompoundPainter<JXMapViewer> painter = new CompoundPainter<JXMapViewer>(painters);
+        mapViewer.setOverlayPainter(painter);
     }
 
     public void recenter(){
@@ -106,6 +109,9 @@ public class MapViewer {
             mapViewer.setAddressLocation(points.iterator().next());
         }else{
             mapViewer.zoomToBestFit(points,0.7);
+            update();
+            mapViewer.repaint();
+
         }
     }
 
