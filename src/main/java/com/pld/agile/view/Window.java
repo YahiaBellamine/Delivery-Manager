@@ -4,10 +4,9 @@ import javax.swing.*;
 
 public class Window extends JFrame {
   public Window() {
-    super("PLD Agile");
+    super("Delivery Manager");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setSize(800, 600);
-    setVisible(true);
   }
 }
 
