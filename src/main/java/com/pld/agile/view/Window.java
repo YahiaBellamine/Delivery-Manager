@@ -3,19 +3,20 @@ package com.pld.agile.view;
 import com.pld.agile.model.CityMap;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class Window extends JFrame {
   public Window() {
-    super("PLD Agile");
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setSize(800, 600);
-    setLayout(null);
+    super("Delivery Manager");
+    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    this.setResizable(false);
+    Dimension screenDimensions = Toolkit.getDefaultToolkit().getScreenSize();
+    this.setSize((int)(screenDimensions.width * 0.9), (int)(screenDimensions.height * 0.9));
 
-    JPanel panel = new JPanel();
-    panel.setBounds(0, 0, 100, 100);
-    panel.setBackground(java.awt.Color.RED);
-    this.add(panel);
-    this.setVisible(true);
+    int x = (int) ((screenDimensions.getWidth() - this.getWidth()) / 2);
+    int y = (int) ((screenDimensions.getHeight() - this.getHeight()) / 2);
+    this.setLocation(x, y);
+
   }
 }
 

@@ -1,19 +1,17 @@
 package com.pld.agile.model;
 
-import java.sql.Timestamp;
-
 public class TimeWindow {
     /** TimeWindow starting time */
-    private Timestamp startTime;
+    private int startTime;
     /** TimeWindow ending time */
-    private Timestamp endTime;
+    private int endTime;
 
     /**
      * TImeWindow constructor.
      * @param start - The starting time of the TimeWindow.
      * @param end - The ending time of the TimeWindow.
      */
-    public TimeWindow(Timestamp start, Timestamp end) {
+    public TimeWindow(int start, int end) {
         startTime = start;
         endTime = end;
     }
@@ -22,7 +20,7 @@ public class TimeWindow {
      *
      * @return - The starting time of the TimeWindow.
      */
-    public Timestamp getStartTime() {
+    public int getStartTime() {
         return startTime;
     }
 
@@ -30,7 +28,7 @@ public class TimeWindow {
      *
      * @return - The ending time of the TimeWindow.
      */
-    public Timestamp getEndTime() {
+    public int getEndTime() {
         return endTime;
     }
 }
