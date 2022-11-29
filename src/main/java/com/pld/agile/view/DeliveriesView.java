@@ -7,10 +7,7 @@ import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 
-public class DeliveriesView {
-    /** Main panel of the textual view */
-    private JPanel textViewPanel;
-
+public class DeliveriesView extends JPanel {
     /** Panel used to display the head infos of the textual view */
     private JPanel textViewHeadPanel;
 
@@ -33,20 +30,20 @@ public class DeliveriesView {
      * Constructor of the textual view.
      */
     public DeliveriesView() {
+        super();
         deliveryRequests = new LinkedList<>();
 
-        textViewPanel = new JPanel(new GridBagLayout());
-        textViewPanel.setName("textViewPanel");
-        textViewPanel.setBackground(Color.RED);
+        Border textViewBorder = BorderFactory.createLoweredBevelBorder();
+        this.setLayout(new GridBagLayout());
+        this.setName("textViewPanel");
+        this.setBorder(textViewBorder);
 
         textViewHeadPanel = new JPanel();
         textViewHeadPanel.setName("textViewPanel");
-        textViewHeadPanel.setBackground(Color.YELLOW);
         textViewHeadPanel.setLayout(new FlowLayout());
 
         deliveryRequestsPanel = new JPanel();
         deliveryRequestsPanel.setName("deliveryRequestsPanel");
-        deliveryRequestsPanel.setBackground(Color.BLUE);
 
         viewTitle = new JLabel("Deliveries");
         viewTitle.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -68,14 +65,14 @@ public class DeliveriesView {
         constraints.weighty = 0.1;
         constraints.gridwidth = 3;
         constraints.fill = GridBagConstraints.BOTH;
-        textViewPanel.add(textViewHeadPanel, constraints);
+        this.add(textViewHeadPanel, constraints);
 
         constraints.gridx = 0;
         constraints.gridy = 1;
         constraints.weighty = 0.9;
         constraints.gridwidth = 3;
         constraints.fill = GridBagConstraints.BOTH;
-        textViewPanel.add(deliveryRequestsPanel, constraints);
+        this.add(deliveryRequestsPanel, constraints);
     }
 
     /**
@@ -83,7 +80,7 @@ public class DeliveriesView {
      * @return The main panel of the text view of the GUI.
      */
     public JPanel getTextViewPanel() {
-        return textViewPanel;
+        return this;
     }
 
     /**
@@ -102,6 +99,7 @@ public class DeliveriesView {
      * Clears the GUI part where the list of delivery requests is displayed.
      */
     private  void clearDeliveryGUI() {
+        System.out.println("Clearing delivery text view");
         Component[] guiDeliveries = deliveryRequestsPanel.getComponents();
         for(Component component : guiDeliveries) {
             deliveryRequestsPanel.remove(component);
@@ -115,6 +113,7 @@ public class DeliveriesView {
      * The new layout is updated depending on the number of deliveries to display.
      */
     private void updateDeliveryPanelLayout() {
+        System.out.println("Updating delivery panel layout");
         deliveryRequestsPanel.setLayout(new GridLayout(deliveryRequests.size(), 1));
     }
 
@@ -138,7 +137,7 @@ public class DeliveriesView {
                 requestTime.setText("Time Window: [" + request.getTimeWindow().getStartTime() + " - " +request.getTimeWindow().getEndTime() + "]");
 
                 //DEBUG
-                /*System.out.println("Added delivery request: name:" + requestTag.getText() + " ; timeW:" + requestTime.getText());*/
+                System.out.println("Added delivery request: name:" + requestTag.getText() + " ; timeW:" + requestTime.getText());
 
                 requestPanel.add(requestTag);
                 requestPanel.add(requestTime);

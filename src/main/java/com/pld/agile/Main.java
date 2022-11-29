@@ -50,12 +50,12 @@ public class Main {
     deliveries.add(new DeliveryRequest(new TimeWindow(9, 10), new Intersection((long)19, 56.7, 42.4, null)));
     deliveries.add(new DeliveryRequest(new TimeWindow(10, 11), new Intersection((long)20, 64.9, 62.3, null)));
 
-    JFrame view = new Window();
+    /*JFrame view = new Window();
     DeliveriesView deliveriesPanel = new DeliveriesView();
-    deliveriesPanel.getTextViewPanel().setSize(view.getSize().width / 4, view.getSize().height);
-    view.add(deliveriesPanel.getTextViewPanel());
+    deliveriesPanel.setSize(view.getSize().width / 4, view.getSize().height);
+    view.add(deliveriesPanel);
     deliveriesPanel.displayRequests(deliveries);
-    view.setVisible(true);
+    view.setVisible(true);*/
 
     
 
@@ -126,12 +126,51 @@ public class Main {
 
 
     //creating the JFrame
-    JFrame frame = new JFrame("MapViewer");
-    frame.setContentPane(mapForm.mainPanel);
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setSize(new Dimension(1000,500));
-    frame.setVisible(true);
-    //mapForm.recenter();
+    JFrame view = new Window();
+    JPanel mainPanel = new JPanel(new GridBagLayout());
+    mainPanel.setBackground(Color.RED);
+
+    DeliveriesView deliveriesPanel = new DeliveriesView();
+    deliveriesPanel.setSize(mainPanel.getWidth() / 4, mainPanel.getHeight());
+
+    //TODO - Replace this panel with the user entry panel (@Aymane)
+    DeliveriesView deliveriesPanel2 = new DeliveriesView();
+    deliveriesPanel2.setSize(mainPanel.getWidth() / 4, mainPanel.getHeight());
+
+    view.setContentPane(mainPanel);
+
+    GridBagConstraints constraints = new GridBagConstraints();
+
+    //User entry panel
+    constraints.gridx = 0;
+    constraints.gridy = 0;
+    constraints.weightx = 0.1;
+    constraints.weighty = 1;
+    constraints.gridwidth = 1;
+    constraints.fill = GridBagConstraints.BOTH;
+    //TODO - Replace this panel with the user entry panel (@Aymane)
+    view.add(deliveriesPanel2, constraints);
+
+    //Graphical view (Map) panel
+    constraints.gridx = 1;
+    constraints.gridy = 0;
+    constraints.weightx = 0.8;
+    constraints.weighty = 1;
+    constraints.gridwidth = 2;
+    constraints.fill = GridBagConstraints.BOTH;
+    view.add(mapForm.mainPanel, constraints);
+
+    //Textual view panel
+    constraints.gridx = 3;
+    constraints.gridy = 0;
+    constraints.weightx = 0.1;
+    constraints.weighty = 1;
+    constraints.gridwidth = 1;
+    constraints.fill = GridBagConstraints.BOTH;
+    view.add(deliveriesPanel, constraints);
+
+    deliveriesPanel.displayRequests(deliveries);
+    view.setVisible(true);
   }
 
 
