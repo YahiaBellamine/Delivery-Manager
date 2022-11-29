@@ -1,17 +1,17 @@
 package main.java.com.pld.agile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.pld.agile.model.CityMap;
 import com.pld.agile.model.DeliveryRequest;
 import com.pld.agile.model.Intersection;
 import com.pld.agile.model.RoadSegment;
 
+import javax.lang.model.type.IntersectionType;
+
 public class Algorithm {
     private HashMap<Long, HashMap<Long, Double>> tspCost;
+
     private List<Intersection> deliveryLocations;
 
     private List<Intersection> bestSol;
@@ -31,9 +31,15 @@ public class Algorithm {
             deliveryLocations.add(deliveryRequests.get(i).getAddress());
         }
 
-        dijkstra(warehouse);
+        HashMap<Intersection, HashMap<Intersection, LinkedList<Intersection>>> shortestPathBetweenTwoIntersections = new HashMap<>();
+
+        List<Intersection> destinations = new ArrayList<>(deliveryLocations);
+        shortestPathBetweenTwoIntersections.put(warehouse, dijkstra(warehouse, destinations));
+        destinations.put(warehouse);
         for (int i = 0; i < deliveryLocations.size(); i++) {
-            dijkstra(deliveryLocations.get(i));
+            destinations.remove(deliveryLocations.get(i));
+            shortestPathBetweenTwoIntersections.put(deliveryLocations.get(i), dijkstra(deliveryLocations.get(i), destinations));
+            destinations.add(deliveryLocations.get(i));
         }
 
         List<Intersection> visited = new ArrayList<>();
@@ -47,6 +53,12 @@ public class Algorithm {
 
         bestSol = new ArrayList<>();
         branchAndBound(visited, unvisited, 0);
+
+        LinkedList<Intersection> optimalTour = new LinkedList<>();
+
+        for (int i = 0; i < visited.size(); i++) {
+            optimalTour.addAll(shortestPathBetweenTwoIntersections.get(visited.get(i)).get(visited.get((i+1)%visited.size())));
+        }
     }
 
     private Map.Entry<Intersection, Double> getLowestDistanceIntersection(HashMap<Intersection, Double> unsettledVertices) {
@@ -61,16 +73,19 @@ public class Algorithm {
         return res;
     }
 
-    private void release(Intersection vi, Intersection vj, Double distIJ, HashMap<Intersection, Double> unsettledVertices) {
+    private void release(Intersection vi, Intersection vj, Double distIJ, HashMap<Intersection, Double> unsettledVertices, HashMap<Intersection, Intersection> previousIntersection) {
         Double di = unsettledVertices.get(vi);
         Double dj = unsettledVertices.get(vj);
         if(dj > di + distIJ){
             dj = di + distIJ;
             unsettledVertices.put(vj, dj);
+            previousIntersection.put(vj, vi);
         }
     }
 
-    private void dijkstra(Intersection source) {
+    private HashMap<Intesection, LinkedList<Intersection>> dijkstra(Intersection source, List<Intersection> destinations) {
+        HashMap<Intersection, Intersection> previousIntersection = new HashMap<>();
+
         HashMap<Intersection, Double> settledVertices = new HashMap<>();
         HashMap<Intersection, Double> unsettledVertices = new HashMap<>();
 
@@ -98,19 +113,29 @@ public class Algorithm {
                     if(!unsettledVertices.containsKey(destination)){
                         unsettledVertices.put(destination, Double.MAX_VALUE);
                     }
-                    release(intersection, destination, length, unsettledVertices);
+                    release(intersection, destination, length, unsettledVertices, previousIntersection);
                 }
             }
             settledVertices.put(intersection, lowestDistance);
             unsettledVertices.remove(intersection);
         }
 
-        for (int i = 0; i < deliveryLocations.size(); i++) {
-            Intersection destination = deliveryLocations.get(i);
+        HashMap<Intesection, LinkedList<Intersection>> shortestPathsFromSource = new HashMap<>();
+        for (int i = 0; i < destinations.size(); i++) {
+            Intersection destination = destinations.get(i);
             tspCost.get(source.getId()).put(destination.getId(), settledVertices.get(destination));
-
+            LinkedList<Intersection> shortestPath = new LinkedList<>();
+            shortestPath.add(destination);
+            Intersection currentIntersection = destination;
+            Intersection prevIntersection = null;
+            while((prevIntersection = previousIntersection.get(currentIntersection))!=null){
+                shortestPath.addFirst(prevIntersection);
+                currentIntersection = prevIntersection;
+            }
+            shortestPathsFromSource.put(destination, shortestPath);
         }
 
+        return shortestPathsFromSource;
     }
 
     /**
