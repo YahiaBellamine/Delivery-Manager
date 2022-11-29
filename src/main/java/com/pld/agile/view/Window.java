@@ -1,5 +1,7 @@
 package com.pld.agile.view;
 
+import com.pld.agile.model.CityMap;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -14,6 +16,7 @@ public class Window extends JFrame {
     int x = (int) ((screenDimensions.getWidth() - this.getWidth()) / 2);
     int y = (int) ((screenDimensions.getHeight() - this.getHeight()) / 2);
     this.setLocation(x, y);
+
   }
 }
 
