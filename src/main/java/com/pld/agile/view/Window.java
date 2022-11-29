@@ -7,7 +7,7 @@ public class Window extends JFrame {
   public Window() {
     super("Delivery Manager");
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    this.setResizable(true);
+    this.setResizable(false);
     Dimension screenDimensions = Toolkit.getDefaultToolkit().getScreenSize();
     this.setSize((int)(screenDimensions.width * 0.9), (int)(screenDimensions.height * 0.9));
 
