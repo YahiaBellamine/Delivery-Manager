@@ -33,7 +33,9 @@ public class MapViewer {
     private HashSet<Marker> map;
 
     private Marker warehouse;
-    private HashSet<Marker> markers;
+
+    private Marker requestMarker;
+    private HashSet<Marker> tourMarkers;
     private List<GeoPosition> tour;
 
     public MapViewer() {
@@ -44,7 +46,7 @@ public class MapViewer {
             }
         });
 
-        markers = new HashSet<>();
+        tourMarkers = new HashSet<>();
         map = new HashSet<>();
         tour = new LinkedList<>();
 
@@ -84,12 +86,10 @@ public class MapViewer {
     public void addPoint(GeoPosition pos, long id, Marker.Type type){
         switch (type){
             case MAP -> map.add(new Marker(id, Color.BLACK, pos, type));
-            case WAREHOUSE -> {
-                map.add(new Marker(id, Color.GREEN, pos, type));
-                //warehouse = new Marker(id,Color.RED, pos, Marker.Type.WAREHOUSE);
-            }
-            case TOUR -> markers.add(new Marker(id, Color.green, pos, type));
-            case REQUEST -> markers.add(new Marker(id, Color.orange, pos, type));
+            case WAREHOUSE -> warehouse = new Marker(id,Color.RED, pos, Marker.Type.WAREHOUSE);
+            case TOUR -> tourMarkers.add(new Marker(id, Color.green, pos, type));
+            case REQUEST -> requestMarker = new Marker(id, Color.orange, pos, type);
+
         }
     }
 
@@ -104,8 +104,14 @@ public class MapViewer {
     }
 
     public void clearMarkers(){
-        markers.clear();
+        tourMarkers.clear();
         tour.clear();
+        requestMarker = null;
+        update();
+    }
+
+    public void clearRequestMarker(){
+        requestMarker = null;
         update();
     }
 
@@ -119,18 +125,35 @@ public class MapViewer {
         List<Painter<JXMapViewer>> painters = new ArrayList<Painter<JXMapViewer>>();
 
         //the warehouse
+        if(warehouse!=null){
+            WarehousePainter warehousePainter = new WarehousePainter();
+            HashSet<Marker> whSet = new HashSet<>();
+            whSet.add(warehouse);
+            warehousePainter.setWaypoints(whSet);
+            painters.add(warehousePainter);
+        }
 
         //the map
-
         MapMarkersPainter mapPainter = new MapMarkersPainter();
         mapPainter.setWaypoints(map);
         painters.add(mapPainter);
 
         //the markers
-        if(markers.size() >0){
+        if(tourMarkers.size() >0){
             MarkersPainter markersPainter = new MarkersPainter();
-            markersPainter.setWaypoints(markers);
+            markersPainter.setWaypoints(tourMarkers);
             painters.add(markersPainter);
+            //the markers
+
+        }
+
+        //the request marker
+        if(requestMarker!=null){
+            MarkersPainter markersPainter2 = new MarkersPainter();
+            HashSet<Marker> reqMarkSet = new HashSet<>();
+            reqMarkSet.add(requestMarker);
+            markersPainter2.setWaypoints(reqMarkSet);
+            painters.add(markersPainter2);
         }
 
         //the tour
