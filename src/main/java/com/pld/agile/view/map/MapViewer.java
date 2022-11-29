@@ -30,11 +30,13 @@ public class MapViewer {
     public JPanel bottomPanel;
     public JXMapViewer mapViewer;
 
-    private HashSet<GeoPosition> points;
-    private HashSet<MyWaypoint> wPoints;
+    private HashSet<Marker> map;
+
+    private Marker warehouse;
+    private HashSet<Marker> markers;
+    private List<GeoPosition> tour;
 
     public MapViewer() {
-
         bottomButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -42,8 +44,9 @@ public class MapViewer {
             }
         });
 
-        points = new HashSet<>();
-        wPoints = new HashSet<>();
+        markers = new HashSet<>();
+        map = new HashSet<>();
+        tour = new LinkedList<>();
 
         // Add interactions
         MouseInputListener mia = new PanMouseInputListener(mapViewer);
@@ -76,43 +79,86 @@ public class MapViewer {
         tileFactory.setThreadPoolSize(8);
         mapViewer.setLayout(null);
         mapPanel = mapViewer;
-
     }
 
-    public void addPoint(double x, double y, long id){
-        GeoPosition newPoint = new GeoPosition(x,y);
-        points.add(newPoint);
-        //MyWaypoint myPoint = new MyWaypoint(text,Color.black,newPoint);
-                //Arrays.asList(new SwingWaypoint(text, newPoint)));
+    public void addPoint(GeoPosition pos, long id, Marker.Type type){
+        switch (type){
+            case MAP -> map.add(new Marker(id, Color.BLACK, pos, type));
+            case WAREHOUSE -> {
+                map.add(new Marker(id, Color.GREEN, pos, type));
+                //warehouse = new Marker(id,Color.RED, pos, Marker.Type.WAREHOUSE);
+            }
+            case TOUR -> markers.add(new Marker(id, Color.green, pos, type));
+            case REQUEST -> markers.add(new Marker(id, Color.orange, pos, type));
+        }
+    }
 
-        wPoints.add(new MyWaypoint(id, Color.black,newPoint));
+    public void updateTour(List<GeoPosition> tourlist){
+        this.tour.clear();
+        this.tour.addAll(tourlist);
+        update();
+    }
+
+    public List<GeoPosition> getTour(){
+        return this.tour;
+    }
+
+    public void clearMarkers(){
+        markers.clear();
+        tour.clear();
+        update();
+    }
+
+    public void clearAll(){
+        clearMarkers();
+        map.clear();
+        update();
     }
 
     public void update(){
-        MapMarkers waypointPainter = new MapMarkers();
-        waypointPainter.setWaypoints(wPoints);
-        //mapViewer.setOverlayPainter(waypointPainter);
-
-
-        RoutePainter routePainter = new RoutePainter(points.stream().toList().subList(0,10));
-
         List<Painter<JXMapViewer>> painters = new ArrayList<Painter<JXMapViewer>>();
-        painters.add(routePainter);
-        painters.add(waypointPainter);
+
+        //the warehouse
+
+        //the map
+
+        MapMarkersPainter mapPainter = new MapMarkersPainter();
+        mapPainter.setWaypoints(map);
+        painters.add(mapPainter);
+
+        //the markers
+        if(markers.size() >0){
+            MarkersPainter markersPainter = new MarkersPainter();
+            markersPainter.setWaypoints(markers);
+            painters.add(markersPainter);
+        }
+
+        //the tour
+        if(tour.size()>1){
+            TourPainter tourPainter = new TourPainter(tour);
+            painters.add(tourPainter);
+        }
 
         CompoundPainter<JXMapViewer> painter = new CompoundPainter<JXMapViewer>(painters);
         mapViewer.setOverlayPainter(painter);
     }
 
     public void recenter(){
-        if(points.size() == 1){
-            mapViewer.setAddressLocation(points.iterator().next());
+        if(map.size() == 1){
+            mapViewer.setAddressLocation(getPositions(map).iterator().next());
         }else{
-            mapViewer.zoomToBestFit(points,0.7);
+            mapViewer.zoomToBestFit(getPositions(map),0.7);
             update();
             mapViewer.repaint();
-
         }
+    }
+
+    public HashSet<GeoPosition> getPositions(HashSet<Marker> ms){
+        HashSet<GeoPosition> positions = new HashSet<>();
+        for(Marker m : ms){
+            positions.add(m.getPosition());
+        }
+        return positions;
     }
 
 }

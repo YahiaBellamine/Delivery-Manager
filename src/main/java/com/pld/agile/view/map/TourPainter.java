@@ -18,7 +18,7 @@ import org.jxmapviewer.painter.Painter;
  * Paints a route
  * @author Martin Steiger
  */
-public class RoutePainter implements Painter<JXMapViewer>
+public class TourPainter implements Painter<JXMapViewer>
 {
     private Color color = Color.RED;
     private boolean antiAlias = true;
@@ -28,7 +28,7 @@ public class RoutePainter implements Painter<JXMapViewer>
     /**
      * @param track the track
      */
-    public RoutePainter(List<GeoPosition> track)
+    public TourPainter(List<GeoPosition> track)
     {
         // copy the list so that changes in the 
         // original list do not have an effect here

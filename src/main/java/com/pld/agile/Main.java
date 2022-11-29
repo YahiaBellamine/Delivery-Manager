@@ -5,12 +5,15 @@ import com.pld.agile.model.Intersection;
 import com.pld.agile.utils.xml.ExceptionXML;
 import com.pld.agile.utils.xml.XMLDeserialiser;
 import com.pld.agile.view.map.MapViewer;
+import com.pld.agile.view.map.Marker;
+import org.jxmapviewer.viewer.GeoPosition;
 
 import javax.swing.*;
 
 import java.awt.*;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 public class Main {
@@ -19,6 +22,9 @@ public class Main {
   public static void main(String[] args) {
 
     String s = "src/main/java/com/pld/agile/utils/maps/smallMap.xml";
+
+    //example of creating a hashmap
+    //and creating the graph using the XML deserialiser function
     Map<Long, Intersection> intersections = new HashMap<Long, Intersection>();
     Intersection i=new Intersection((long)1,0,0,null);
     CityMap cityMap=new CityMap(0,0,0,0,i);
@@ -28,29 +34,61 @@ public class Main {
       throw new RuntimeException(e);
     }
 
+
+    //example of creating the map panel
     MapViewer mapForm = new MapViewer();
-    // traverse the list and print information
-    // System.out.println(intersections.size());
+
+    //example of traversing the map of intersections and printing information
     for(Map.Entry<Long,Intersection> entry:intersections.entrySet() ) {
+      if(entry.getKey() == 25303831) continue;
       System.out.println("ID: "+entry.getKey());
       System.out.println(entry.getValue().getLatitude());
       System.out.println(entry.getValue().getLongitude());
       System.out.println(entry.getValue().getOutgoingSegments().size());
+      //example of printing the outgoing segments
 //           for(int j=0;j<entry.getValue().getOutgoingSegments().size();j++){
 //               System.out.println(entry.getValue().getOutgoingSegments().get(j));
 //           }
       System.out.println();
 
-      mapForm.addPoint(entry.getValue().getLatitude(),
-              entry.getValue().getLongitude(),
-               entry.getValue().getId());
+      //example of creating a GeoPosition objects and adding it to the map as a map marker
+      GeoPosition pos = new GeoPosition(entry.getValue().getLatitude(),entry.getValue().getLongitude());
+      mapForm.addPoint(pos,
+              entry.getValue().getId(), Marker.Type.MAP);
     }
 
+    //example of defining the warehouse marker on the map
+    GeoPosition pos = new GeoPosition(cityMap.getWarehouse().getLatitude(),
+            cityMap.getWarehouse().getLongitude());
+    mapForm.addPoint(pos,cityMap.getWarehouse().getId(), Marker.Type.WAREHOUSE);
 
-    // DeepCopy works
-    System.out.println(cityMap.getWarehouse().getId());
+    //example of adding some Tour markers to the map
+    //and creating a list of GeoPositions to draw the route
+    int counter=0;
+    LinkedList<GeoPosition> listPos = new LinkedList<>();
+    listPos.add(pos);
+    for(Intersection entry:intersections.values()){
+      GeoPosition pos2 = new GeoPosition(entry.getLatitude(), entry.getLongitude());
+      mapForm.addPoint(pos2, 0, Marker.Type.TOUR);
+      listPos.add(pos2);
+      counter++;
+      if(counter>4) break;
+    }
+    listPos.add(pos);
+    mapForm.updateTour(listPos);
+
+    // clearing tour markers and the tour route:
+   // mapForm.clearMarkers();
+
+    //clearing all the markers (including the intersections' markers
+  //  mapForm.clearAll();
+
+    //example of adding a marker as the delivery request address
+    GeoPosition pos3 = new GeoPosition(45.757072,4.8586116);
+    mapForm.addPoint(pos3, 0, Marker.Type.REQUEST);
 
 
+    //creating the JFrame
     JFrame frame = new JFrame("MapViewer");
     frame.setContentPane(mapForm.mainPanel);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
