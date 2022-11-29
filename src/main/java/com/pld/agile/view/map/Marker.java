@@ -2,25 +2,41 @@
 package com.pld.agile.view.map;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
 
 import org.jxmapviewer.viewer.DefaultWaypoint;
 import org.jxmapviewer.viewer.GeoPosition;
 
 import javax.swing.*;
-import javax.swing.event.MouseInputListener;
 
 /**
  * A waypoint that also has a color and a label
  * @author Martin Steiger
  */
-public class MyWaypoint extends DefaultWaypoint
+public class Marker extends DefaultWaypoint
 {
+    public enum Type{WAREHOUSE, MAP, TOUR, REQUEST}
     private final long id;
     private Color color;
-
     private JLabel lbl;
 
+    private Type type;
+
+    /**
+     * @param id the id
+     * @param color the color
+     * @param position the coordinate
+     */
+    public Marker(long id, Color color, GeoPosition position, Type type)
+    {
+        super(position);
+        this.id = id;
+        this.color = color;
+        this.lbl = new JLabel();
+        this.type = type;
+        if(this.type == Type.MAP){
+            lbl.addMouseListener(new MarkerMouseListener(this));
+        }
+    }
     public JLabel getLbl() {
         return lbl;
     }
@@ -29,20 +45,7 @@ public class MyWaypoint extends DefaultWaypoint
         this.lbl = lbl;
     }
 
-    /**
-     * @param id the id
-     * @param color the color
-     * @param coord the coordinate
-     */
-    public MyWaypoint(long id, Color color, GeoPosition coord)
-    {
-        super(coord);
-        this.id = id;
-        this.color = color;
-        this.lbl = new JLabel();
 
-        lbl.addMouseListener(new MarkerMouseListener(this));
-    }
 
     /**
      * @return the color

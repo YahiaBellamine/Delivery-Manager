@@ -10,30 +10,23 @@
 package com.pld.agile.view.map;
 
 import org.jxmapviewer.JXMapViewer;
-import org.jxmapviewer.viewer.Waypoint;
 import org.jxmapviewer.viewer.WaypointPainter;
-import org.jxmapviewer.viewer.WaypointRenderer;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A fancy waypoint painter
  * @author Martin Steiger
  */
-public class MapMarkers extends WaypointPainter<MyWaypoint>
+public class MapMarkersPainter extends WaypointPainter<Marker>
 {
     @Override
     protected void doPaint(Graphics2D g, JXMapViewer viewer, int width, int height) {
        // g = (Graphics2D)g.create();
 
-        for (MyWaypoint w : getWaypoints()) {
+        for (Marker w : getWaypoints()) {
             Point2D point = viewer.getTileFactory().geoToPixel(w.getPosition(), viewer.getZoom());
             int zoom = viewer.getZoom();
             int imgW = 35/(zoom+1);

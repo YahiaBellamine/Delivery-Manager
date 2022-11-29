@@ -1,26 +1,27 @@
 package com.pld.agile.view.map;
 
 import javax.swing.event.MouseInputListener;
-import java.awt.*;
 import java.awt.event.MouseEvent;
 
 public class MarkerMouseListener implements MouseInputListener {
 
-    private MyWaypoint wp;
+    private Marker wp;
 
-    public MarkerMouseListener(MyWaypoint wp){
+    public MarkerMouseListener(Marker wp){
         this.wp = wp;
     }
 
-    public MyWaypoint getWp() {
+    public Marker getWp() {
         return wp;
     }
 
-    public void setWp(MyWaypoint wp) {
+    public void setWp(Marker wp) {
         this.wp = wp;
     }
     @Override public void mouseClicked(MouseEvent e) {
-        System.out.println(wp.getId());
+
+        System.out.println(wp.getId() +" "+wp.getPosition().getLatitude()+" "+wp.getPosition().getLongitude());
+
     }
     @Override public void mousePressed(MouseEvent e) {}
     @Override public void mouseReleased(MouseEvent e) {}
