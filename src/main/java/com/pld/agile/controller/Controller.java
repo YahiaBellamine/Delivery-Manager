@@ -60,6 +60,7 @@ public class Controller {
       throw new RuntimeException(e);
     }
     for (Intersection intersection : intersections.values()) {
+      if(cityMap.getWarehouse().getId() == intersection.getId()) continue;
       GeoPosition geoPosition = new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
       this.window.getMapViewer().addPoint(geoPosition, intersection.getId(), Marker.Type.MAP);
     }
