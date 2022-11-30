@@ -4,6 +4,7 @@ import com.pld.agile.model.CityMap;
 import com.pld.agile.model.DeliveryRequest;
 import com.pld.agile.model.Intersection;
 import com.pld.agile.model.enums.TimeWindow;
+import com.pld.agile.utils.Algorithm;
 import com.pld.agile.utils.xml.ExceptionXML;
 import com.pld.agile.utils.xml.XMLDeserialiser;
 import com.pld.agile.view.Window;
@@ -37,6 +38,11 @@ public class Controller {
       DeliveryRequest deliveryRequest = new DeliveryRequest(tm, this.intersections.get(currentIntersectionId));
       // Add delivery request to right panel
       this.deliveryRequests.add(deliveryRequest);
+      LinkedList<Intersection> optimalTour = Algorithm.ExecuteAlgorithm(this.cityMap.getWarehouse(), deliveryRequests);
+      this.window.getMapViewer().updateTour(optimalTour.stream().map(intersection -> {
+        return new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
+      }).toList());
+
       this.window.getDeliveriesView().displayRequests(deliveryRequests);
 
       /* Add pointer to the map*/
