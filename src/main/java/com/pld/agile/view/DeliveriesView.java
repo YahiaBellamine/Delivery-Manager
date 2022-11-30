@@ -52,7 +52,7 @@ public class DeliveriesView extends JPanel {
         deliveryRequestsPanel.setName("deliveryRequestsScrollPane");
         requestsScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         requestsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        requestsScrollPane.add(deliveryRequestsPanel);
+        requestsScrollPane.setViewportView(deliveryRequestsPanel);
 
         viewTitle = new JLabel("Deliveries");
         viewTitle.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -127,7 +127,7 @@ public class DeliveriesView extends JPanel {
             GridBagConstraints constraints = new GridBagConstraints();
             constraints.gridx = 0;
             constraints.weightx = 1;
-            constraints.weighty = 1.0 / deliveryRequests.size();
+            constraints.weighty = 1 / deliveryRequests.size();
             constraints.gridwidth = 1;
             constraints.fill = GridBagConstraints.HORIZONTAL;
 
