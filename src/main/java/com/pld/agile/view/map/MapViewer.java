@@ -88,7 +88,11 @@ public class MapViewer {
 
     public void addPoint(GeoPosition pos, long id, Marker.Type type){
         switch (type){
-            case MAP -> map.add(new Marker(id, Color.BLACK, pos, type, controller));
+            case MAP -> {
+                Marker m = new Marker(id, Color.BLACK, pos, type, controller);
+                map.add(m);
+                mapViewer.add(m.getLbl());
+            }
             case WAREHOUSE -> warehouse = new Marker(id,Color.RED, pos, Marker.Type.WAREHOUSE, controller);
             case TOUR -> tourMarkers.add(new Marker(id, Color.green, pos, type, controller));
             case REQUEST -> requestMarker = new Marker(id, Color.orange, pos, type, controller);
@@ -120,6 +124,7 @@ public class MapViewer {
     public void clearAll(){
         clearMarkers();
         map.clear();
+        mapViewer.removeAll();
         update();
     }
 
