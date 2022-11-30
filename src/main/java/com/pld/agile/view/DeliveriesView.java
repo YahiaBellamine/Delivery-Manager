@@ -14,6 +14,9 @@ public class DeliveriesView extends JPanel {
     /** Panel used to display the delivery requests of a tour */
     private JPanel deliveryRequestsPanel;
 
+    /** Scrollable panel to display the delivery requests of a tour */
+    private JScrollPane requestsScrollPane;
+
     /** Main label of the textual view */
     private JLabel viewTitle;
 
@@ -45,6 +48,12 @@ public class DeliveriesView extends JPanel {
         deliveryRequestsPanel = new JPanel();
         deliveryRequestsPanel.setName("deliveryRequestsPanel");
 
+        requestsScrollPane = new JScrollPane();
+        deliveryRequestsPanel.setName("deliveryRequestsScrollPane");
+        requestsScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        requestsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        requestsScrollPane.add(deliveryRequestsPanel);
+
         viewTitle = new JLabel("Deliveries");
         viewTitle.setHorizontalTextPosition(SwingConstants.CENTER);
 
@@ -72,7 +81,7 @@ public class DeliveriesView extends JPanel {
         constraints.weighty = 0.9;
         constraints.gridwidth = 3;
         constraints.fill = GridBagConstraints.BOTH;
-        this.add(deliveryRequestsPanel, constraints);
+        this.add(requestsScrollPane, constraints);
     }
 
     /**
@@ -105,7 +114,7 @@ public class DeliveriesView extends JPanel {
      */
     private void updateDeliveryPanelLayout() {
         System.out.println("New layout - number of rows: " + deliveryRequests.size());
-        deliveryRequestsPanel.setLayout(new GridLayout(deliveryRequests.size(), 1));
+        deliveryRequestsPanel.setLayout(new GridBagLayout());
     }
 
     /**
@@ -114,6 +123,14 @@ public class DeliveriesView extends JPanel {
     private void paintRequests() {
         if(!deliveryRequests.isEmpty()) {
             Border deliveryPanelBorder = BorderFactory.createRaisedBevelBorder();
+
+            GridBagConstraints constraints = new GridBagConstraints();
+            constraints.gridx = 0;
+            constraints.weightx = 1;
+            constraints.weighty = 1.0 / deliveryRequests.size();
+            constraints.gridwidth = 1;
+            constraints.fill = GridBagConstraints.HORIZONTAL;
+
             int requestsCounter = 1;
             for(DeliveryRequest request : deliveryRequests) {
                 JPanel requestPanel = new JPanel();
@@ -123,6 +140,7 @@ public class DeliveriesView extends JPanel {
                 requestPanel.setLayout(new BoxLayout(requestPanel, BoxLayout.PAGE_AXIS));
                 requestPanel.setBorder(deliveryPanelBorder);
                 requestPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+                requestPanel.setAlignmentY(Component.TOP_ALIGNMENT);
 
                 requestTag.setText("Delivery request n°" + requestsCounter);
                 requestTime.setText("Time Window: [" + request.getTimeWindow().getStart() + " - " +request.getTimeWindow().getEnd() + "]");
@@ -132,13 +150,18 @@ public class DeliveriesView extends JPanel {
 
                 requestPanel.add(requestTag);
                 requestPanel.add(requestTime);
-                deliveryRequestsPanel.add(requestPanel);
+
+                constraints.gridy = requestsCounter - 1;
+                deliveryRequestsPanel.add(requestPanel, constraints);
 
                 requestPanel.setPreferredSize(new Dimension(requestPanel.getParent().getWidth(), requestPanel.getParent().getHeight() / 10));
                 requestPanel.revalidate();
 
                 ++requestsCounter;
             }
+            requestsScrollPane.setViewportView(deliveryRequestsPanel);
+            requestsScrollPane.revalidate();
+            requestsScrollPane.repaint();
             deliveryRequestsPanel.revalidate();
             deliveryRequestsPanel.repaint();
         }
