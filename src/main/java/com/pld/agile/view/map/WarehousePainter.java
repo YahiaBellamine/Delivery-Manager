@@ -40,7 +40,7 @@ public class WarehousePainter extends WaypointPainter<Marker>
     {
         try
         {
-            File resource = new File( "src/main/java/com/pld/agile/view/map/warehouse.png");
+            File resource = new File( "src/main/java/com/pld/agile/view/map/warehouse2.png");
             origImage = ImageIO.read(resource);
         }
         catch (Exception ex)
@@ -95,11 +95,6 @@ public class WarehousePainter extends WaypointPainter<Marker>
             int x = (int)(point.getX() - rectangle.getX());
             int y = (int)(point.getY() - rectangle.getY());
             g.drawImage(newimg, x -newimg.getWidth(null) / 2, y -newimg.getHeight(null), null);
-//            JLabel lbl = w.getLbl();
-//            lbl.setBounds( x-imgW/2, y-imgH/2, imgW,imgH);
-//            lbl.setBackground(w.getColor());
-//            lbl.setOpaque(true);
-//            viewer.add(lbl);
         }
     }
 
