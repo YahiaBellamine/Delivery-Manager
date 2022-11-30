@@ -79,7 +79,7 @@ public class Controller {
     // if the user selects a file
     if (r == JFileChooser.APPROVE_OPTION) {
       // set the label to the path of the selected file
-      path = j.getSelectedFile().getAbsolutePath();
+      path = j.getSelectedFile().toURI().getPath();
     }
     try {
       XMLDeserialiser.load(path, intersections, cityMap);
