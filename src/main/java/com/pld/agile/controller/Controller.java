@@ -3,6 +3,7 @@ package com.pld.agile.controller;
 import com.pld.agile.model.CityMap;
 import com.pld.agile.model.DeliveryRequest;
 import com.pld.agile.model.Intersection;
+import com.pld.agile.model.RoadSegment;
 import com.pld.agile.model.enums.TimeWindow;
 import com.pld.agile.utils.xml.ExceptionXML;
 import com.pld.agile.utils.xml.XMLDeserialiser;
@@ -86,11 +87,37 @@ public class Controller {
       throw new RuntimeException(e);
     }
     window.getMapViewer().clearAll();
-    for (Intersection intersection : intersections.values()) {
+    /*for (Intersection intersection : intersections.values()) {
       if(cityMap.getWarehouse().getId() == intersection.getId()) continue;
       GeoPosition geoPosition = new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
       this.window.getMapViewer().addPoint(geoPosition, intersection.getId(), Marker.Type.MAP);
+    }*/
+
+    Intersection warehouse = cityMap.getWarehouse();
+    HashSet<Intersection> settledVertices = new HashSet<>();
+    HashSet<Intersection> unsettledVertices = new HashSet<>();
+
+    unsettledVertices.add(warehouse);
+
+    while(unsettledVertices.size()!=0){
+      Intersection intersection = unsettledVertices.iterator().next();
+
+      List<RoadSegment> outgoingSegments = intersection.getOutgoingSegments();
+
+      for (RoadSegment outgoingSegment:outgoingSegments) {
+        Intersection destination = outgoingSegment.getDestination();
+        if(!settledVertices.contains(destination)) {
+          if (!unsettledVertices.contains(destination)) {
+            unsettledVertices.add(destination);
+          }
+        }
+      }
+      settledVertices.add(intersection);
+      unsettledVertices.remove(intersection);
+      GeoPosition geoPosition = new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
+      this.window.getMapViewer().addPoint(geoPosition, intersection.getId(), Marker.Type.MAP);
     }
+
 //    // Define the warehouse marker on the map
     GeoPosition warehousePosition = new GeoPosition(cityMap.getWarehouse().getLatitude(),
             cityMap.getWarehouse().getLongitude());
