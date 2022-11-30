@@ -13,6 +13,7 @@ import org.jxmapviewer.viewer.GeoPosition;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -59,7 +60,7 @@ public class Controller {
 
   }
 
-  public void loadMap(/*String path*/) {
+  public void loadMap(/*String path*/) throws UnsupportedEncodingException {
     String path = "src/main/java/com/pld/agile/utils/maps/smallMap.xml";
 
     JFileChooser j = new JFileChooser("src/main/java/com/pld/agile/utils/maps");
@@ -75,7 +76,9 @@ public class Controller {
     // if the user selects a file
     if (r == JFileChooser.APPROVE_OPTION) {
       // set the label to the path of the selected file
-      path = j.getSelectedFile().getAbsolutePath();
+      path = j.getSelectedFile().toURI().getPath();
+     // path = java.net.URLDecoder.decode(path,"utf-8");
+      System.out.println(path);
     }
     try {
       XMLDeserialiser.load(path, intersections, cityMap);
