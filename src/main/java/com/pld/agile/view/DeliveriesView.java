@@ -92,7 +92,7 @@ public class DeliveriesView {
      */
     public void displayRequests(List<DeliveryRequest> requests) {
         deliveryRequests.clear();
-        deliveryRequests = requests;
+        deliveryRequests.addAll(requests);
         clearDeliveryGUI();
         updateDeliveryPanelLayout();
         paintRequests();
@@ -115,6 +115,7 @@ public class DeliveriesView {
      * The new layout is updated depending on the number of deliveries to display.
      */
     private void updateDeliveryPanelLayout() {
+        System.out.println("New layout - number of rows: " + deliveryRequests.size());
         deliveryRequestsPanel.setLayout(new GridLayout(deliveryRequests.size(), 1));
     }
 
