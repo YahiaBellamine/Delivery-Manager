@@ -7,10 +7,7 @@ import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 
-public class DeliveriesView {
-    /** Main panel of the textual view */
-    private JPanel textViewPanel;
-
+public class DeliveriesView extends JPanel {
     /** Panel used to display the head infos of the textual view */
     private JPanel textViewHeadPanel;
 
@@ -33,20 +30,20 @@ public class DeliveriesView {
      * Constructor of the textual view.
      */
     public DeliveriesView() {
+        super();
         deliveryRequests = new LinkedList<>();
 
-        textViewPanel = new JPanel(new GridBagLayout());
-        textViewPanel.setName("textViewPanel");
-        textViewPanel.setBackground(Color.RED);
+        Border textViewBorder = BorderFactory.createLoweredBevelBorder();
+        this.setLayout(new GridBagLayout());
+        this.setName("textViewPanel");
+        this.setBorder(textViewBorder);
 
         textViewHeadPanel = new JPanel();
-        textViewHeadPanel.setName("textViewPanel");
-        textViewHeadPanel.setBackground(Color.YELLOW);
+        textViewHeadPanel.setName("textViewHeadPanel");
         textViewHeadPanel.setLayout(new FlowLayout());
 
         deliveryRequestsPanel = new JPanel();
         deliveryRequestsPanel.setName("deliveryRequestsPanel");
-        deliveryRequestsPanel.setBackground(Color.BLUE);
 
         viewTitle = new JLabel("Deliveries");
         viewTitle.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -68,22 +65,14 @@ public class DeliveriesView {
         constraints.weighty = 0.1;
         constraints.gridwidth = 3;
         constraints.fill = GridBagConstraints.BOTH;
-        textViewPanel.add(textViewHeadPanel, constraints);
+        this.add(textViewHeadPanel, constraints);
 
         constraints.gridx = 0;
         constraints.gridy = 1;
         constraints.weighty = 0.9;
         constraints.gridwidth = 3;
         constraints.fill = GridBagConstraints.BOTH;
-        textViewPanel.add(deliveryRequestsPanel, constraints);
-    }
-
-    /**
-     *
-     * @return The main panel of the text view of the GUI.
-     */
-    public JPanel getTextViewPanel() {
-        return textViewPanel;
+        this.add(deliveryRequestsPanel, constraints);
     }
 
     /**
@@ -92,7 +81,7 @@ public class DeliveriesView {
      */
     public void displayRequests(List<DeliveryRequest> requests) {
         deliveryRequests.clear();
-        deliveryRequests = requests;
+        deliveryRequests.addAll(requests);
         clearDeliveryGUI();
         updateDeliveryPanelLayout();
         paintRequests();
@@ -115,6 +104,7 @@ public class DeliveriesView {
      * The new layout is updated depending on the number of deliveries to display.
      */
     private void updateDeliveryPanelLayout() {
+        System.out.println("New layout - number of rows: " + deliveryRequests.size());
         deliveryRequestsPanel.setLayout(new GridLayout(deliveryRequests.size(), 1));
     }
 
@@ -135,7 +125,7 @@ public class DeliveriesView {
                 requestPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
                 requestTag.setText("Delivery request n°" + requestsCounter);
-                // requestTime.setText("Time Window: [" + request.getTimeWindow().getStartTime() + " - " +request.getTimeWindow().getEndTime() + "]");
+                requestTime.setText("Time Window: [" + request.getTimeWindow().getStart() + " - " +request.getTimeWindow().getEnd() + "]");
 
                 //DEBUG
                 /*System.out.println("Added delivery request: name:" + requestTag.getText() + " ; timeW:" + requestTime.getText());*/
@@ -144,7 +134,7 @@ public class DeliveriesView {
                 requestPanel.add(requestTime);
                 deliveryRequestsPanel.add(requestPanel);
 
-                requestPanel.setPreferredSize(new Dimension(requestPanel.getParent().getParent().getWidth(), requestPanel.getHeight()));
+                requestPanel.setPreferredSize(new Dimension(requestPanel.getParent().getWidth(), requestPanel.getParent().getHeight() / 10));
                 requestPanel.revalidate();
 
                 ++requestsCounter;

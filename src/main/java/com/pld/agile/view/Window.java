@@ -30,10 +30,9 @@ public class Window extends JFrame {
     this.mapViewer = new MapViewer(controller);
 
     mapViewer = new MapViewer(controller);
-    mapViewer.mainPanel.setBounds(320, 10, 650, 650);
-    mapViewer.recenter();
-    this.getContentPane().add(mapViewer.mainPanel);
 
+
+    //Create the JFrame
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setResizable(false);
     Dimension screenDimensions = Toolkit.getDefaultToolkit().getScreenSize();
@@ -44,34 +43,72 @@ public class Window extends JFrame {
     int y = (int) ((screenDimensions.getHeight() - this.getHeight()) / 2);
     this.setLocation(x, y);
 
+    JPanel contentPane = new JPanel(new GridBagLayout());
+    this.setContentPane(contentPane);
+
+    mapViewer.recenter();
+    this.getContentPane().add(mapViewer.mainPanel);
+
     ButtonListener buttonListener = new ButtonListener(controller);
 
     JButton loadMapButton = new JButton("Load a Map");
-    loadMapButton.setBounds(10, 10, 250, 30);
+    loadMapButton.setMaximumSize(new Dimension(250, 30));
+    loadMapButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     loadMapButton.setActionCommand(LOAD_MAP);
     loadMapButton.addActionListener(buttonListener);
 
     JButton addDeliveryRequestBtn = new JButton("Add a Delivery Request");
-    addDeliveryRequestBtn.setBounds(10, 300, 250, 30);
+    addDeliveryRequestBtn.setMaximumSize(new Dimension(250, 30));
+    addDeliveryRequestBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
     addDeliveryRequestBtn.setActionCommand(ADD_DELIVERY_REQUEST);
     addDeliveryRequestBtn.addActionListener(buttonListener);
 
     deliveryRequestView = new DeliveryRequestView();
-    deliveryRequestView.setBounds(10, 50, 250, 200);
-    this.getContentPane().add(deliveryRequestView);
 
     deliveriesView = new DeliveriesView();
-    deliveriesView.getTextViewPanel().setBounds(1200, 10, 300, 400);
-    this.getContentPane().add(deliveriesView.getTextViewPanel());
+    deliveriesView.setSize(contentPane.getWidth() / 4, contentPane.getHeight());
 
     JPanel leftContainer = new JPanel();
-    leftContainer.setBounds(0, 0, 300, 400);
-    leftContainer.setLayout(null);
-    leftContainer.add(loadMapButton);
-    leftContainer.add(deliveryRequestView);
-    leftContainer.add(addDeliveryRequestBtn);
-    this.getContentPane().add(leftContainer);
+    leftContainer.setLayout(new BoxLayout(leftContainer, BoxLayout.PAGE_AXIS));
 
+    leftContainer.add(Box.createRigidArea(new Dimension(0,50)));
+    leftContainer.add(loadMapButton);
+    leftContainer.add(Box.createRigidArea(new Dimension(0,20)));
+    leftContainer.add(deliveryRequestView);
+    leftContainer.add(Box.createRigidArea(new Dimension(0,20)));
+    leftContainer.add(addDeliveryRequestBtn);
+    leftContainer.add(Box.createRigidArea(new Dimension(0,100)));
+
+    GridBagConstraints constraints = new GridBagConstraints();
+
+    //User entry panel
+    constraints.gridx = 0;
+    constraints.gridy = 0;
+    constraints.weightx = 0.1;
+    constraints.weighty = 1;
+    constraints.gridwidth = 1;
+    constraints.fill = GridBagConstraints.BOTH;
+    this.add(leftContainer, constraints);
+
+    //Graphical view (Map) panel
+    constraints.gridx = 1;
+    constraints.gridy = 0;
+    constraints.weightx = 0.8;
+    constraints.weighty = 1;
+    constraints.gridwidth = 2;
+    constraints.fill = GridBagConstraints.BOTH;
+    this.add(mapViewer.mainPanel, constraints);
+
+    //Textual view panel
+    constraints.gridx = 3;
+    constraints.gridy = 0;
+    constraints.weightx = 0.1;
+    constraints.weighty = 1;
+    constraints.gridwidth = 1;
+    constraints.fill = GridBagConstraints.BOTH;
+    this.add(deliveriesView, constraints);
+
+    this.setVisible(true);
   }
 
   public MapViewer getMapViewer() {
