@@ -25,6 +25,7 @@ public class MapViewer {
     public JButton bottomButton;
     public JPanel centerPanel;
     public JPanel bottomPanel;
+    private JButton recenterButton;
     public JXMapViewer mapViewer;
 
     private HashSet<Marker> map;
@@ -61,6 +62,14 @@ public class MapViewer {
         mapViewer.addMouseListener(sa);
         mapViewer.addMouseMotionListener(sa);
         mapViewer.setOverlayPainter(sp);
+
+        recenter();
+        recenterButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                recenter();
+            }
+        });
     }
 
     private void createUIComponents() {
@@ -160,15 +169,19 @@ public class MapViewer {
     }
 
     public void recenter(){
-        mapViewer.setAddressLocation(new GeoPosition(45.764043, 4.835659));
-        mapViewer.setZoom(15);
-//        if(map.size() == 1){
-//            mapViewer.setAddressLocation(getPositions(map).iterator().next());
-//        }else{
-//            mapViewer.zoomToBestFit(getPositions(map),0.7);
-//            update();
-//            mapViewer.repaint();
-//        }
+//        mapViewer.setAddressLocation(new GeoPosition(45.764043, 4.835659));
+//        mapViewer.setZoom(15);
+        if(map.size() == 1){
+            mapViewer.setAddressLocation(getPositions(map).iterator().next());
+        }else if(map.size()>1){
+            mapViewer.zoomToBestFit(getPositions(map),0.7);
+            update();
+            mapViewer.repaint();
+        }else{
+            GeoPosition lyon = new GeoPosition(45.7640, 4.8357);
+            mapViewer.setAddressLocation(lyon);
+            mapViewer.setZoom(6);
+        }
     }
 
     public HashSet<GeoPosition> getPositions(HashSet<Marker> ms){

@@ -67,7 +67,7 @@ public class Controller {
     GeoPosition warehousePosition = new GeoPosition(cityMap.getWarehouse().getLatitude(),
             cityMap.getWarehouse().getLongitude());
     this.window.getMapViewer().addPoint(warehousePosition, cityMap.getWarehouse().getId(), Marker.Type.WAREHOUSE);
-    this.window.getMapViewer().update();
+    this.window.getMapViewer().recenter();
   }
 
   public void selectIntersection(Long currentIntersectionId) {
