@@ -3,6 +3,7 @@ package com.pld.agile.view.map;
 
 import java.awt.*;
 
+import com.pld.agile.controller.Controller;
 import org.jxmapviewer.viewer.DefaultWaypoint;
 import org.jxmapviewer.viewer.GeoPosition;
 
@@ -26,7 +27,7 @@ public class Marker extends DefaultWaypoint
      * @param color the color
      * @param position the coordinate
      */
-    public Marker(long id, Color color, GeoPosition position, Type type)
+    public Marker(long id, Color color, GeoPosition position, Type type, Controller controller)
     {
         super(position);
         this.id = id;
@@ -34,7 +35,7 @@ public class Marker extends DefaultWaypoint
         this.lbl = new JLabel();
         this.type = type;
         if(this.type == Type.MAP){
-            lbl.addMouseListener(new MarkerMouseListener(this));
+            lbl.addMouseListener(new MarkerMouseListener(this, controller));
         }
     }
     public JLabel getLbl() {

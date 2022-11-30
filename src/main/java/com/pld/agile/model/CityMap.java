@@ -11,6 +11,10 @@ public class CityMap {
     private Intersection warehouse;
     private List<Tour> tourList;
 
+    public CityMap() {
+        this.tourList = new LinkedList<Tour>();
+    }
+
     public CityMap(double minLatitude, double maxLatitude, double minLongitude, double maxLongitude, Intersection warehouse) {
         this.minLatitude = minLatitude;
         this.maxLatitude = maxLatitude;

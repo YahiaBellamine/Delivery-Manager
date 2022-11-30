@@ -135,7 +135,7 @@ public class DeliveriesView {
                 requestPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
                 requestTag.setText("Delivery request n°" + requestsCounter);
-                requestTime.setText("Time Window: [" + request.getTimeWindow().getStartTime() + " - " +request.getTimeWindow().getEndTime() + "]");
+                // requestTime.setText("Time Window: [" + request.getTimeWindow().getStartTime() + " - " +request.getTimeWindow().getEndTime() + "]");
 
                 //DEBUG
                 /*System.out.println("Added delivery request: name:" + requestTag.getText() + " ; timeW:" + requestTime.getText());*/

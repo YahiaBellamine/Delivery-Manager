@@ -1,5 +1,6 @@
 package com.pld.agile.view.map;
 
+import com.pld.agile.controller.Controller;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.input.CenterMapListener;
@@ -22,11 +23,7 @@ public class MapViewer {
     public JPanel mainPanel;
     public JPanel mapPanel;
     public JButton bottomButton;
-    public JPanel topPanel;
-    public JLabel topLabel;
     public JPanel centerPanel;
-    public JPanel leftPanel;
-    public JPanel rightPanel;
     public JPanel bottomPanel;
     public JXMapViewer mapViewer;
 
@@ -38,13 +35,10 @@ public class MapViewer {
     private HashSet<Marker> tourMarkers;
     private List<GeoPosition> tour;
 
-    public MapViewer() {
-        bottomButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                recenter();
-            }
-        });
+    private Controller controller;
+
+    public MapViewer(Controller controller) {
+        this.controller = controller;
 
         tourMarkers = new HashSet<>();
         map = new HashSet<>();
@@ -85,11 +79,10 @@ public class MapViewer {
 
     public void addPoint(GeoPosition pos, long id, Marker.Type type){
         switch (type){
-            case MAP -> map.add(new Marker(id, Color.BLACK, pos, type));
-            case WAREHOUSE -> warehouse = new Marker(id,Color.RED, pos, Marker.Type.WAREHOUSE);
-            case TOUR -> tourMarkers.add(new Marker(id, Color.green, pos, type));
-            case REQUEST -> requestMarker = new Marker(id, Color.orange, pos, type);
-
+            case MAP -> map.add(new Marker(id, Color.BLACK, pos, type, controller));
+            case WAREHOUSE -> warehouse = new Marker(id,Color.RED, pos, Marker.Type.WAREHOUSE, controller);
+            case TOUR -> tourMarkers.add(new Marker(id, Color.green, pos, type, controller));
+            case REQUEST -> requestMarker = new Marker(id, Color.orange, pos, type, controller);
         }
     }
 
@@ -167,13 +160,15 @@ public class MapViewer {
     }
 
     public void recenter(){
-        if(map.size() == 1){
-            mapViewer.setAddressLocation(getPositions(map).iterator().next());
-        }else{
-            mapViewer.zoomToBestFit(getPositions(map),0.7);
-            update();
-            mapViewer.repaint();
-        }
+        mapViewer.setAddressLocation(new GeoPosition(45.764043, 4.835659));
+        mapViewer.setZoom(15);
+//        if(map.size() == 1){
+//            mapViewer.setAddressLocation(getPositions(map).iterator().next());
+//        }else{
+//            mapViewer.zoomToBestFit(getPositions(map),0.7);
+//            update();
+//            mapViewer.repaint();
+//        }
     }
 
     public HashSet<GeoPosition> getPositions(HashSet<Marker> ms){
