@@ -12,7 +12,6 @@ import org.jxmapviewer.viewer.GeoPosition;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -83,6 +82,8 @@ public class Controller {
       throw new RuntimeException(e);
     }
     window.getMapViewer().clearAll();
+    deliveryRequests.clear();
+    this.window.getDeliveriesView().displayRequests(deliveryRequests);
     for (Intersection intersection : intersections.values()) {
       if(cityMap.getWarehouse().getId() == intersection.getId()) continue;
       GeoPosition geoPosition = new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
