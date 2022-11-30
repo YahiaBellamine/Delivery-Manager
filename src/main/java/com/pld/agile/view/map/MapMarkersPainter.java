@@ -38,7 +38,7 @@ public class MapMarkersPainter extends WaypointPainter<Marker>
             lbl.setBounds( x-imgW/2, y-imgH/2, imgW,imgH);
             lbl.setBackground(w.getColor());
             lbl.setOpaque(true);
-            viewer.add(lbl);
+            //viewer.add(lbl);
         }
     }
 }

@@ -32,6 +32,9 @@ public class XMLDeserialiser {
       Node map = document.getElementsByTagName("map").item(0);
       // TODO: How can we create Map while initialising the max and min for longitude and latitude here?
 
+      //reinitialising the map
+      intersections.clear();
+
       Node warehouse = document.getElementsByTagName("warehouse").item(0);
       String warehouseAddress=warehouse.getAttributes().getNamedItem("address").getNodeValue();
       System.out.println("The address of our warehouse: "+warehouseAddress);

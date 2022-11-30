@@ -10,6 +10,9 @@ import com.pld.agile.view.Window;
 import com.pld.agile.view.map.Marker;
 import org.jxmapviewer.viewer.GeoPosition;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,13 +55,34 @@ public class Controller {
     }
   }
 
+  public void resetDeliveryRequests(){
+
+  }
+
   public void loadMap(/*String path*/) {
     String path = "src/main/java/com/pld/agile/utils/maps/smallMap.xml";
+
+    JFileChooser j = new JFileChooser("src/main/java/com/pld/agile/utils/maps");
+    j.setAcceptAllFileFilterUsed(false);
+    j.setDialogTitle("Select a map file (.xml)");
+
+    FileNameExtensionFilter restrict = new FileNameExtensionFilter("Only .xml files", "xml");
+    j.addChoosableFileFilter(restrict);
+
+    // invoke the showsOpenDialog function to show the save dialog
+    int r = j.showOpenDialog(null);
+
+    // if the user selects a file
+    if (r == JFileChooser.APPROVE_OPTION) {
+      // set the label to the path of the selected file
+      path = j.getSelectedFile().getAbsolutePath();
+    }
     try {
       XMLDeserialiser.load(path, intersections, cityMap);
     } catch (ExceptionXML e) {
       throw new RuntimeException(e);
     }
+    window.getMapViewer().clearAll();
     for (Intersection intersection : intersections.values()) {
       if(cityMap.getWarehouse().getId() == intersection.getId()) continue;
       GeoPosition geoPosition = new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
