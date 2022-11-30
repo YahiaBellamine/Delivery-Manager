@@ -1,5 +1,7 @@
 package com.pld.agile.model;
 
+import com.pld.agile.model.enums.TimeWindow;
+
 public class DeliveryRequest {
     /** The TimeWindow of the delivery request */
     private TimeWindow timeWindow;
@@ -30,5 +32,13 @@ public class DeliveryRequest {
      */
     public Intersection getAddress() {
         return address;
+    }
+
+    @Override
+    public String toString() {
+        return "DeliveryRequest{" +
+                "timeWindow=" + timeWindow +
+                ", address=" + address +
+                '}';
     }
 }
