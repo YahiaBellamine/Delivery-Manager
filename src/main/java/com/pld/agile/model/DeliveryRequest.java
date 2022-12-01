@@ -7,6 +7,8 @@ public class DeliveryRequest {
     private TimeWindow timeWindow;
     /** The address of the delivery request */
     private Intersection address;
+    /** The passing time through the delivery address */
+    private double passingTime;
 
     /**
      * DeliveryRequest constructor.
@@ -16,6 +18,7 @@ public class DeliveryRequest {
     public DeliveryRequest(TimeWindow deliveryTime, Intersection deliveryAddress) {
         timeWindow = deliveryTime;
         address = deliveryAddress;
+        passingTime = 0.0;
     }
 
     /**
@@ -34,11 +37,24 @@ public class DeliveryRequest {
         return address;
     }
 
+    /**
+     *
+     * @return - The address of the delivery request.
+     */
+    public double getPassingTime() {
+        return passingTime;
+    }
+
+    public String getFormattedPassingTime() {
+        return "";
+    }
+
     @Override
     public String toString() {
         return "DeliveryRequest{" +
                 "timeWindow=" + timeWindow +
                 ", address=" + address +
+                ", passingTime=" + getFormattedPassingTime() +
                 '}';
     }
 }

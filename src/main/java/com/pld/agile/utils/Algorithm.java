@@ -5,47 +5,59 @@ import java.util.*;
 import com.pld.agile.model.DeliveryRequest;
 import com.pld.agile.model.Intersection;
 import com.pld.agile.model.RoadSegment;
+import com.pld.agile.model.enums.TimeWindow;
 
 public class Algorithm {
 
   static HashMap<Long, HashMap<Long, Double>> tspCost;
-  static List<Intersection> bestSol;
+  static HashMap<Intersection, HashMap<Intersection, LinkedList<Intersection>>> shortestPathBetweenTwoIntersections;
+  static List<DeliveryRequest> bestSol;
   static Double bestSolCost;
 
   public static LinkedList<Intersection> ExecuteAlgorithm(Intersection warehouse, List<DeliveryRequest> deliveryRequests) {
 
     tspCost = new HashMap<>();
 
+    shortestPathBetweenTwoIntersections = new HashMap<>();
+
+    /* Dijkstra Algorithm to calculate tspCost */
     List<Intersection> deliveryLocations = new ArrayList<>();
     for (DeliveryRequest deliveryRequest : deliveryRequests) {
       deliveryLocations.add(deliveryRequest.getAddress());
     }
 
-    HashMap<Intersection, HashMap<Intersection, LinkedList<Intersection>>> shortestPathBetweenTwoIntersections = new HashMap<>();
-
     List<Intersection> destinations = new ArrayList<>(deliveryLocations);
-    shortestPathBetweenTwoIntersections.put(warehouse, dijkstra(warehouse, destinations));
+    dijkstra(warehouse, destinations);
     destinations.add(warehouse);
     for (Intersection deliveryLocation : deliveryLocations) {
       destinations.remove(deliveryLocation);
-      shortestPathBetweenTwoIntersections.put(deliveryLocation, dijkstra(deliveryLocation, destinations));
+      dijkstra(deliveryLocation, destinations);
       destinations.add(deliveryLocation);
     }
 
-    List<Intersection> visited = new ArrayList<>();
-
-    visited.add(warehouse);
-
-    List<Intersection> unvisited = new ArrayList<>(deliveryLocations);
-
+    /* Branch and Bound Algorithm */
     bestSol = new ArrayList<>();
     bestSolCost = Double.MAX_VALUE;
+
+    LinkedList<DeliveryRequest> visited = new LinkedList<>();
+    visited.add(new DeliveryRequest(null, warehouse));
+
+    LinkedList<DeliveryRequest> unvisited = new LinkedList<>(deliveryRequests);
+
+    // We sort unvisited vertices based on ascending TimeWindow
+    unvisited.sort(new Comparator<DeliveryRequest>() {
+      @Override
+      public int compare(DeliveryRequest o1, DeliveryRequest o2) {
+        return o1.getTimeWindow().isBefore(o2.getTimeWindow());
+      }
+    });
+
     branchAndBound(visited, unvisited, 0.0);
 
+    /* Calculating optimal tour */
     LinkedList<Intersection> optimalTour = new LinkedList<>();
-
     for (int i = 0; i < bestSol.size(); i++) {
-      optimalTour.addAll(shortestPathBetweenTwoIntersections.get(bestSol.get(i)).get(bestSol.get((i+1)%bestSol.size())));
+      optimalTour.addAll(shortestPathBetweenTwoIntersections.get(bestSol.get(i).getAddress()).get(bestSol.get((i+1)%bestSol.size()).getAddress()));
     }
 
     return optimalTour;
@@ -73,7 +85,7 @@ public class Algorithm {
     }
   }
 
-  private static HashMap<Intersection, LinkedList<Intersection>> dijkstra(Intersection source, List<Intersection> destinations) {
+  private static void dijkstra(Intersection source, List<Intersection> destinations) {
     HashMap<Intersection, Intersection> previousIntersection = new HashMap<>();
 
     HashMap<Intersection, Double> settledVertices = new HashMap<>();
@@ -124,39 +136,61 @@ public class Algorithm {
       shortestPathsFromSource.put(destination, shortestPath);
     }
 
-    return shortestPathsFromSource;
+    shortestPathBetweenTwoIntersections.put(source, shortestPathsFromSource);
   }
 
   /**
    * Method that must be defined in TemplateTSP subclasses
-   * @param lastVisitedVertex the last visited vertex in the list visited
-   * @param visited the list of visited vertices
+   * @param lastVisitedVertex the last visited vertex
    * @param unvisited the list of unvisited vertices
-   * @return a lower bound of the cost of paths in <code>g</code> starting from <code>lastVisitedVertex</code>, visiting
-   * every vertex in <code>unvisited</code> exactly once, and returning back to vertex <code>0</code>.
+   * @param warehouse the warehouse vertex
+   * @return a lower bound of the cost of paths in the graph of delivery locations starting from <code>lastVisitedVertex</code>, visiting
+   * every vertex in <code>unvisited</code> exactly once, and returning to <code>warehouse</code>.
    */
-  private static Double bound(Intersection lastVisitedVertex, List<Intersection> visited, List<Intersection> unvisited) {
+  private static Double bound(DeliveryRequest lastVisitedVertex, List<DeliveryRequest> unvisited, DeliveryRequest warehouse) {
+    Double borneInf = Double.MAX_VALUE;
+
     int unvisitedSize = unvisited.size();
 
-    Double borneInf;
-    Double l = Double.MAX_VALUE;
-
-    for (Intersection intersection : unvisited) {
-      if (tspCost.get(lastVisitedVertex.getId()).get(intersection.getId()) < l) {
-        l = tspCost.get(lastVisitedVertex.getId()).get(intersection.getId());
+    TimeWindow firstTW = unvisited.get(0).getTimeWindow();
+    if(lastVisitedVertex.getAddress().getId() == warehouse.getAddress().getId()){ // We calculate the minimum distance between the warehouse and the delivery locations within the first time window of delivery requests
+      int i = 0;
+      while (i<unvisitedSize && unvisited.get(i).getTimeWindow()==firstTW){
+        Double distance = tspCost.get(lastVisitedVertex.getAddress().getId()).get(unvisited.get(i).getAddress().getId());
+        if (distance < borneInf) {
+          borneInf = distance;
+        }
+        ++i;
       }
-    }
-    borneInf = l;
+    }else{ // We calculate the minimum distance between the lastVisitedVertex and the delivery locations within the first and second time windows of delivery requests
+      int i = 0;
+      while (i<unvisitedSize && unvisited.get(i).getTimeWindow()==firstTW){
+        ++i;
+      }
+      TimeWindow secondTW = (i < unvisitedSize ? unvisited.get(i).getTimeWindow() : null);
+      i = 0;
+      while (i<unvisitedSize && (unvisited.get(i).getTimeWindow()==firstTW || unvisited.get(i).getTimeWindow()==secondTW)){
+        Double distance = tspCost.get(lastVisitedVertex.getAddress().getId()).get(unvisited.get(i).getAddress().getId());
+        if (distance < borneInf) {
+          borneInf = distance;
+        }
+        ++i;
+      }
 
-    for (int i = 0; i < unvisitedSize; i++) {
-      Double li = tspCost.get(unvisited.get(i).getId()).get(visited.get(0).getId());
-      for (int j = 0; j < unvisitedSize; j++) {
-        Double dist = tspCost.get(unvisited.get(i).getId()).get(unvisited.get(j).getId());
-        if(i!=j &&  dist < li){
-          li = dist;
+      for (i = 0; i < unvisitedSize; i++) {
+        if(unvisited.get(i).getTimeWindow()==firstTW || unvisited.get(i).getTimeWindow()==secondTW){
+          Double li = Double.MAX_VALUE;
+          for (int j = 0; j < unvisitedSize; j++) {
+            if(i != j && (unvisited.get(j).getTimeWindow()==firstTW || unvisited.get(j).getTimeWindow()==secondTW)){
+              Double distance = tspCost.get(unvisited.get(i).getAddress().getId()).get(unvisited.get(j).getAddress().getId());
+              if (distance < li) {
+                li = distance;
+              }
+            }
+          }
+          borneInf += (li != Double.MAX_VALUE ? li : 0);
         }
       }
-      borneInf += li;
     }
     return borneInf;
   }
@@ -168,27 +202,35 @@ public class Algorithm {
    * @param unvisited the set of vertex that have not yet been visited
    * @param currentCost the tspCost of the path corresponding to <code>visited</code>
    */
-  private static void branchAndBound(List<Intersection> visited, List<Intersection> unvisited, Double currentCost){
+  private static void branchAndBound(LinkedList<DeliveryRequest> visited, LinkedList<DeliveryRequest> unvisited, Double currentCost){
     int visitedSize = visited.size();
     int unvisitedSize = unvisited.size();
+    LinkedList<DeliveryRequest> unvisitedBeforePermutation = new LinkedList<>(unvisited);
 
     if (unvisitedSize == 0){
-      currentCost += tspCost.get(visited.get(visitedSize-1).getId()).get(visited.get(0).getId());
+      Long lastVisitedIntersectionId = visited.get(visitedSize-1).getAddress().getId();
+      Long warehouseIntersectionId = visited.get(0).getAddress().getId();
+      currentCost += tspCost.get(lastVisitedIntersectionId).get(warehouseIntersectionId);
 
       if(currentCost < bestSolCost){
         bestSolCost = currentCost;
         bestSol = new ArrayList<>(visited);
       }
-    } else if (currentCost+bound(visited.get(visitedSize-1), visited, unvisited) < bestSolCost){
+    } else if (currentCost + bound(visited.get(visitedSize-1), unvisitedBeforePermutation, visited.get(0)) < bestSolCost){
 
-      for (int i = 0; i < unvisitedSize; i++) {
-        Intersection intersection = unvisited.get(i);
-        visited.add(intersection);
-        unvisited.remove(intersection);
+      for (int i = 0; i < unvisitedBeforePermutation.size(); i++) {
+        DeliveryRequest vertex = unvisitedBeforePermutation.get(i);
+
+        visited.add(vertex);
+        unvisited.remove(vertex);
+
         visitedSize = visited.size();
-        branchAndBound(visited, unvisited, currentCost + tspCost.get(visited.get(visitedSize-2).getId()).get(visited.get(visitedSize-1).getId()));
-        visited.remove(intersection);
-        unvisited.add(intersection);
+        Long beforeLastVisitedIntersectionId = visited.get(visitedSize-2).getAddress().getId();
+        Long lastVisitedIntersectionId = visited.get(visitedSize-1).getAddress().getId();
+        branchAndBound(visited, unvisited, currentCost + tspCost.get(beforeLastVisitedIntersectionId).get(lastVisitedIntersectionId));
+
+        visited.remove(vertex);
+        unvisited.add(vertex);
       }
     }
   }
