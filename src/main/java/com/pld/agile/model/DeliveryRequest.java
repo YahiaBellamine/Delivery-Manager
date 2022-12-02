@@ -8,7 +8,7 @@ public class DeliveryRequest {
     /** The address of the delivery request */
     private Intersection address;
     /** The passing time through the delivery address */
-    private double passingTime;
+    private Double passingTime;
 
     /**
      * DeliveryRequest constructor.
@@ -39,14 +39,22 @@ public class DeliveryRequest {
 
     /**
      *
-     * @return - The address of the delivery request.
+     * @return - The time when the courier will deliver for this delivery request.
      */
     public double getPassingTime() {
         return passingTime;
     }
 
+    public void setPassingTime(Double pT) { this.passingTime = pT; }
+
     public String getFormattedPassingTime() {
-        return "";
+        double temp = this.passingTime;
+        int hours = (int)temp;
+        temp -= hours;
+        int minutes = (int)(temp*60);
+        temp = temp*60 - minutes;
+        int seconds = (int)(temp*60);
+        return hours+"h"+minutes+"min"+seconds+"s";
     }
 
     @Override

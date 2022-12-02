@@ -5,28 +5,29 @@ import java.util.*;
 import com.pld.agile.model.DeliveryRequest;
 import com.pld.agile.model.Intersection;
 import com.pld.agile.model.RoadSegment;
+import com.pld.agile.model.Tour;
 import com.pld.agile.model.enums.TimeWindow;
 
 public class Algorithm {
 
   static HashMap<Long, HashMap<Long, Double>> tspCost;
-  static HashMap<Intersection, HashMap<Intersection, LinkedList<Intersection>>> shortestPathBetweenTwoIntersections;
-  static List<DeliveryRequest> bestSol;
+  static HashMap<Intersection, HashMap<Intersection, LinkedList<Intersection>>> shortestPathBetweenTwoDeliveryLocations;
+  static LinkedList<DeliveryRequest> bestSol;
   static Double bestSolCost;
 
-  public static LinkedList<Intersection> ExecuteAlgorithm(Intersection warehouse, List<DeliveryRequest> deliveryRequests) {
+  public static Tour ExecuteAlgorithm(Intersection warehouse, LinkedList<DeliveryRequest> deliveryRequests) {
 
     tspCost = new HashMap<>();
 
-    shortestPathBetweenTwoIntersections = new HashMap<>();
+    shortestPathBetweenTwoDeliveryLocations = new HashMap<>();
 
     /* Dijkstra Algorithm to calculate tspCost */
-    List<Intersection> deliveryLocations = new ArrayList<>();
+    ArrayList<Intersection> deliveryLocations = new ArrayList<>();
     for (DeliveryRequest deliveryRequest : deliveryRequests) {
       deliveryLocations.add(deliveryRequest.getAddress());
     }
 
-    List<Intersection> destinations = new ArrayList<>(deliveryLocations);
+    ArrayList<Intersection> destinations = new ArrayList<>(deliveryLocations);
     dijkstra(warehouse, destinations);
     destinations.add(warehouse);
     for (Intersection deliveryLocation : deliveryLocations) {
@@ -36,7 +37,7 @@ public class Algorithm {
     }
 
     /* Branch and Bound Algorithm */
-    bestSol = new ArrayList<>();
+    bestSol = new LinkedList<>();
     bestSolCost = Double.MAX_VALUE;
 
     LinkedList<DeliveryRequest> visited = new LinkedList<>();
@@ -54,22 +55,33 @@ public class Algorithm {
 
     branchAndBound(visited, unvisited, 0.0);
 
-    /* Calculating optimal tour */
-    LinkedList<Intersection> optimalTour = new LinkedList<>();
+    /* Calculating the optimal tour and updating passing time for each delivery request */
+    Tour optimalTour = new Tour();
+    optimalTour.setDeliveryRequests(deliveryRequests);
+    // We start at 8h
+    Double passingTime = 8.0;
+    // The previous delivery
     for (int i = 0; i < bestSol.size(); i++) {
-      optimalTour.addAll(shortestPathBetweenTwoIntersections.get(bestSol.get(i).getAddress()).get(bestSol.get((i+1)%bestSol.size()).getAddress()));
+      optimalTour.getIntersections().addAll(shortestPathBetweenTwoDeliveryLocations.get(bestSol.get(i).getAddress()).get(bestSol.get((i+1)%bestSol.size()).getAddress()));
+      passingTime += tspCost.get(bestSol.get(i).getAddress().getId()).get(bestSol.get((i+1)%bestSol.size()).getAddress().getId())/(1000.0*15.0);
+      bestSol.get((i+1)%bestSol.size()).setPassingTime(passingTime);
+      passingTime += 5.0/60.0;
     }
+
+    /* Calculating the duration of optimalTour */
+    optimalTour.setTourDuration(bestSolCost/(1000.0*15.0) + (5.0/60.0) * deliveryRequests.size());
+    System.out.println(optimalTour.getFormattedTourDuration());
 
     return optimalTour;
   }
 
-  private static Map.Entry<Intersection, Double> getLowestDistanceIntersection(HashMap<Intersection, Double> unsettledVertices) {
-    Map.Entry<Intersection, Double> res = null;
+  private static Intersection getLowestDistanceIntersection(HashMap<Intersection, Double> unsettledVertices) {
+    Intersection res = null;
     Double lowestDistance = Double.MAX_VALUE;
     for(Map.Entry<Intersection, Double> entry: unsettledVertices.entrySet()){
       if(entry.getValue() < lowestDistance){
         lowestDistance = entry.getValue();
-        res = entry;
+        res = entry.getKey();
       }
     }
     return res;
@@ -80,7 +92,9 @@ public class Algorithm {
     Double dj = unsettledVertices.get(vj);
     if(dj > di + distIJ){
       dj = di + distIJ;
+      // We update the distance to vertex j
       unsettledVertices.put(vj, dj);
+      // We update the previous intersection of vertex j
       previousIntersection.put(vj, vi);
     }
   }
@@ -98,10 +112,7 @@ public class Algorithm {
     unsettledVertices.put(source, 0.0);
 
     while (unsettledVertices.size()!=0) {
-      Map.Entry<Intersection, Double> lowestDistanceIntersection = getLowestDistanceIntersection(unsettledVertices);
-
-      Intersection intersection = lowestDistanceIntersection.getKey();
-      Double lowestDistance = lowestDistanceIntersection.getValue();
+      Intersection intersection = getLowestDistanceIntersection(unsettledVertices);
 
       List<RoadSegment> outgoingSegments = intersection.getOutgoingSegments();
 
@@ -118,7 +129,7 @@ public class Algorithm {
           release(intersection, destination, length, unsettledVertices, previousIntersection);
         }
       }
-      settledVertices.put(intersection, lowestDistance);
+      settledVertices.put(intersection, unsettledVertices.get(intersection));
       unsettledVertices.remove(intersection);
     }
 
@@ -136,7 +147,7 @@ public class Algorithm {
       shortestPathsFromSource.put(destination, shortestPath);
     }
 
-    shortestPathBetweenTwoIntersections.put(source, shortestPathsFromSource);
+    shortestPathBetweenTwoDeliveryLocations.put(source, shortestPathsFromSource);
   }
 
   /**
@@ -214,7 +225,7 @@ public class Algorithm {
 
       if(currentCost < bestSolCost){
         bestSolCost = currentCost;
-        bestSol = new ArrayList<>(visited);
+        bestSol = new LinkedList<>(visited);
       }
     } else if (currentCost + bound(visited.get(visitedSize-1), unvisitedBeforePermutation, visited.get(0)) < bestSolCost){
 
