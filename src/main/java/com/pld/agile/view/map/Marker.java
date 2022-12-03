@@ -2,6 +2,7 @@
 package com.pld.agile.view.map;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 import com.pld.agile.controller.Controller;
 import org.jxmapviewer.viewer.DefaultWaypoint;
@@ -15,52 +16,42 @@ import javax.swing.*;
  */
 public class Marker extends DefaultWaypoint
 {
-    public enum Type{WAREHOUSE, MAP, TOUR, REQUEST}
+    public enum Type{WAREHOUSE, TOUR, REQUEST}
     private final long id;
-    private Color color;
-    private JLabel lbl;
-
     private Type type;
+    private BufferedImage img;
 
     /**
      * @param id the id
-     * @param color the color
+     * @param img the image
      * @param position the coordinate
      */
-    public Marker(long id, Color color, GeoPosition position, Type type, Controller controller)
+    public Marker(long id, GeoPosition position, BufferedImage img, Type type)
     {
         super(position);
         this.id = id;
-        this.color = color;
-        this.lbl = new JLabel();
+        this.img = img;
         this.type = type;
-        if(this.type == Type.MAP){
-            lbl.addMouseListener(new MarkerMouseListener(this, controller));
-        }
     }
-    public JLabel getLbl() {
-        return lbl;
-    }
-
-    public void setLbl(JLabel lbl) {
-        this.lbl = lbl;
-    }
-
-
 
     /**
-     * @return the color
+     * @return the id
      */
-    public Color getColor()
-    {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
     public long getId() {
         return id;
+    }
+
+    /**
+     * @return the image
+     */
+    public BufferedImage getImg() {
+        return img;
+    }
+
+    /**
+     * @param img the image
+     */
+    public void setImg(BufferedImage img) {
+        this.img = img;
     }
 }

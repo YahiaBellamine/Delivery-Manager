@@ -1,32 +1,32 @@
 package com.pld.agile.view.map;
 
 import com.pld.agile.controller.Controller;
+import org.jxmapviewer.JXMapViewer;
+import org.jxmapviewer.viewer.GeoPosition;
 
 import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 
 public class MarkerMouseListener implements MouseInputListener {
 
-    private Marker wp;
+    //private Marker wp;
     private Controller controller;
 
-    public MarkerMouseListener(Marker wp, Controller controller){
-        this.wp = wp;
+    public MarkerMouseListener(Controller controller){
         this.controller = controller;
     }
 
-    public Marker getWp() {
-        return wp;
-    }
-
-    public void setWp(Marker wp) {
-        this.wp = wp;
-    }
     @Override public void mouseClicked(MouseEvent e) {
         switch (e.getButton()) {
             case MouseEvent.BUTTON1:
-                controller.selectIntersection(wp.getId());
+                JXMapViewer mv =controller.getWindow().getMapViewer().mapViewer;
+                Rectangle bounds = controller.getWindow().getMapViewer().mapViewer.getViewportBounds();
+                int x =e.getX();
+                int y =e.getY();
+                GeoPosition pos = controller.getWindow().getMapViewer().mapViewer.convertPointToGeoPosition(new Point(x,y));
+                controller.searchIntersection(pos.getLatitude(),pos.getLongitude());
                 break;
         }
     }

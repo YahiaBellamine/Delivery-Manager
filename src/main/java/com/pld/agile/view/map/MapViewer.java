@@ -16,6 +16,7 @@ import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.util.*;
 import java.util.List;
 
@@ -53,17 +54,18 @@ public class MapViewer {
         mapViewer.addMouseListener(new CenterMapListener(mapViewer));
 
         mapViewer.addMouseWheelListener(new ZoomMouseWheelListenerCursor(mapViewer));
+        mapViewer.addMouseListener(new MarkerMouseListener(controller));
 
-        mapViewer.addKeyListener(new PanKeyListener(mapViewer));
+        //mapViewer.addKeyListener(new PanKeyListener(mapViewer));
 
-        // Add a selection painter
-        SelectionAdapter sa = new SelectionAdapter(mapViewer);
-        SelectionPainter sp = new SelectionPainter(sa);
-        mapViewer.addMouseListener(sa);
-        mapViewer.addMouseMotionListener(sa);
-        mapViewer.setOverlayPainter(sp);
+//        // Add a selection painter
+//        SelectionAdapter sa = new SelectionAdapter(mapViewer);
+//        SelectionPainter sp = new SelectionPainter(sa);
+//        mapViewer.addMouseListener(sa);
+//        mapViewer.addMouseMotionListener(sa);
+//        mapViewer.setOverlayPainter(sp);
 
-        recenter();
+        //recenter();
         recenterButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -88,14 +90,12 @@ public class MapViewer {
 
     public void addPoint(GeoPosition pos, long id, Marker.Type type){
         switch (type){
-            case MAP -> {
-                Marker m = new Marker(id, Color.BLACK, pos, type, controller);
-                map.add(m);
-                mapViewer.add(m.getLbl());
+            case WAREHOUSE -> {
+                warehouse = new Marker(id,pos,ImageUtil.getWarehouseImage(Color.yellow),Marker.Type.WAREHOUSE);
+                setCenter(pos);
             }
-            case WAREHOUSE -> warehouse = new Marker(id,Color.RED, pos, Marker.Type.WAREHOUSE, controller);
-            case TOUR -> tourMarkers.add(new Marker(id, Color.green, pos, type, controller));
-            case REQUEST -> requestMarker = new Marker(id, Color.orange, pos, type, controller);
+            case TOUR -> tourMarkers.add(new Marker(id, pos,ImageUtil.getMarkerImage(Color.GREEN), type));
+            case REQUEST -> requestMarker = new Marker(id, pos,ImageUtil.getMarkerImage(Color.ORANGE), type);
         }
     }
 
@@ -131,36 +131,22 @@ public class MapViewer {
     public void update(){
         List<Painter<JXMapViewer>> painters = new ArrayList<Painter<JXMapViewer>>();
 
+        HashSet<Marker> markers = new HashSet<>();
+
         //the warehouse
         if(warehouse!=null){
-            WarehousePainter warehousePainter = new WarehousePainter();
-            HashSet<Marker> whSet = new HashSet<>();
-            whSet.add(warehouse);
-            warehousePainter.setWaypoints(whSet);
-            painters.add(warehousePainter);
+            markers.add(warehouse);
+            System.out.println("adding warehouse");
         }
-
-        //the map
-        MapMarkersPainter mapPainter = new MapMarkersPainter();
-        mapPainter.setWaypoints(map);
-        painters.add(mapPainter);
-
         //the markers
         if(tourMarkers.size() >0){
-            MarkersPainter markersPainter = new MarkersPainter();
-            markersPainter.setWaypoints(tourMarkers);
-            painters.add(markersPainter);
-            //the markers
-
+            markers.addAll(tourMarkers);
         }
 
         //the request marker
         if(requestMarker!=null){
-            MarkersPainter markersPainter2 = new MarkersPainter();
-            HashSet<Marker> reqMarkSet = new HashSet<>();
-            reqMarkSet.add(requestMarker);
-            markersPainter2.setWaypoints(reqMarkSet);
-            painters.add(markersPainter2);
+            markers.add(requestMarker);
+            System.out.println("adding requestMarker");
         }
 
         //the tour
@@ -169,6 +155,9 @@ public class MapViewer {
             painters.add(tourPainter);
         }
 
+        MarkersPainter markersPainter = new MarkersPainter();
+        markersPainter.setWaypoints(markers);
+        painters.add(markersPainter);
         CompoundPainter<JXMapViewer> painter = new CompoundPainter<JXMapViewer>(painters);
         mapViewer.setOverlayPainter(painter);
     }
@@ -176,17 +165,26 @@ public class MapViewer {
     public void recenter(){
 //        mapViewer.setAddressLocation(new GeoPosition(45.764043, 4.835659));
 //        mapViewer.setZoom(15);
-        if(map.size() == 1){
-            mapViewer.setAddressLocation(getPositions(map).iterator().next());
-        }else if(map.size()>1){
-            mapViewer.zoomToBestFit(getPositions(map),0.7);
-            update();
-            mapViewer.repaint();
-        }else{
-            GeoPosition lyon = new GeoPosition(45.7640, 4.8357);
-            mapViewer.setAddressLocation(lyon);
-            mapViewer.setZoom(6);
-        }
+//        if(map.size() == 1){
+//            mapViewer.setAddressLocation(getPositions(map).iterator().next());
+//        }else if(map.size()>1){
+//            mapViewer.zoomToBestFit(getPositions(map),0.7);
+//            update();
+//            mapViewer.repaint();
+//        }else{
+//            GeoPosition lyon = new GeoPosition(45.7640, 4.8357);
+//            mapViewer.setAddressLocation(lyon);
+//            mapViewer.setZoom(6);
+//        }
+
+        mapViewer.setZoom(6);
+        mapViewer.recenterToAddressLocation();
+        update();
+    }
+
+    public void setCenter(GeoPosition pos){
+        mapViewer.setAddressLocation(pos);
+        recenter();
     }
 
     public HashSet<GeoPosition> getPositions(HashSet<Marker> ms){

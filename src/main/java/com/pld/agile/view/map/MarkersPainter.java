@@ -31,48 +31,36 @@ import javax.swing.*;
 public class MarkersPainter extends WaypointPainter<Marker>
 {
 
-    private final Map<Color, BufferedImage> map = new HashMap<Color, BufferedImage>();
+//    private final Map<Color, BufferedImage> map = new HashMap<Color, BufferedImage>();
 
 //    private final Font font = new Font("Lucida Sans", Font.BOLD, 10);
 
-    private BufferedImage origImage;
+//    private BufferedImage origImage;
 
     /**
      * Uses a default waypoint image
      */
-    public MarkersPainter()
-    {
-        try
-        {
-            File resource = new File( "src/main/java/com/pld/agile/view/map/waypoint_white.png");
-            origImage = ImageIO.read(resource);
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-    }
 
-    private BufferedImage convert(BufferedImage loadImg, Color newColor)
-    {
-        int w = loadImg.getWidth();
-        int h = loadImg.getHeight();
-        BufferedImage imgOut = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        BufferedImage imgColor = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-
-        Graphics2D g = imgColor.createGraphics();
-        g.setColor(newColor);
-        g.fillRect(0, 0, w+1, h+1);
-        g.dispose();
-
-        Graphics2D graphics = imgOut.createGraphics();
-        graphics.drawImage(loadImg, 0, 0, null);
-        graphics.setComposite(MultiplyComposite.Default);
-        graphics.drawImage(imgColor, 0, 0, null);
-        graphics.dispose();
-
-        return imgOut;
-    }
+//    private static BufferedImage convert(BufferedImage loadImg, Color newColor)
+//    {
+//        int w = loadImg.getWidth();
+//        int h = loadImg.getHeight();
+//        BufferedImage imgOut = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+//        BufferedImage imgColor = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+//
+//        Graphics2D g = imgColor.createGraphics();
+//        g.setColor(newColor);
+//        g.fillRect(0, 0, w+1, h+1);
+//        g.dispose();
+//
+//        Graphics2D graphics = imgOut.createGraphics();
+//        graphics.drawImage(loadImg, 0, 0, null);
+//        graphics.setComposite(MultiplyComposite.Default);
+//        graphics.drawImage(imgColor, 0, 0, null);
+//        graphics.dispose();
+//
+//        return imgOut;
+//    }
 
 
     @Override
@@ -80,24 +68,22 @@ public class MarkersPainter extends WaypointPainter<Marker>
         // g = (Graphics2D)g.create();
 
         for (Marker w : getWaypoints()) {
-            if (origImage == null)
-                return;
-
-            BufferedImage myImg = map.get(w.getColor());
-
-            if (myImg == null)
-            {
-                myImg = convert(origImage, w.getColor());
-                map.put(w.getColor(), myImg);
-            }
+//            BufferedImage myImg = map.get(w.getColor());
+//
+//            if (myImg == null)
+//            {
+//                myImg = convert(origImage, w.getColor());
+//                map.put(w.getColor(), myImg);
+//            }
             Point2D point = viewer.getTileFactory().geoToPixel(w.getPosition(), viewer.getZoom());
             int zoom = viewer.getZoom();
-//            int imgW = 35/(zoom+1);
-//            int imgH = 35/(zoom+1);
+            int imgW = 100/(zoom+1);
+            int imgH = (w.getImg().getHeight()*imgW)/w.getImg().getWidth();
             Rectangle rectangle = viewer.getViewportBounds();
             int x = (int)(point.getX() - rectangle.getX());
             int y = (int)(point.getY() - rectangle.getY());
-            g.drawImage(myImg, x -myImg.getWidth() / 2, y -myImg.getHeight(), null);
+            Image img = w.getImg().getScaledInstance(imgW,imgH,Image.SCALE_SMOOTH);
+            g.drawImage(img, x -img.getWidth(null) / 2, y -img.getHeight(null), null);
 //            JLabel lbl = w.getLbl();
 //            lbl.setBounds( x-imgW/2, y-imgH/2, imgW,imgH);
 //            lbl.setBackground(w.getColor());

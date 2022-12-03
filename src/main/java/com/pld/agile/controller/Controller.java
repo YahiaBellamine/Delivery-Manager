@@ -13,6 +13,7 @@ import org.jxmapviewer.viewer.GeoPosition;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -91,29 +92,29 @@ public class Controller {
     }*/
 
     Intersection warehouse = cityMap.getWarehouse();
-    HashSet<Intersection> settledVertices = new HashSet<>();
-    HashSet<Intersection> unsettledVertices = new HashSet<>();
-
-    unsettledVertices.add(warehouse);
-
-    while(unsettledVertices.size()!=0){
-      Intersection intersection = unsettledVertices.iterator().next();
-
-      List<RoadSegment> outgoingSegments = intersection.getOutgoingSegments();
-
-      for (RoadSegment outgoingSegment:outgoingSegments) {
-        Intersection destination = outgoingSegment.getDestination();
-        if(!settledVertices.contains(destination)) {
-          if (!unsettledVertices.contains(destination)) {
-            unsettledVertices.add(destination);
-          }
-        }
-      }
-      settledVertices.add(intersection);
-      unsettledVertices.remove(intersection);
-      GeoPosition geoPosition = new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
-      this.window.getMapViewer().addPoint(geoPosition, intersection.getId(), Marker.Type.MAP);
-    }
+//    HashSet<Intersection> settledVertices = new HashSet<>();
+//    HashSet<Intersection> unsettledVertices = new HashSet<>();
+//
+//    unsettledVertices.add(warehouse);
+//
+//    while(unsettledVertices.size()!=0){
+//      Intersection intersection = unsettledVertices.iterator().next();
+//
+//      List<RoadSegment> outgoingSegments = intersection.getOutgoingSegments();
+//
+//      for (RoadSegment outgoingSegment:outgoingSegments) {
+//        Intersection destination = outgoingSegment.getDestination();
+//        if(!settledVertices.contains(destination)) {
+//          if (!unsettledVertices.contains(destination)) {
+//            unsettledVertices.add(destination);
+//          }
+//        }
+//      }
+//      settledVertices.add(intersection);
+//      unsettledVertices.remove(intersection);
+//      GeoPosition geoPosition = new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
+//      this.window.getMapViewer().addPoint(geoPosition, intersection.getId(), Marker.Type.MAP);
+//    }
 
 //    // Define the warehouse marker on the map
     GeoPosition warehousePosition = new GeoPosition(cityMap.getWarehouse().getLatitude(),
@@ -135,4 +136,24 @@ public class Controller {
     // cityMap.deleteDeliveryRequest(deliveryRequest);
   }
 
+  public void searchIntersection(double x, double y){
+    double r = Double.MAX_VALUE;
+    long id=-1;
+    for(Intersection i : intersections.values()){
+      double dist = Point2D.distance(x,y,i.getLatitude(),i.getLongitude());
+      if(dist<r){
+        System.out.println("dist "+dist+ " "+i.getLatitude()+" "+i.getLongitude());
+        id = i.getId();
+        r = dist;
+      }
+    }
+    if(id!=-1)    selectIntersection(id);
+  }
+  public Window getWindow() {
+    return window;
+  }
+
+  public void setWindow(Window window) {
+    this.window = window;
+  }
 }
