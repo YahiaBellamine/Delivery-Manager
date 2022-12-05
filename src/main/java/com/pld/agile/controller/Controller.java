@@ -29,6 +29,11 @@ public class Controller {
   private Long currentIntersectionId;
   private List<DeliveryRequest> deliveryRequests;
 
+  protected final InitialState initialState = new InitialState();
+  protected final LoadedMapState loadedMapState = new LoadedMapState();
+  protected final DestinationSelectedState destinationSelectedState = new DestinationSelectedState();
+  protected final ComputedTourState computedTourState = new ComputedTourState();
+
   public Controller() {
     window = new Window(this);
     cityMap = new CityMap();
