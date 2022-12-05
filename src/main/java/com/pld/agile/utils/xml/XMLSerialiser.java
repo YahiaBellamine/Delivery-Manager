@@ -1,6 +1,8 @@
 package com.pld.agile.utils.xml;
 
+import com.pld.agile.model.DeliveryRequest;
 import com.pld.agile.model.Intersection;
+import com.pld.agile.model.Tour;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -28,12 +30,24 @@ public class XMLSerialiser {
      * @throws TransformerException
      * @throws ExceptionXML
      */
-    public static void save(LinkedList<Intersection> optimalTour) throws ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException, ExceptionXML{
+    public static void save(Tour optimalTour) throws ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException, ExceptionXML{
         File xml = XMLFileOpener.getInstance().open(false);
         StreamResult result = new StreamResult(xml);
         document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         Element tour = document.createElement("tour");
-        for(Intersection in:optimalTour){
+        for(DeliveryRequest de:optimalTour.getDeliveryRequests()){
+            Element delivery=document.createElement("delivery_request");
+            String tw="";
+            tw+= Integer.toString(de.getTimeWindow().getStart());
+            tw+=" : ";
+            tw+=Integer.toString(de.getTimeWindow().getEnd());
+            createAttribute(delivery,"time_window",tw);
+            createAttribute(delivery,"id_intersection",Long.toString(de.getAddress().getId()));
+            createAttribute(delivery,"passing_time",Double.toString(de.getPassingTime()));
+            tour.appendChild(delivery);
+        }
+
+        for(Intersection in:optimalTour.getIntersections()){
             Element intersection=document.createElement("intersection");
             //Element intersection=tour.addElement("intersection");
             createAttribute(intersection,"id",Long.toString(in.getId()));

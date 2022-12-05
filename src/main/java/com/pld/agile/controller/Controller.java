@@ -69,14 +69,11 @@ public class Controller {
     }
   }
 
-  public void stockTour() throws ExceptionXML, ParserConfigurationException, TransformerException {
+  public void saveTour() throws ExceptionXML, ParserConfigurationException, TransformerException {
 //    for(DeliveryRequest d: deliveryRequests){
 //      System.out.println(d.getAddress());
 //    }
-    LinkedList<Intersection> optimalTour = Algorithm.ExecuteAlgorithm(this.cityMap.getWarehouse(), deliveryRequests);
-    for(Intersection in:optimalTour){
-      System.out.println(in.getId());
-    }
+    Tour optimalTour = Algorithm.ExecuteAlgorithm(this.cityMap.getWarehouse(), (LinkedList<DeliveryRequest>)deliveryRequests);
     XMLSerialiser.save(optimalTour);
   }
   public void resetDeliveryRequests(){

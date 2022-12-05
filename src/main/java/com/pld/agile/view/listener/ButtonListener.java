@@ -33,9 +33,9 @@ public class ButtonListener implements ActionListener {
       case Window.ADD_DELIVERY_REQUEST:
         controller.addDeliveryRequest();
         break;
-      case Window.STOCK_TOUR:
+      case Window.SAVE_TOUR:
         try {
-          controller.stockTour();
+          controller.saveTour();
         } catch (ExceptionXML ex) {
           throw new RuntimeException(ex);
         } catch (ParserConfigurationException ex) {
