@@ -3,7 +3,6 @@ package com.pld.agile.controller;
 import com.pld.agile.model.CityMap;
 import com.pld.agile.model.DeliveryRequest;
 import com.pld.agile.model.Intersection;
-import com.pld.agile.model.RoadSegment;
 import com.pld.agile.model.enums.TimeWindow;
 import com.pld.agile.utils.Algorithm;
 import com.pld.agile.utils.xml.ExceptionXML;
@@ -15,9 +14,7 @@ import org.jxmapviewer.viewer.GeoPosition;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.geom.Point2D;
-import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.util.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -95,6 +92,8 @@ public class Controller {
       throw new RuntimeException(e);
     }
     window.getMapViewer().clearAll();
+    deliveryRequests.clear();
+    this.window.getDeliveriesView().displayRequests(deliveryRequests);
 
     /*for (Intersection intersection : intersections.values()) {
     deliveryRequests.clear();
