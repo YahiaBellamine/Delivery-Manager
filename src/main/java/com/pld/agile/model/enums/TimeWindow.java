@@ -40,11 +40,11 @@ public enum TimeWindow {
     return this.start+"h - " + this.end + "h";
   }
 
-  public int isBefore(TimeWindow tW){
-    if(this.start < tW.start){
-      return 1;
-    } else if (this.start > tW.start) {
+  public int isBefore(TimeWindow timeWindow){
+    if(this.start < timeWindow.start){
       return -1;
+    } else if (this.start > timeWindow.start) {
+      return 1;
     }
     return 0;
   }

@@ -33,8 +33,8 @@ public class Tour {
      *
      * @return - The list of all delivery requests in the Tour.
      */
-    public void setDeliveryRequests(LinkedList<DeliveryRequest> dR) {
-        this.deliveryRequests.addAll(dR);
+    public void setDeliveryRequests(LinkedList<DeliveryRequest> deliveryRequests) {
+        this.deliveryRequests.addAll(deliveryRequests);
     }
 
     /**
@@ -54,10 +54,10 @@ public class Tour {
     }
 
     /**
-     * @param tD the new value of tourDuration
+     * @param tourDuration the new value of tourDuration
      * Set the tour duration
      */
-    public void setTourDuration(Double tD) { this.tourDuration = tD; }
+    public void setTourDuration(Double tourDuration) { this.tourDuration = tourDuration; }
 
     public String getFormattedTourDuration() {
         double temp = this.tourDuration;
@@ -71,10 +71,10 @@ public class Tour {
 
     /**
      * Adds a new delivery request to the Tour.
-     * @param newDeliveryRequest - The delivery request to add to the Tour.
+     * @param deliveryRequest - The delivery request to add to the Tour.
      */
-    public void addDeliveryRequests(DeliveryRequest newDeliveryRequest) {
-        this.deliveryRequests.add(newDeliveryRequest);
+    public void addDeliveryRequest(DeliveryRequest deliveryRequest) {
+        this.deliveryRequests.add(deliveryRequest);
     }
 
     /**

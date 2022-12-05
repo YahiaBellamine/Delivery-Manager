@@ -14,10 +14,7 @@ import org.jxmapviewer.viewer.GeoPosition;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Controller {
 
@@ -46,7 +43,8 @@ public class Controller {
       this.window.getMapViewer().updateTour(optimalTourIntersections.stream().map(intersection -> {
         return new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
       }).toList());
-      this.window.getDeliveriesView().displayRequests(deliveryRequests);
+      this.window.getDeliveriesView().displayTourDuration(optimalTour);
+      this.window.getDeliveriesView().displayRequests(optimalTour.getDeliveryRequests());
 
       /* Add pointer to the map*/
       GeoPosition geoPosition = new GeoPosition(intersections.get(currentIntersectionId).getLatitude(),

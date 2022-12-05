@@ -45,7 +45,7 @@ public class DeliveryRequest {
         return passingTime;
     }
 
-    public void setPassingTime(Double pT) { this.passingTime = pT; }
+    public void setPassingTime(Double passingTime) { this.passingTime = passingTime; }
 
     public String getFormattedPassingTime() {
         double temp = this.passingTime;
