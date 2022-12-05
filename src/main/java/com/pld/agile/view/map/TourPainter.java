@@ -1,18 +1,19 @@
 
 package com.pld.agile.view.map;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.GeoPosition;
 import org.jxmapviewer.painter.Painter;
+
+import javax.swing.*;
 
 /**
  * Paints a route
@@ -48,16 +49,16 @@ public class TourPainter implements Painter<JXMapViewer>
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // do the drawing
-        g.setColor(Color.BLACK);
-        g.setStroke(new BasicStroke(8));
+        g.setColor(color);
+        g.setStroke(new BasicStroke(15/(map.getZoom()+1)));
 
         drawRoute(g, map, 0);
 
         // do the drawing again
-        g.setColor(color);
-        g.setStroke(new BasicStroke(8));
+        g.setColor(Color.BLACK);
+        g.setStroke(new BasicStroke(15/(map.getZoom()+1)));
         //g.translate(-1,0);
-        drawRoute(g, map, 8);
+        drawRoute(g, map, 40/(map.getZoom()+1));
 
         g.dispose();
     }
@@ -72,7 +73,7 @@ public class TourPainter implements Painter<JXMapViewer>
         int lastY = 0;
 
         boolean first = true;
-
+        boolean jump = false;
         for (GeoPosition gp : track)
         {
             // convert geo-coordinate to world bitmap pixel
@@ -84,9 +85,26 @@ public class TourPainter implements Painter<JXMapViewer>
             }
             else
             {
-                g.drawLine(lastX+d, lastY, (int) pt.getX()+d, (int) pt.getY());
-            }
+                if(d==0) {
+                    g.drawLine(lastX, lastY, (int) (pt.getX()), (int) (pt.getY()) );
+                }else{
+                    if(jump){
+                        double a = Math.atan2(lastY-pt.getY(),lastX-pt.getX()) + Math.PI/4;
+                        int dx = (int) (d*Math.sin(a));
+                        int dy =(int) (-d*Math.cos(a));
+                        a -= 2*Math.PI /4;
+                        int dx2 = (int)(d*Math.sin(a));
+                        int dy2 = (int) (-d*Math.cos(a));
 
+                        int x = (2*lastX+(int)(pt.getX()))/3;
+                        int y = (2*lastY+(int) (pt.getY()))/3;
+
+                        g.drawLine(x,y, x+dx, y+dy);
+                        g.drawLine(x,y, x-dx2, y-dy2);
+                    }
+                }
+                jump = !jump;
+            }
             lastX = (int) pt.getX();
             lastY = (int) pt.getY();
         }
