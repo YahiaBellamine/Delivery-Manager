@@ -96,8 +96,8 @@ public class TourPainter implements Painter<JXMapViewer>
                         int dx2 = (int)(d*Math.sin(a));
                         int dy2 = (int) (-d*Math.cos(a));
 
-                        int x = (2*lastX+(int)(pt.getX()))/3;
-                        int y = (2*lastY+(int) (pt.getY()))/3;
+                        int x = (4*lastX+(int)(3*pt.getX()))/7;
+                        int y = (4*lastY+(int) (3*pt.getY()))/7;
 
                         g.drawLine(x,y, x+dx, y+dy);
                         g.drawLine(x,y, x-dx2, y-dy2);
