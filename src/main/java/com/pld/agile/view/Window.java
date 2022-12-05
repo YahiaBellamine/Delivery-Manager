@@ -45,7 +45,7 @@ public class Window extends JFrame {
 
     JPanel contentPane = new JPanel(new GridBagLayout());
     this.setContentPane(contentPane);
-
+    mapViewer.setCenter(new GeoPosition(45.7640,4.8357));
     mapViewer.recenter();
     this.getContentPane().add(mapViewer.mainPanel);
 

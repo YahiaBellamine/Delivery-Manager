@@ -5,6 +5,7 @@ import com.pld.agile.view.Window;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.UnsupportedEncodingException;
 
 public class ButtonListener implements ActionListener {
 
@@ -20,7 +21,11 @@ public class ButtonListener implements ActionListener {
     // Forward the corresponding message to the controller
     switch (e.getActionCommand()){
       case Window.LOAD_MAP:
-        controller.loadMap();
+        try {
+          controller.loadMap();
+        } catch (UnsupportedEncodingException ex) {
+          throw new RuntimeException(ex);
+        }
         break;
       case Window.ADD_DELIVERY_REQUEST:
         controller.addDeliveryRequest();

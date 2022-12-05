@@ -49,15 +49,15 @@ public class TourPainter implements Painter<JXMapViewer>
 
         // do the drawing
         g.setColor(Color.BLACK);
-        g.setStroke(new BasicStroke(4));
+        g.setStroke(new BasicStroke(8));
 
-        drawRoute(g, map);
+        drawRoute(g, map, 0);
 
         // do the drawing again
         g.setColor(color);
-        g.setStroke(new BasicStroke(2));
-
-        drawRoute(g, map);
+        g.setStroke(new BasicStroke(8));
+        //g.translate(-1,0);
+        drawRoute(g, map, 8);
 
         g.dispose();
     }
@@ -66,7 +66,7 @@ public class TourPainter implements Painter<JXMapViewer>
      * @param g the graphics object
      * @param map the map
      */
-    private void drawRoute(Graphics2D g, JXMapViewer map)
+    private void drawRoute(Graphics2D g, JXMapViewer map, int d)
     {
         int lastX = 0;
         int lastY = 0;
@@ -84,7 +84,7 @@ public class TourPainter implements Painter<JXMapViewer>
             }
             else
             {
-                g.drawLine(lastX, lastY, (int) pt.getX(), (int) pt.getY());
+                g.drawLine(lastX+d, lastY, (int) pt.getX()+d, (int) pt.getY());
             }
 
             lastX = (int) pt.getX();
