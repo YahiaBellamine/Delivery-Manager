@@ -4,10 +4,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class CityMap {
-    private  double minLatitude;
-    private  double maxLatitude;
-    private  double minLongitude;
-    private  double maxLongitude;
+    private double minLatitude;
+    private double maxLatitude;
+    private double minLongitude;
+    private double maxLongitude;
     private Intersection warehouse;
     private List<Tour> tourList;
 
