@@ -19,5 +19,10 @@ public class ComputedTourState implements State{
     @Override
     public void updateDeliveryRequest(CityMap cityMap, Window w) {};
 
+    @Override
+    public void selectDestinationPoint(Controller c, Window w) {
+        c.setCurrentState(c.destinationSelectedState);
+    };
+
 
 }

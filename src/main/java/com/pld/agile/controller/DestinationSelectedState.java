@@ -16,4 +16,9 @@ public class DestinationSelectedState implements State{
     // TODO:
     c.setCurrentState(c.computedTourState);
   }
+
+  @Override
+  public void loadMap(Controller c, Window w) {
+    c.setCurrentState(c.loadedMapState);
+  }
 }
