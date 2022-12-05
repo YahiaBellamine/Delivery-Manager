@@ -29,8 +29,6 @@ public class MapViewer {
     private JButton recenterButton;
     public JXMapViewer mapViewer;
 
-    private HashSet<Marker> map;
-
     private Marker warehouse;
 
     private Marker requestMarker;
@@ -43,7 +41,6 @@ public class MapViewer {
         this.controller = controller;
 
         tourMarkers = new HashSet<>();
-        map = new HashSet<>();
         tour = new LinkedList<>();
 
         // Add interactions
@@ -123,7 +120,6 @@ public class MapViewer {
 
     public void clearAll(){
         clearMarkers();
-        map.clear();
         mapViewer.removeAll();
         update();
     }
