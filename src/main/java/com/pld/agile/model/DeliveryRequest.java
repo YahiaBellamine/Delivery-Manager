@@ -2,7 +2,8 @@ package com.pld.agile.model;
 
 import com.pld.agile.model.enums.TimeWindow;
 
-public class DeliveryRequest {
+public class
+DeliveryRequest {
     /** The TimeWindow of the delivery request */
     private TimeWindow timeWindow;
     /** The address of the delivery request */

@@ -7,6 +7,7 @@ import com.pld.agile.model.enums.TimeWindow;
 import com.pld.agile.utils.Algorithm;
 import com.pld.agile.utils.xml.ExceptionXML;
 import com.pld.agile.utils.xml.XMLDeserialiser;
+import com.pld.agile.utils.xml.XMLSerialiser;
 import com.pld.agile.view.Window;
 import com.pld.agile.view.map.Marker;
 import org.jxmapviewer.viewer.GeoPosition;
@@ -15,6 +16,8 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.geom.Point2D;
 import java.io.UnsupportedEncodingException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,6 +65,16 @@ public class Controller {
     }
   }
 
+  public void stockTour() throws ExceptionXML, ParserConfigurationException, TransformerException {
+//    for(DeliveryRequest d: deliveryRequests){
+//      System.out.println(d.getAddress());
+//    }
+    LinkedList<Intersection> optimalTour = Algorithm.ExecuteAlgorithm(this.cityMap.getWarehouse(), deliveryRequests);
+    for(Intersection in:optimalTour){
+      System.out.println(in.getId());
+    }
+    XMLSerialiser.save(optimalTour);
+  }
   public void resetDeliveryRequests(){
 
   }
