@@ -34,6 +34,9 @@ public class XMLSerialiser {
         File xml = XMLFileOpener.getInstance().open(false);
         StreamResult result = new StreamResult(xml);
         document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        if(optimalTour==null) {
+            throw new ExceptionXML("No tour to save");
+        }
         Element tour = document.createElement("tour");
         for(DeliveryRequest de:optimalTour.getDeliveryRequests()){
             Element delivery=document.createElement("delivery_request");

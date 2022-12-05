@@ -73,7 +73,13 @@ public class Controller {
 //    for(DeliveryRequest d: deliveryRequests){
 //      System.out.println(d.getAddress());
 //    }
+    if(deliveryRequests.size()==0) {
+      throw new ExceptionXML("Add at least one delivery request before saving the tour");
+    }
     Tour optimalTour = Algorithm.ExecuteAlgorithm(this.cityMap.getWarehouse(), (LinkedList<DeliveryRequest>)deliveryRequests);
+    if(optimalTour==null) {
+      throw new ExceptionXML("No tour to save");
+    }
     XMLSerialiser.save(optimalTour);
   }
   public void resetDeliveryRequests(){
