@@ -22,7 +22,7 @@ import java.util.Map;
 
 
 public class Controller {
-
+  private State currentState;
   private Window window;
   private CityMap cityMap;
   private Map<Long, Intersection> intersections;
@@ -35,6 +35,14 @@ public class Controller {
     this.intersections = new HashMap<>();
     deliveryRequests = new LinkedList<>();
     window.setVisible(true);
+  }
+
+  /**
+   * Change the current state of the controller
+   * @param state the new current state
+   */
+  protected void setCurrentState(State state){
+    currentState = state;
   }
 
   public void addDeliveryRequest() {
