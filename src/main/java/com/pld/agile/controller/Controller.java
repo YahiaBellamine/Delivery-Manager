@@ -5,6 +5,7 @@ import com.pld.agile.model.DeliveryRequest;
 import com.pld.agile.model.Intersection;
 import com.pld.agile.model.RoadSegment;
 import com.pld.agile.model.enums.TimeWindow;
+import com.pld.agile.utils.Algorithm;
 import com.pld.agile.utils.xml.ExceptionXML;
 import com.pld.agile.utils.xml.XMLDeserialiser;
 import com.pld.agile.view.Window;
@@ -17,6 +18,11 @@ import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 
 public class Controller {
 
@@ -40,6 +46,10 @@ public class Controller {
       DeliveryRequest deliveryRequest = new DeliveryRequest(tm, this.intersections.get(currentIntersectionId));
       // Add delivery request to right panel
       this.deliveryRequests.add(deliveryRequest);
+      LinkedList<Intersection> optimalTour = Algorithm.ExecuteAlgorithm(this.cityMap.getWarehouse(), deliveryRequests);
+      this.window.getMapViewer().updateTour(optimalTour.stream().map(intersection -> {
+        return new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
+      }).toList());
       this.window.getDeliveriesView().displayRequests(deliveryRequests);
 
       /* Add pointer to the map*/
@@ -85,7 +95,11 @@ public class Controller {
       throw new RuntimeException(e);
     }
     window.getMapViewer().clearAll();
+
     /*for (Intersection intersection : intersections.values()) {
+    deliveryRequests.clear();
+    this.window.getDeliveriesView().displayRequests(deliveryRequests);
+    for (Intersection intersection : intersections.values()) {
       if(cityMap.getWarehouse().getId() == intersection.getId()) continue;
       GeoPosition geoPosition = new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
       this.window.getMapViewer().addPoint(geoPosition, intersection.getId(), Marker.Type.MAP);
