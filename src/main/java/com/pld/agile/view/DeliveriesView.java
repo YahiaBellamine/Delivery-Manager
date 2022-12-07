@@ -153,7 +153,7 @@ public class DeliveriesView extends JPanel {
                 JPanel requestPanel = new JPanel();
                 JLabel requestTag = new JLabel();
                 JLabel requestTime = new JLabel();
-                JLabel requestPassingTime = new JLabel();
+                JLabel requestArrivalTime = new JLabel();
 
                 requestPanel.setLayout(new BoxLayout(requestPanel, BoxLayout.PAGE_AXIS));
                 requestPanel.setBorder(deliveryPanelBorder);
@@ -162,14 +162,14 @@ public class DeliveriesView extends JPanel {
 
                 requestTag.setText("Delivery request n°" + requestsCounter);
                 requestTime.setText("Time Window: [" + request.getTimeWindow().getStart() + " - " +request.getTimeWindow().getEnd() + "]");
-                requestPassingTime.setText("Passing time: " + request.getFormattedPassingTime());
+                requestArrivalTime.setText("Arrival time: " + request.getFormattedArrivalTime());
 
                 //DEBUG
                 /*System.out.println("Added delivery request: name:" + requestTag.getText() + " ; timeW:" + requestTime.getText());*/
 
                 requestPanel.add(requestTag);
                 requestPanel.add(requestTime);
-                requestPanel.add(requestPassingTime);
+                requestPanel.add(requestArrivalTime);
 
                 constraints.gridy = requestsCounter - 1;
                 deliveryRequestsPanel.add(requestPanel, constraints);
