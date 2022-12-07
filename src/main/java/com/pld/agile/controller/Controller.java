@@ -113,7 +113,9 @@ public class Controller {
     try {
       XMLDeserialiser.load(path, intersections, cityMap);
     } catch (ExceptionXML e) {
-      throw new RuntimeException(e);
+//      throw new RuntimeException(e);
+      this.window.displayMessage(e.getMessage()+" detected");
+      return;
     }
     window.getMapViewer().clearAll();
     deliveryRequests.clear();

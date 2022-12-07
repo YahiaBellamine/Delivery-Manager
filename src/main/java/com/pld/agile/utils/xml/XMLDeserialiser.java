@@ -1,5 +1,6 @@
 package com.pld.agile.utils.xml;
 
+import com.pld.agile.controller.Controller;
 import com.pld.agile.model.CityMap;
 import com.pld.agile.model.Intersection;
 import com.pld.agile.model.RoadSegment;
@@ -89,6 +90,7 @@ public class XMLDeserialiser {
     Intersection destination = intersections.get(destinationID);
     if (destination == null) {
       throw new ExceptionXML("Unknown intersection");
+
     }
     String name = e.getAttribute("name");
     double length = Double.parseDouble(e.getAttribute("length"));
@@ -121,6 +123,12 @@ public class XMLDeserialiser {
     List<RoadSegment> outgoingSegments = new ArrayList<RoadSegment>();
     if (id < 0) {
       throw new ExceptionXML("Invalid ID");
+    }
+    if(latitude<-90||latitude>90){
+      throw new ExceptionXML(("Invalid latitude"));
+    }
+    if(longitude<-180||longitude>180){
+      throw new ExceptionXML("Invalid longitude");
     }
     return new Intersection(id, latitude,longitude,outgoingSegments);
   }
