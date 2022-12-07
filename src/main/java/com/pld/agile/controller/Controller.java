@@ -3,10 +3,12 @@ package com.pld.agile.controller;
 import com.pld.agile.model.CityMap;
 import com.pld.agile.model.DeliveryRequest;
 import com.pld.agile.model.Intersection;
+import com.pld.agile.model.Tour;
 import com.pld.agile.model.enums.TimeWindow;
 import com.pld.agile.utils.Algorithm;
 import com.pld.agile.utils.xml.ExceptionXML;
 import com.pld.agile.utils.xml.XMLDeserialiser;
+import com.pld.agile.utils.xml.XMLSerialiser;
 import com.pld.agile.view.Window;
 import com.pld.agile.view.map.Marker;
 import org.jxmapviewer.viewer.GeoPosition;
@@ -15,10 +17,13 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.geom.Point2D;
 import java.io.UnsupportedEncodingException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.*;
 
 
 public class Controller {
@@ -43,11 +48,13 @@ public class Controller {
       DeliveryRequest deliveryRequest = new DeliveryRequest(tm, this.intersections.get(currentIntersectionId));
       // Add delivery request to right panel
       this.deliveryRequests.add(deliveryRequest);
-      LinkedList<Intersection> optimalTour = Algorithm.ExecuteAlgorithm(this.cityMap.getWarehouse(), deliveryRequests);
-      this.window.getMapViewer().updateTour(optimalTour.stream().map(intersection -> {
+      Tour optimalTour = Algorithm.ExecuteAlgorithm(this.cityMap.getWarehouse(), (LinkedList<DeliveryRequest>) deliveryRequests);
+      List<Intersection> optimalTourIntersections = optimalTour.getIntersections();
+      this.window.getMapViewer().updateTour(optimalTourIntersections.stream().map(intersection -> {
         return new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
       }).toList());
-      this.window.getDeliveriesView().displayRequests(deliveryRequests);
+      this.window.getDeliveriesView().displayTourDuration(optimalTour);
+      this.window.getDeliveriesView().displayRequests(optimalTour.getDeliveryRequests());
 
       /* Add pointer to the map*/
       GeoPosition geoPosition = new GeoPosition(intersections.get(currentIntersectionId).getLatitude(),
@@ -62,6 +69,19 @@ public class Controller {
     }
   }
 
+  public void saveTour() throws ExceptionXML, ParserConfigurationException, TransformerException {
+//    for(DeliveryRequest d: deliveryRequests){
+//      System.out.println(d.getAddress());
+//    }
+    if(deliveryRequests.size()==0) {
+      throw new ExceptionXML("Add at least one delivery request before saving the tour");
+    }
+    Tour optimalTour = Algorithm.ExecuteAlgorithm(this.cityMap.getWarehouse(), (LinkedList<DeliveryRequest>)deliveryRequests);
+    if(optimalTour==null) {
+      throw new ExceptionXML("No tour to save");
+    }
+    XMLSerialiser.save(optimalTour);
+  }
   public void resetDeliveryRequests(){
 
   }

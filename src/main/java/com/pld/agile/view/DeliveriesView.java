@@ -1,6 +1,8 @@
 package com.pld.agile.view;
 
 import com.pld.agile.model.DeliveryRequest;
+import com.pld.agile.model.Tour;
+
 import javax.swing.border.Border;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,6 +21,9 @@ public class DeliveriesView extends JPanel {
 
     /** Main label of the textual view */
     private JLabel viewTitle;
+
+    /** Label for displaying tour duration */
+    private JLabel tourDuration;
 
     /** Undo button */
     private JButton undo;
@@ -45,11 +50,14 @@ public class DeliveriesView extends JPanel {
         textViewHeadPanel.setName("textViewHeadPanel");
         textViewHeadPanel.setLayout(new FlowLayout());
 
+        tourDuration = new JLabel("");
+        tourDuration.setHorizontalTextPosition(SwingConstants.CENTER);
+
         deliveryRequestsPanel = new JPanel();
         deliveryRequestsPanel.setName("deliveryRequestsPanel");
 
         requestsScrollPane = new JScrollPane();
-        deliveryRequestsPanel.setName("deliveryRequestsScrollPane");
+        requestsScrollPane.setName("deliveryRequestsScrollPane");
         requestsScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         requestsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         requestsScrollPane.setViewportView(deliveryRequestsPanel);
@@ -66,6 +74,7 @@ public class DeliveriesView extends JPanel {
         textViewHeadPanel.add(viewTitle);
         textViewHeadPanel.add(undo);
         textViewHeadPanel.add(redo);
+        textViewHeadPanel.add(tourDuration);
 
         GridBagConstraints constraints = new GridBagConstraints();
 
@@ -82,6 +91,14 @@ public class DeliveriesView extends JPanel {
         constraints.gridwidth = 3;
         constraints.fill = GridBagConstraints.BOTH;
         this.add(requestsScrollPane, constraints);
+    }
+
+    /**
+     * Changes the tour duration
+     * @param tour - The new tour
+     */
+    public void displayTourDuration(Tour tour) {
+        tourDuration.setText("Tour duration :"+ tour.getFormattedTourDuration());
     }
 
     /**
@@ -136,6 +153,7 @@ public class DeliveriesView extends JPanel {
                 JPanel requestPanel = new JPanel();
                 JLabel requestTag = new JLabel();
                 JLabel requestTime = new JLabel();
+                JLabel requestArrivalTime = new JLabel();
 
                 requestPanel.setLayout(new BoxLayout(requestPanel, BoxLayout.PAGE_AXIS));
                 requestPanel.setBorder(deliveryPanelBorder);
@@ -144,12 +162,14 @@ public class DeliveriesView extends JPanel {
 
                 requestTag.setText("Delivery request n°" + requestsCounter);
                 requestTime.setText("Time Window: [" + request.getTimeWindow().getStart() + " - " +request.getTimeWindow().getEnd() + "]");
+                requestArrivalTime.setText("Arrival time: " + request.getFormattedArrivalTime());
 
                 //DEBUG
                 /*System.out.println("Added delivery request: name:" + requestTag.getText() + " ; timeW:" + requestTime.getText());*/
 
                 requestPanel.add(requestTag);
                 requestPanel.add(requestTime);
+                requestPanel.add(requestArrivalTime);
 
                 constraints.gridy = requestsCounter - 1;
                 deliveryRequestsPanel.add(requestPanel, constraints);

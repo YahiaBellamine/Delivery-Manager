@@ -28,8 +28,16 @@ public class XMLDeserialiser {
       DocumentBuilder db = dbf.newDocumentBuilder();
       // charge the required .xml
       Document document = db.parse(path);
+      // verify if we found the document
+      if(document==null){
+        throw new ExceptionXML("Error file is null");
+      }
       // obtain the map
       Node map = document.getElementsByTagName("map").item(0);
+      // verify if the document starts with "map"
+      if(map==null){
+        throw new ExceptionXML("This is not a map");
+      }
       // TODO: How can we create Map while initialising the max and min for longitude and latitude here?
 
       //reinitialising the map

@@ -8,6 +8,8 @@ public class Tour {
     private List<DeliveryRequest> deliveryRequests;
     /** The list of all intersections that compose the tour */
     private List<Intersection> intersections;
+    /** The duration of the tour */
+    private Double tourDuration;
 
     /**
      * Default Tour constructor.
@@ -16,6 +18,7 @@ public class Tour {
     public Tour() {
         deliveryRequests = new LinkedList<>();
         intersections = new LinkedList<>();
+        tourDuration = 0.0;
     }
 
     /**
@@ -28,6 +31,14 @@ public class Tour {
 
     /**
      *
+     * @return - The list of all delivery requests in the Tour.
+     */
+    public void setDeliveryRequests(LinkedList<DeliveryRequest> deliveryRequests) {
+        this.deliveryRequests.addAll(deliveryRequests);
+    }
+
+    /**
+     *
      * @return - The list of all intersections that compose the Tour.
      */
     public List<Intersection> getIntersections() {
@@ -35,11 +46,35 @@ public class Tour {
     }
 
     /**
-     * Adds a new delivery request to the Tour.
-     * @param newDeliveryRequest - The delivery request to add to the Tour.
+     *
+     * @return - The duration of this tour.
      */
-    public void addDeliveryRequests(DeliveryRequest newDeliveryRequest) {
-        this.deliveryRequests.add(newDeliveryRequest);
+    public Double getTourDuration() {
+        return tourDuration;
+    }
+
+    /**
+     * @param tourDuration the new value of tourDuration
+     * Set the tour duration
+     */
+    public void setTourDuration(Double tourDuration) { this.tourDuration = tourDuration; }
+
+    public String getFormattedTourDuration() {
+        double temp = this.tourDuration;
+        int hours = (int)temp;
+        temp -= hours;
+        int minutes = (int)(temp*60);
+        temp = temp*60 - minutes;
+        int seconds = (int)(temp*60);
+        return hours+"h"+minutes+"min"+seconds+"s";
+    }
+
+    /**
+     * Adds a new delivery request to the Tour.
+     * @param deliveryRequest - The delivery request to add to the Tour.
+     */
+    public void addDeliveryRequest(DeliveryRequest deliveryRequest) {
+        this.deliveryRequests.add(deliveryRequest);
     }
 
     /**

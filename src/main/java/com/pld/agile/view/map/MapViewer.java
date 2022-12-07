@@ -29,8 +29,6 @@ public class MapViewer {
     private JButton recenterButton;
     public JXMapViewer mapViewer;
 
-    private HashSet<Marker> map;
-
     private Marker warehouse;
 
     private Marker requestMarker;
@@ -43,7 +41,6 @@ public class MapViewer {
         this.controller = controller;
 
         tourMarkers = new HashSet<>();
-        map = new HashSet<>();
         tour = new LinkedList<>();
 
         // Add interactions
@@ -123,7 +120,6 @@ public class MapViewer {
 
     public void clearAll(){
         clearMarkers();
-        map.clear();
         mapViewer.removeAll();
         update();
     }
@@ -136,7 +132,6 @@ public class MapViewer {
         //the warehouse
         if(warehouse!=null){
             markers.add(warehouse);
-            System.out.println("adding warehouse");
         }
         //the markers
         if(tourMarkers.size() >0){
@@ -146,7 +141,6 @@ public class MapViewer {
         //the request marker
         if(requestMarker!=null){
             markers.add(requestMarker);
-            System.out.println("adding requestMarker");
         }
 
         //the tour
