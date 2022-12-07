@@ -82,7 +82,6 @@ public class MarkersPainter extends WaypointPainter<Marker>
             g.drawString(text, x, y);
 
             g.setColor(c);
-            System.out.println("black");
         }
         for (Marker w : getWaypoints()) {
 //            BufferedImage myImg = map.get(w.getColor());
