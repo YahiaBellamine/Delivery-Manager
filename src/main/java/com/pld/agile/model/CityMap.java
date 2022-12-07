@@ -1,5 +1,6 @@
 package com.pld.agile.model;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,11 +9,15 @@ public class CityMap {
     private double maxLatitude;
     private double minLongitude;
     private double maxLongitude;
+
     private Intersection warehouse;
-    private List<Tour> tourList;
+    private static List<Tour> tourList= new ArrayList(10);
 
     public CityMap() {
-        this.tourList = new LinkedList<Tour>();
+        for (int i = 0; i < 10; i++) {
+            Tour t=new Tour();
+            tourList.add(t);
+        }
     }
 
     public CityMap(double minLatitude, double maxLatitude, double minLongitude, double maxLongitude, Intersection warehouse) {
@@ -21,7 +26,11 @@ public class CityMap {
         this.minLongitude = minLongitude;
         this.maxLongitude = maxLongitude;
         this.warehouse = warehouse;
-        tourList = new LinkedList<>();
+        for (int i = 0; i < 10; i++) {
+            Tour t=new Tour();
+            tourList.add(t);
+        }
+        //tourList = new ArrayList<>();
     }
 
     public double getMinLatitude() {
@@ -54,6 +63,21 @@ public class CityMap {
 
     public void setMaxLongitude(double maxLongitude) {
         this.maxLongitude = maxLongitude;
+    }
+
+    public static void setTour(int index, Tour tour) {
+        CityMap.tourList.set(index, tour);
+    }
+    public static Tour getTour(int index){
+        return CityMap.tourList.get(index);
+    }
+
+    public static List<Tour> getTourList() {
+        return tourList;
+    }
+
+    public static void setTourList(List<Tour> tourList) {
+        CityMap.tourList = tourList;
     }
 
     public Intersection getWarehouse() {

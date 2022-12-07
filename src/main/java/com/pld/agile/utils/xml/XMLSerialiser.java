@@ -51,7 +51,8 @@ public class XMLSerialiser {
             double h= de.getPassingTime()-decimal;
             double min=decimal*60-decimal*60%1;
             double s=(decimal*60-min)*60;
-            time=Integer.toString((int)h)+":"+Integer.toString((int)min)+":"+Integer.toString((int) s);
+
+            time=String.format("%02d",(int)h)+":"+String.format("%02d",(int)min)+":"+String.format("%02d",(int)s);
             createAttribute(delivery,"passing_time",time);
             tour.appendChild(delivery);
         }

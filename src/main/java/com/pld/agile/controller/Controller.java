@@ -49,6 +49,9 @@ public class Controller {
       // Add delivery request to right panel
       this.deliveryRequests.add(deliveryRequest);
       Tour optimalTour = Algorithm.ExecuteAlgorithm(this.cityMap.getWarehouse(), (LinkedList<DeliveryRequest>) deliveryRequests);
+      // TODO: when we have several delivery men, the index should be modified
+      System.out.println(CityMap.getTourList().size());
+      CityMap.setTour(0,optimalTour);
       List<Intersection> optimalTourIntersections = optimalTour.getIntersections();
       this.window.getMapViewer().updateTour(optimalTourIntersections.stream().map(intersection -> {
         return new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
@@ -76,7 +79,8 @@ public class Controller {
     if(deliveryRequests.size()==0) {
       throw new ExceptionXML("Add at least one delivery request before saving the tour");
     }
-    Tour optimalTour = Algorithm.ExecuteAlgorithm(this.cityMap.getWarehouse(), (LinkedList<DeliveryRequest>)deliveryRequests);
+    // TODO: when we have several delivery men, the index should be modified  and call function save in a loop
+    Tour optimalTour = CityMap.getTour(0);
     if(optimalTour==null) {
       throw new ExceptionXML("No tour to save");
     }
