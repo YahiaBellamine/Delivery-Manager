@@ -12,7 +12,7 @@ public class CityMap {
     private List<Tour> tourList;
 
     public CityMap() {
-        this.tourList = new LinkedList<Tour>();
+        this.tourList = new LinkedList<>();
     }
 
     public CityMap(double minLatitude, double maxLatitude, double minLongitude, double maxLongitude, Intersection warehouse) {
@@ -64,7 +64,11 @@ public class CityMap {
         this.warehouse = warehouse;
     }
 
-    public static void DeepCopy(CityMap temp,CityMap cityMap){
+    public List<Tour> getTourList() {
+        return tourList;
+    }
+
+    public static void DeepCopy(CityMap temp, CityMap cityMap){
         cityMap.warehouse=temp.warehouse;
         cityMap.maxLatitude= temp.maxLatitude;
         cityMap.minLatitude= temp.minLatitude;

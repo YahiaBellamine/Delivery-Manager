@@ -1,8 +1,11 @@
 package com.pld.agile.view;
 
 import com.pld.agile.controller.Controller;
+import com.pld.agile.model.CityMap;
 import com.pld.agile.view.listener.ButtonListener;
 import com.pld.agile.view.map.MapViewer;
+import org.jxmapviewer.viewer.GeoPosition;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -21,12 +24,10 @@ public class Window extends JFrame {
   public final static String SAVE_TOUR= "Save the tour";
   public final static String RECENTER_MAP = "Recenter the Map";
 
-  public Window(Controller controller) {
+  public Window(Controller controller, CityMap cm) {
     super("Delivery Manager");
     this.controller = controller;
-    this.mapViewer = new MapViewer(controller);
-
-    mapViewer = new MapViewer(controller);
+    mapViewer = new MapViewer(controller,cm);
 
     //Create the JFrame
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

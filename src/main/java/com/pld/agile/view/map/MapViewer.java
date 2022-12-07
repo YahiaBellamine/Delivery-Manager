@@ -1,6 +1,8 @@
 package com.pld.agile.view.map;
 
 import com.pld.agile.controller.Controller;
+import com.pld.agile.model.CityMap;
+import com.pld.agile.model.Tour;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.input.CenterMapListener;
@@ -29,16 +31,16 @@ public class MapViewer {
     private Marker warehouse;
 
     private Marker requestMarker;
-    private HashSet<Marker> tourMarkers;
-    private List<GeoPosition> tour;
 
-    private Controller controller;
+    private List<Route> routes;
 
-    public MapViewer(Controller controller) {
-        this.controller = controller;
+    private CityMap cityMap;
 
-        tourMarkers = new HashSet<>();
-        tour = new LinkedList<>();
+
+    public MapViewer(Controller controller, CityMap cm) {
+        cityMap = cm;
+        routes = new ArrayList<>();
+
 
         // Add interactions
         MouseInputListener mia = new PanMouseInputListener(mapViewer);
@@ -50,15 +52,6 @@ public class MapViewer {
         mapViewer.addMouseWheelListener(new ZoomMouseWheelListenerCursor(mapViewer));
         mapViewer.addMouseListener(new MarkerMouseListener(controller));
 
-        //mapViewer.addKeyListener(new PanKeyListener(mapViewer));
-
-//        // Add a selection painter
-//        SelectionAdapter sa = new SelectionAdapter(mapViewer);
-//        SelectionPainter sp = new SelectionPainter(sa);
-//        mapViewer.addMouseListener(sa);
-//        mapViewer.addMouseMotionListener(sa);
-//        mapViewer.setOverlayPainter(sp);
-        //recenter();
     }
 
     private void createUIComponents() {
@@ -81,26 +74,8 @@ public class MapViewer {
                 warehouse = new Marker(id,pos,ImageUtil.getWarehouseImage(Color.yellow),Marker.Type.WAREHOUSE);
                 setCenter(pos);
             }
-            case TOUR -> tourMarkers.add(new Marker(id, pos,ImageUtil.getMarkerImage(Color.GREEN), type));
             case REQUEST -> requestMarker = new Marker(id, pos,ImageUtil.getMarkerImage(Color.ORANGE), type);
         }
-    }
-
-    public void updateTour(List<GeoPosition> tourlist){
-        this.tour.clear();
-        this.tour.addAll(tourlist);
-        update();
-    }
-
-    public List<GeoPosition> getTour(){
-        return this.tour;
-    }
-
-    public void clearMarkers(){
-        tourMarkers.clear();
-        tour.clear();
-        requestMarker = null;
-        update();
     }
 
     public void clearRequestMarker(){
@@ -109,11 +84,23 @@ public class MapViewer {
     }
 
     public void clearAll(){
-        clearMarkers();
+        warehouse = null;
+        requestMarker = null;
+        routes.clear();
         mapViewer.removeAll();
         update();
     }
 
+    public void updateRoutes(){
+        routes = new ArrayList<>(cityMap.getTourList().size());
+
+//        Iterator<Route> it = routes.iterator();
+        for(Tour t : cityMap.getTourList()){
+            Route r = new Route(Color.blue);
+            r.updateRouteSegments(t);
+            routes.add(r);
+        }
+    }
     public void update(){
         List<Painter<JXMapViewer>> painters = new ArrayList<Painter<JXMapViewer>>();
 
@@ -123,10 +110,6 @@ public class MapViewer {
         if(warehouse!=null){
             markers.add(warehouse);
         }
-        //the markers
-        if(tourMarkers.size() >0){
-            markers.addAll(tourMarkers);
-        }
 
         //the request marker
         if(requestMarker!=null){
@@ -134,8 +117,8 @@ public class MapViewer {
         }
 
         //the tour
-        if(tour.size()>1){
-            TourPainter tourPainter = new TourPainter(tour);
+        if(routes.size()>0){
+            TourPainter tourPainter = new TourPainter(routes);
             painters.add(tourPainter);
         }
 
@@ -171,12 +154,11 @@ public class MapViewer {
         recenter();
     }
 
-    public HashSet<GeoPosition> getPositions(HashSet<Marker> ms){
-        HashSet<GeoPosition> positions = new HashSet<>();
-        for(Marker m : ms){
-            positions.add(m.getPosition());
-        }
-        return positions;
+    public List<Route> getRoutes() {
+        return routes;
     }
 
+    public void setRoutes(List<Route> routes) {
+        this.routes = routes;
+    }
 }

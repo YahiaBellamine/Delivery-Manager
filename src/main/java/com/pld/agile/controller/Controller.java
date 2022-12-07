@@ -11,10 +11,12 @@ import com.pld.agile.utils.xml.XMLDeserialiser;
 import com.pld.agile.utils.xml.XMLSerialiser;
 import com.pld.agile.view.Window;
 import com.pld.agile.view.map.Marker;
+import com.pld.agile.view.map.Route;
 import org.jxmapviewer.viewer.GeoPosition;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.io.UnsupportedEncodingException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -32,13 +34,12 @@ public class Controller {
   private CityMap cityMap;
   private Map<Long, Intersection> intersections;
   private Long currentIntersectionId;
-  private List<DeliveryRequest> deliveryRequests;
+
 
   public Controller() {
-    window = new Window(this);
     cityMap = new CityMap();
+    window = new Window(this, cityMap);
     this.intersections = new HashMap<>();
-    deliveryRequests = new LinkedList<>();
     window.setVisible(true);
   }
 
@@ -47,19 +48,24 @@ public class Controller {
       TimeWindow tm = (TimeWindow) this.window.getDeliveryRequestView().comboBoxTimeWindow.getSelectedItem();
       DeliveryRequest deliveryRequest = new DeliveryRequest(tm, this.intersections.get(currentIntersectionId));
       // Add delivery request to right panel
-      this.deliveryRequests.add(deliveryRequest);
-      Tour optimalTour = Algorithm.ExecuteAlgorithm(this.cityMap.getWarehouse(), (LinkedList<DeliveryRequest>) deliveryRequests);
-      List<Intersection> optimalTourIntersections = optimalTour.getIntersections();
-      this.window.getMapViewer().updateTour(optimalTourIntersections.stream().map(intersection -> {
-        return new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
-      }).toList());
-      this.window.getDeliveriesView().displayTourDuration(optimalTour);
-      this.window.getDeliveriesView().displayRequests(optimalTour.getDeliveryRequests());
 
-      /* Add pointer to the map*/
-      GeoPosition geoPosition = new GeoPosition(intersections.get(currentIntersectionId).getLatitude(),
-              intersections.get(currentIntersectionId).getLongitude());
-      this.window.getMapViewer().addPoint(geoPosition, currentIntersectionId, Marker.Type.TOUR);
+      cityMap.getTourList().get(0).addDeliveryRequest(deliveryRequest);
+      Tour optimalTour = Algorithm.ExecuteAlgorithm(this.cityMap.getWarehouse(),(LinkedList<DeliveryRequest>) cityMap.getTourList().get(0).getDeliveryRequests());
+      cityMap.getTourList().set(0,optimalTour);
+      window.getMapViewer().updateRoutes();
+
+//      List<Intersection> optimalTourIntersections = optimalTour.getIntersections();
+//      this.window.getMapViewer().updateTour(optimalTourIntersections.stream().map(intersection -> {
+//        return new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
+//      }).toList());
+//      this.window.getDeliveriesView().displayTourDuration(optimalTour);
+//      this.window.getDeliveriesView().displayRequests(optimalTour.getDeliveryRequests());
+//
+//      /* Add pointer to the map*/
+//      GeoPosition geoPosition = new GeoPosition(intersections.get(currentIntersectionId).getLatitude(),
+//              intersections.get(currentIntersectionId).getLongitude());
+//      this.window.getMapViewer().addPoint(geoPosition, currentIntersectionId, Marker.Type.TOUR);
+
       this.window.getMapViewer().clearRequestMarker();
       currentIntersectionId = null;
       this.window.getDeliveryRequestView().setSelectDestinationPoint("  Select your destination point on the map.");
@@ -72,15 +78,15 @@ public class Controller {
   public void saveTour() throws ExceptionXML, ParserConfigurationException, TransformerException {
 //    for(DeliveryRequest d: deliveryRequests){
 //      System.out.println(d.getAddress());
+////    }
+//    if(deliveryRequests.size()==0) {
+//      throw new ExceptionXML("Add at least one delivery request before saving the tour");
 //    }
-    if(deliveryRequests.size()==0) {
-      throw new ExceptionXML("Add at least one delivery request before saving the tour");
-    }
-    Tour optimalTour = Algorithm.ExecuteAlgorithm(this.cityMap.getWarehouse(), (LinkedList<DeliveryRequest>)deliveryRequests);
-    if(optimalTour==null) {
-      throw new ExceptionXML("No tour to save");
-    }
-    XMLSerialiser.save(optimalTour);
+//    Tour optimalTour = Algorithm.ExecuteAlgorithm(this.cityMap.getWarehouse(), (LinkedList<DeliveryRequest>)deliveryRequests);
+//    if(optimalTour==null) {
+//      throw new ExceptionXML("No tour to save");
+//    }
+//    XMLSerialiser.save(optimalTour);
   }
   public void resetDeliveryRequests(){
 
@@ -112,44 +118,13 @@ public class Controller {
       throw new RuntimeException(e);
     }
     window.getMapViewer().clearAll();
-    deliveryRequests.clear();
-    this.window.getDeliveriesView().displayRequests(deliveryRequests);
+    cityMap.getTourList().clear();
+    this.window.getDeliveriesView().displayRequests(new LinkedList<DeliveryRequest>());
 
-    /*for (Intersection intersection : intersections.values()) {
-    deliveryRequests.clear();
-    this.window.getDeliveriesView().displayRequests(deliveryRequests);
-    for (Intersection intersection : intersections.values()) {
-      if(cityMap.getWarehouse().getId() == intersection.getId()) continue;
-      GeoPosition geoPosition = new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
-      this.window.getMapViewer().addPoint(geoPosition, intersection.getId(), Marker.Type.MAP);
-    }*/
+    cityMap.getTourList().add(new Tour());
 
-    Intersection warehouse = cityMap.getWarehouse();
-//    HashSet<Intersection> settledVertices = new HashSet<>();
-//    HashSet<Intersection> unsettledVertices = new HashSet<>();
-//
-//    unsettledVertices.add(warehouse);
-//
-//    while(unsettledVertices.size()!=0){
-//      Intersection intersection = unsettledVertices.iterator().next();
-//
-//      List<RoadSegment> outgoingSegments = intersection.getOutgoingSegments();
-//
-//      for (RoadSegment outgoingSegment:outgoingSegments) {
-//        Intersection destination = outgoingSegment.getDestination();
-//        if(!settledVertices.contains(destination)) {
-//          if (!unsettledVertices.contains(destination)) {
-//            unsettledVertices.add(destination);
-//          }
-//        }
-//      }
-//      settledVertices.add(intersection);
-//      unsettledVertices.remove(intersection);
-//      GeoPosition geoPosition = new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
-//      this.window.getMapViewer().addPoint(geoPosition, intersection.getId(), Marker.Type.MAP);
-//    }
+    //Intersection warehouse = cityMap.getWarehouse();
 
-//    // Define the warehouse marker on the map
     GeoPosition warehousePosition = new GeoPosition(cityMap.getWarehouse().getLatitude(),
             cityMap.getWarehouse().getLongitude());
     this.window.getMapViewer().addPoint(warehousePosition, cityMap.getWarehouse().getId(), Marker.Type.WAREHOUSE);

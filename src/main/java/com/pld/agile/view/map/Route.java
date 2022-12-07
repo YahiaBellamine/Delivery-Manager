@@ -1,5 +1,6 @@
 package com.pld.agile.view.map;
 
+import com.pld.agile.model.DeliveryRequest;
 import org.jxmapviewer.viewer.GeoPosition;
 import com.pld.agile.model.Intersection;
 import com.pld.agile.model.Tour;
@@ -16,13 +17,25 @@ public class Route {
     /** The list defining the color of each geo-positions list segments */
     private List<Color> routeColors;
 
+    /** A list of Markers to define the delivery requests */
+    private List<Marker> routeMarkers;
+
+    /** The list defining the color of each Marker */
+    private List<Color> routeMarkersColors;
+
+    /** the default color for the segments */
+    private Color defaultColor;
+
     /**
      * Default Route constructor.
      * The route starts empty.
      */
-    public Route() {
+    public Route(Color c) {
         routeSegments = new LinkedList<>();
         routeColors = new ArrayList<>();
+        routeMarkers = new ArrayList<>();
+        routeMarkersColors = new ArrayList<>();
+        defaultColor = c;
     }
 
     /**
@@ -31,6 +44,7 @@ public class Route {
      */
     public void updateRouteSegments(Tour tour) {
         routeSegments.clear();
+        routeMarkers.clear();
         LinkedList<GeoPosition> segList = new LinkedList<>();
 
         int deliveryIndex = 0;
@@ -39,13 +53,18 @@ public class Route {
             GeoPosition geoPos = new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
             segList.add(geoPos);
 
-            if((tour.getDeliveryRequests().get(deliveryIndex).getAddress().getLongitude() == intersection.getLongitude())
-                    && (tour.getDeliveryRequests().get(deliveryIndex).getAddress().getLatitude() == intersection.getLatitude())) {
+            if(deliveryIndex<tour.getDeliveryRequests().size() &&
+            (tour.getDeliveryRequests().get(deliveryIndex).getAddress().getId() == intersection.getId())) {
                         routeSegments.add(segList);
-                        segList.clear();
-                        segList.add(geoPos);
+                        segList = new LinkedList<>();
                         ++deliveryIndex;
             }
+        }
+        routeSegments.add(segList);
+        for(DeliveryRequest delivery : tour.getDeliveryRequests()){
+            Intersection i = delivery.getAddress();
+            GeoPosition gp = new GeoPosition(i.getLatitude(),i.getLongitude());
+            routeMarkers.add(new Marker(i.getId(),gp,ImageUtil.getMarkerImage(defaultColor), Marker.Type.TOUR));
         }
     }
 
@@ -76,5 +95,21 @@ public class Route {
      */
     public List<Color> getRouteColors() {
         return routeColors;
+    }
+
+    /**
+     *
+     * @return The list of Markers.
+     */
+    public List<Marker> getRouteMarkers() {
+        return routeMarkers;
+    }
+
+    /**
+     *
+     * @return The list of colors for each Marker.
+     */
+    public List<Color> getRouteMarkersColors() {
+        return routeMarkersColors;
     }
 }
