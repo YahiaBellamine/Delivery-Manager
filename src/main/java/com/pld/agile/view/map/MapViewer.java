@@ -9,23 +9,18 @@ import org.jxmapviewer.input.PanMouseInputListener;
 import org.jxmapviewer.input.ZoomMouseWheelListenerCursor;
 import org.jxmapviewer.painter.CompoundPainter;
 import org.jxmapviewer.painter.Painter;
-import org.jxmapviewer.viewer.*;
-
-import javax.swing.*;
 import javax.swing.event.MouseInputListener;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.*;
 import java.util.List;
+import org.jxmapviewer.viewer.*;
+import javax.swing.*;
+import java.awt.*;
+import java.util.*;
+
 
 public class MapViewer {
     public JPanel mainPanel;
     public JPanel mapPanel;
-    public JButton bottomButton;
     public JPanel centerPanel;
-    public JPanel bottomPanel;
-    private JButton recenterButton;
     public JXMapViewer mapViewer;
 
     private HashSet<Marker> map;
@@ -64,12 +59,6 @@ public class MapViewer {
         mapViewer.setOverlayPainter(sp);
 
         recenter();
-        recenterButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                recenter();
-            }
-        });
     }
 
     private void createUIComponents() {
