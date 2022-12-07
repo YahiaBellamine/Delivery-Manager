@@ -3,6 +3,7 @@ package com.pld.agile.view.listener;
 import com.pld.agile.controller.Controller;
 import com.pld.agile.utils.xml.ExceptionXML;
 import com.pld.agile.view.Window;
+import com.pld.agile.view.map.MapViewer;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -13,9 +14,11 @@ import java.io.UnsupportedEncodingException;
 public class ButtonListener implements ActionListener {
 
   private Controller controller;
+  private MapViewer mapViewer;
 
-  public ButtonListener(Controller controller){
+  public ButtonListener(Controller controller, MapViewer mapViewer) {
     this.controller = controller;
+    this.mapViewer = mapViewer;
   }
 
   @Override
@@ -43,6 +46,9 @@ public class ButtonListener implements ActionListener {
         } catch (TransformerException ex) {
           throw new RuntimeException(ex);
         }
+        break;
+      case Window.RECENTER_MAP:
+        mapViewer.recenter();
         break;
     }
   }
