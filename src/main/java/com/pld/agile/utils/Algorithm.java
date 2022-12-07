@@ -55,9 +55,9 @@ public class Algorithm {
 
         branchAndBound(visited, unvisited, 0.0);
 
-        /* Calculating the optimal tour and updating passing time for each delivery request */
+        /* Calculating the optimal tour and updating arrival time for each delivery request */
         // We start from warehouse at 8h
-        Double passingTime = 8.0;
+        Double arrivalTime = 8.0;
         for (int i = 0; i < bestSol.size(); i++) {
             DeliveryRequest deliveryRequest = bestSol.get(i);
             DeliveryRequest nextDeliveryRequest = bestSol.get((i + 1) % bestSol.size());
@@ -70,22 +70,22 @@ public class Algorithm {
             // Add the shortest path between deliveryRequest and nextDeliveryRequest to optimalTour
             optimalTour.getIntersections().addAll(shortestPathBetweenTwoDeliveryLocations.get(deliveryRequest.getAddress()).get(nextDeliveryRequest.getAddress()));
 
-            // Calculating passingTime by adding the duration between deliveryRequest and nextDeliveryRequest
-            passingTime += tspCost.get(deliveryRequest.getAddress().getId()).get(nextDeliveryRequest.getAddress().getId()) / (1000.0 * 15.0);
+            // Calculating arrivalTime by adding the duration between deliveryRequest and nextDeliveryRequest
+            arrivalTime += tspCost.get(deliveryRequest.getAddress().getId()).get(nextDeliveryRequest.getAddress().getId()) / (1000.0 * 15.0);
 
             // If the courier arrives to a delivery location before the start of its time window, they should wait until the start of the time window
             TimeWindow timeWindow = nextDeliveryRequest.getTimeWindow();
-            if (timeWindow != null && passingTime < timeWindow.getStart()) {
-                passingTime = (double) timeWindow.getStart();
+            if (timeWindow != null && arrivalTime < timeWindow.getStart()) {
+                arrivalTime = (double) timeWindow.getStart();
             }
-            nextDeliveryRequest.setPassingTime(passingTime);
+            nextDeliveryRequest.setArrivalTime(arrivalTime);
 
             // The courier takes 5 minutes to perform a delivery
-            passingTime += 5.0 / 60.0;
+            arrivalTime += 5.0 / 60.0;
         }
 
         /* Calculating the duration of optimalTour */
-        optimalTour.setTourDuration(bestSol.get(0).getPassingTime() - 8.0);
+        optimalTour.setTourDuration(bestSol.get(0).getArrivalTime() - 8.0);
 
         return optimalTour;
     }

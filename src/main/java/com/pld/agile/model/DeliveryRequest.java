@@ -8,8 +8,8 @@ DeliveryRequest {
     private TimeWindow timeWindow;
     /** The address of the delivery request */
     private Intersection address;
-    /** The passing time through the delivery address */
-    private Double passingTime;
+    /** The arrival time through the delivery address */
+    private Double arrivalTime;
 
     /**
      * DeliveryRequest constructor.
@@ -19,7 +19,7 @@ DeliveryRequest {
     public DeliveryRequest(TimeWindow deliveryTime, Intersection deliveryAddress) {
         timeWindow = deliveryTime;
         address = deliveryAddress;
-        passingTime = 0.0;
+        arrivalTime = 0.0;
     }
 
     /**
@@ -42,14 +42,14 @@ DeliveryRequest {
      *
      * @return - The time when the courier will deliver for this delivery request.
      */
-    public double getPassingTime() {
-        return passingTime;
+    public double getArrivalTime() {
+        return arrivalTime;
     }
 
-    public void setPassingTime(Double passingTime) { this.passingTime = passingTime; }
+    public void setArrivalTime(Double arrivalTime) { this.arrivalTime = arrivalTime; }
 
-    public String getFormattedPassingTime() {
-        double temp = this.passingTime;
+    public String getFormattedArrivalTime() {
+        double temp = this.arrivalTime;
         int hours = (int)temp;
         temp -= hours;
         int minutes = (int)(temp*60);
@@ -63,7 +63,7 @@ DeliveryRequest {
         return "DeliveryRequest{" +
                 "timeWindow=" + timeWindow +
                 ", address=" + address +
-                ", passingTime=" + getFormattedPassingTime() +
+                ", arrivalTime=" + getFormattedArrivalTime() +
                 '}';
     }
 }

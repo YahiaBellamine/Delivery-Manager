@@ -47,12 +47,12 @@ public class XMLSerialiser {
             createAttribute(delivery,"time_window",tw);
             createAttribute(delivery,"id_intersection",Long.toString(de.getAddress().getId()));
             String time="";
-            double decimal=de.getPassingTime()%1;
-            double h= de.getPassingTime()-decimal;
+            double decimal=de.getArrivalTime()%1;
+            double h= de.getArrivalTime()-decimal;
             double min=decimal*60-decimal*60%1;
             double s=(decimal*60-min)*60;
             time=Integer.toString((int)h)+":"+Integer.toString((int)min)+":"+Integer.toString((int) s);
-            createAttribute(delivery,"passing_time",time);
+            createAttribute(delivery,"arrival_time",time);
             tour.appendChild(delivery);
         }
 
