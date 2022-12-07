@@ -132,7 +132,6 @@ public class MapViewer {
         //the warehouse
         if(warehouse!=null){
             markers.add(warehouse);
-            System.out.println("adding warehouse");
         }
         //the markers
         if(tourMarkers.size() >0){
@@ -142,7 +141,6 @@ public class MapViewer {
         //the request marker
         if(requestMarker!=null){
             markers.add(requestMarker);
-            System.out.println("adding requestMarker");
         }
 
         //the tour

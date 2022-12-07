@@ -66,7 +66,24 @@ public class MarkersPainter extends WaypointPainter<Marker>
     @Override
     protected void doPaint(Graphics2D g, JXMapViewer viewer, int width, int height) {
         // g = (Graphics2D)g.create();
+        if(getWaypoints().isEmpty()){
+            Rectangle rect = viewer.getViewportBounds();
+            Color c = g.getColor();
+            g.setColor(new Color(0,0,0,180));
+            g.fillRect(0, 0, rect.width, rect.height);
 
+            g.setColor(new Color(200,200,200,200));
+            Font font = new Font(Font.SERIF,Font.BOLD,20);
+            g.setFont(font);
+            FontMetrics metrics = g.getFontMetrics(font);
+            String text = "Please load a map to start adding delivery requests";
+            int x = (rect.width - metrics.stringWidth(text)) / 2;
+            int y =  ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
+            g.drawString(text, x, y);
+
+            g.setColor(c);
+            System.out.println("black");
+        }
         for (Marker w : getWaypoints()) {
 //            BufferedImage myImg = map.get(w.getColor());
 //
