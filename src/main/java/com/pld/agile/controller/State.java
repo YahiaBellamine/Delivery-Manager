@@ -13,7 +13,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.util.Map;
 
 public interface State {
-    public default void loadMap(Controller c, Window w, Map<Long, Intersection> intersections, CityMap cityMap) {
+    public default void loadMap(Controller c, Window w, CityMap cityMap) {
         JFileChooser j = new JFileChooser("src/main/java/com/pld/agile/utils/maps");
         j.setAcceptAllFileFilterUsed(false);
         j.setDialogTitle("Select a map file (.xml)");

@@ -3,8 +3,6 @@ package com.pld.agile.controller;
 import com.pld.agile.model.CityMap;
 import com.pld.agile.model.DeliveryRequest;
 import com.pld.agile.model.Intersection;
-import com.pld.agile.model.enums.TimeWindow;
-import com.pld.agile.utils.Algorithm;
 import com.pld.agile.view.Window;
 import com.pld.agile.view.map.Marker;
 import org.jxmapviewer.viewer.GeoPosition;
@@ -19,7 +17,7 @@ import java.util.Map;
 public class Controller {
   private State currentState;
   private Window window;
-  private CityMap cityMap;
+  private final CityMap cityMap;
   private Map<Long, Intersection> intersections;/* TODO: remove attribut (already present in cityMap)*/
   private Long currentIntersectionId;/* TODO: remove attribut (already present in DestinationSelectedState)*/
   private List<DeliveryRequest> deliveryRequests; /* TODO: remove attribut (already present in cityMap->Tour)*/
@@ -90,7 +88,7 @@ public class Controller {
    * @param
    */
   public void loadMap() {
-    currentState.loadMap(this, window, intersections ,cityMap);
+    currentState.loadMap(this, window ,cityMap);
   }
 
   /**
