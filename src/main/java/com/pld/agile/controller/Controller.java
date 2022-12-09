@@ -45,40 +45,58 @@ public class Controller {
     currentState = state;
   }
 
-  /* TODO: remove and replace by currentState.addNewRequest(c)*/
-  public void addDeliveryRequest() {
-    if (currentIntersectionId != null) {
-      TimeWindow tm = (TimeWindow) this.window.getDeliveryRequestView().comboBoxTimeWindow.getSelectedItem();
-      DeliveryRequest deliveryRequest = new DeliveryRequest(tm, this.intersections.get(currentIntersectionId));
-      // Add delivery request to right panel
-      this.deliveryRequests.add(deliveryRequest);
-      LinkedList<Intersection> optimalTour = Algorithm.ExecuteAlgorithm(this.cityMap.getWarehouse(), deliveryRequests);
-      this.window.getMapViewer().updateTour(optimalTour.stream().map(intersection -> {
-        return new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
-      }).toList());
-      this.window.getDeliveriesView().displayRequests(deliveryRequests);
-
-      /* Add pointer to the map*/
-      GeoPosition geoPosition = new GeoPosition(intersections.get(currentIntersectionId).getLatitude(),
-              intersections.get(currentIntersectionId).getLongitude());
-      this.window.getMapViewer().addPoint(geoPosition, currentIntersectionId, Marker.Type.TOUR);
-      this.window.getMapViewer().clearRequestMarker();
-      currentIntersectionId = null;
-      this.window.getDeliveryRequestView().setSelectDestinationPoint("  Select your destination point on the map.");
-
-    } else {
-      this.window.displayMessage("Please select an intersection on the map");
-    }
+  /**
+   * Create a new delivery request
+   * @param
+   */
+  public void addNewRequest() {
+    currentState.addNewRequest(cityMap, this, window);
   }
 
-  public void resetDeliveryRequests(){
-
+  /**
+   * Delete a delivery Request
+   * @param
+   */
+  public void deleteDeliveryRequest(){
+    currentState.deleteDeliveryRequest(cityMap, window);
   }
 
+  /**
+   * Update a delivery request
+   * @param
+   */
+  public void updateDeliveryRequest(){
+    currentState.updateDeliveryRequest(cityMap, window);
+  }
+
+  /**
+   * Restore tours from a file
+   * @param
+   */
+  public void restoreTours(){
+    currentState.restoreTours(cityMap, this, window);
+  }
+
+  /**
+   * Save tours to a file
+   * @param
+   */
+  public void saveTours(){
+    currentState.saveTours(cityMap, window);
+  }
+
+  /**
+   * Load a map from a file
+   * @param
+   */
   public void loadMap() {
     currentState.loadMap(this, window, intersections ,cityMap);
   }
 
+  /**
+   * Select a destination point
+   * @param destinationPointId the id of the destination point
+   */
   public void selectDestinationPoint(Long destinationPointId) {
     currentState.selectDestinationPoint(this, destinationPointId);
   }
@@ -91,11 +109,6 @@ public class Controller {
     this.window.getMapViewer().addPoint(geoPosition, currentIntersectionId, Marker.Type.REQUEST);
     this.window.getMapViewer().update();
     this.window.getDeliveryRequestView().setSelectDestinationPoint("Intersection " + currentIntersectionId);
-  }
-
-  // TODO: remove and replace by currentState.deleteDeliveryRequest
-  public void deleteDeliveryRequest(DeliveryRequest deliveryRequest) {
-    // cityMap.deleteDeliveryRequest(deliveryRequest);
   }
 
   // TODO: Remove from here (need to be somewhere else)
