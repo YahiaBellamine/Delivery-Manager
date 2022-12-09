@@ -1,18 +1,11 @@
 package com.pld.agile.controller;
 
-import com.pld.agile.model.CityMap;
-import com.pld.agile.model.DeliveryRequest;
-import com.pld.agile.model.Intersection;
+import com.pld.agile.model.*;
 import com.pld.agile.view.Window;
 import com.pld.agile.view.map.Marker;
 import org.jxmapviewer.viewer.GeoPosition;
 
 import java.awt.geom.Point2D;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 
 public class Controller {
   private State currentState;
@@ -24,6 +17,7 @@ public class Controller {
   protected final ComputedTourState computedTourState = new ComputedTourState();
 
   public Controller() {
+    new Couriers(1);
     this.cityMap = new CityMap();
     this.window = new Window(cityMap, this);
     window.setVisible(true);

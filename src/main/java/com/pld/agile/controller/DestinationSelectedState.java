@@ -25,6 +25,7 @@ public class DestinationSelectedState implements State{
     DeliveryRequest deliveryRequest = new DeliveryRequest(timeWindow, cityMap.getIntersections().get(this.destinationPointId));
 
     Tour tour = cityMap.getTour(courier);
+    if(tour == null) tour = new Tour();
     tour.addDeliveryRequest(deliveryRequest);
 
     Tour optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
