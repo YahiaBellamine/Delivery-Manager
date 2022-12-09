@@ -18,11 +18,9 @@ public class LoadedMapState implements State{
     };
 
     @Override
-    public void selectDestinationPoint(Controller c, Window w) {
+    public void selectDestinationPoint(Controller c, Long destinationPointId) {
         c.setCurrentState(c.destinationSelectedState);
+        c.destinationSelectedState.setDestinationPointId(destinationPointId);
     };
 
-    @Override
-    public void loadMap(Controller c, Window w)  {
-    };
 }

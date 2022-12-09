@@ -5,16 +5,11 @@ import com.pld.agile.model.DeliveryRequest;
 import com.pld.agile.model.Intersection;
 import com.pld.agile.model.enums.TimeWindow;
 import com.pld.agile.utils.Algorithm;
-import com.pld.agile.utils.xml.ExceptionXML;
-import com.pld.agile.utils.xml.XMLDeserialiser;
 import com.pld.agile.view.Window;
 import com.pld.agile.view.map.Marker;
 import org.jxmapviewer.viewer.GeoPosition;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.geom.Point2D;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,9 +20,9 @@ public class Controller {
   private State currentState;
   private Window window;
   private CityMap cityMap;
-  private Map<Long, Intersection> intersections;
-  private Long currentIntersectionId;
-  private List<DeliveryRequest> deliveryRequests;
+  private Map<Long, Intersection> intersections;/* TODO: remove attribut (already present in cityMap)*/
+  private Long currentIntersectionId;/* TODO: remove attribut (already present in DestinationSelectedState)*/
+  private List<DeliveryRequest> deliveryRequests; /* TODO: remove attribut (already present in cityMap->Tour)*/
 
   protected final InitialState initialState = new InitialState();
   protected final LoadedMapState loadedMapState = new LoadedMapState();
@@ -50,6 +45,7 @@ public class Controller {
     currentState = state;
   }
 
+  /* TODO: remove and replace by currentState.addNewRequest(c)*/
   public void addDeliveryRequest() {
     if (currentIntersectionId != null) {
       TimeWindow tm = (TimeWindow) this.window.getDeliveryRequestView().comboBoxTimeWindow.getSelectedItem();
@@ -79,77 +75,16 @@ public class Controller {
 
   }
 
-  public void loadMap(/*String path*/) throws UnsupportedEncodingException {
-    String path = "src/main/java/com/pld/agile/utils/maps/smallMap.xml";
+  public void loadMap() {
+    currentState.loadMap(this, window, intersections ,cityMap);
+  }
 
-    JFileChooser j = new JFileChooser("src/main/java/com/pld/agile/utils/maps");
-    j.setAcceptAllFileFilterUsed(false);
-    j.setDialogTitle("Select a map file (.xml)");
-
-    FileNameExtensionFilter restrict = new FileNameExtensionFilter("Only .xml files", "xml");
-    j.addChoosableFileFilter(restrict);
-
-    // invoke the showsOpenDialog function to show the save dialog
-    int r = j.showOpenDialog(null);
-
-    // if the user selects a file
-    if (r == JFileChooser.APPROVE_OPTION) {
-      // set the label to the path of the selected file
-      path = j.getSelectedFile().toURI().getPath();
-     // path = java.net.URLDecoder.decode(path,"utf-8");
-      System.out.println(path);
-    }
-    try {
-      XMLDeserialiser.load(path, intersections, cityMap);
-    } catch (ExceptionXML e) {
-      throw new RuntimeException(e);
-    }
-    window.getMapViewer().clearAll();
-    deliveryRequests.clear();
-    this.window.getDeliveriesView().displayRequests(deliveryRequests);
-
-    /*for (Intersection intersection : intersections.values()) {
-    deliveryRequests.clear();
-    this.window.getDeliveriesView().displayRequests(deliveryRequests);
-    for (Intersection intersection : intersections.values()) {
-      if(cityMap.getWarehouse().getId() == intersection.getId()) continue;
-      GeoPosition geoPosition = new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
-      this.window.getMapViewer().addPoint(geoPosition, intersection.getId(), Marker.Type.MAP);
-    }*/
-
-    Intersection warehouse = cityMap.getWarehouse();
-//    HashSet<Intersection> settledVertices = new HashSet<>();
-//    HashSet<Intersection> unsettledVertices = new HashSet<>();
-//
-//    unsettledVertices.add(warehouse);
-//
-//    while(unsettledVertices.size()!=0){
-//      Intersection intersection = unsettledVertices.iterator().next();
-//
-//      List<RoadSegment> outgoingSegments = intersection.getOutgoingSegments();
-//
-//      for (RoadSegment outgoingSegment:outgoingSegments) {
-//        Intersection destination = outgoingSegment.getDestination();
-//        if(!settledVertices.contains(destination)) {
-//          if (!unsettledVertices.contains(destination)) {
-//            unsettledVertices.add(destination);
-//          }
-//        }
-//      }
-//      settledVertices.add(intersection);
-//      unsettledVertices.remove(intersection);
-//      GeoPosition geoPosition = new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
-//      this.window.getMapViewer().addPoint(geoPosition, intersection.getId(), Marker.Type.MAP);
-//    }
-
-//    // Define the warehouse marker on the map
-    GeoPosition warehousePosition = new GeoPosition(cityMap.getWarehouse().getLatitude(),
-            cityMap.getWarehouse().getLongitude());
-    this.window.getMapViewer().addPoint(warehousePosition, cityMap.getWarehouse().getId(), Marker.Type.WAREHOUSE);
-    this.window.getMapViewer().recenter();
+  public void selectDestinationPoint(Long destinationPointId) {
+    currentState.selectDestinationPoint(this, destinationPointId);
   }
 
   public void selectIntersection(Long currentIntersectionId) {
+    /* TODO: remove and replace by currentState.selectDestinationPoint*/
     this.currentIntersectionId = currentIntersectionId;
     GeoPosition geoPosition = new GeoPosition(intersections.get(currentIntersectionId).getLatitude(),
             intersections.get(currentIntersectionId).getLongitude());
@@ -158,10 +93,12 @@ public class Controller {
     this.window.getDeliveryRequestView().setSelectDestinationPoint("Intersection " + currentIntersectionId);
   }
 
+  // TODO: remove and replace by currentState.deleteDeliveryRequest
   public void deleteDeliveryRequest(DeliveryRequest deliveryRequest) {
     // cityMap.deleteDeliveryRequest(deliveryRequest);
   }
 
+  // TODO: Remove from here (need to be somewhere else)
   public void searchIntersection(double x, double y){
     double r = Double.MAX_VALUE;
     long id=-1;
@@ -175,6 +112,8 @@ public class Controller {
     }
     if(id!=-1)    selectIntersection(id);
   }
+
+  // TODO: remove all getters and setters (shouldn't be in the controller)
   public Window getWindow() {
     return window;
   }

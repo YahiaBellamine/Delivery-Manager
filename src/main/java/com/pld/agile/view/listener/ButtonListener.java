@@ -19,17 +19,9 @@ public class ButtonListener implements ActionListener {
   public void actionPerformed(ActionEvent e) {
     // Method called by the button listener each time a button is clicked
     // Forward the corresponding message to the controller
-    switch (e.getActionCommand()){
-      case Window.LOAD_MAP:
-        try {
-          controller.loadMap();
-        } catch (UnsupportedEncodingException ex) {
-          throw new RuntimeException(ex);
-        }
-        break;
-      case Window.ADD_DELIVERY_REQUEST:
-        controller.addDeliveryRequest();
-        break;
+    switch (e.getActionCommand()) {
+      case Window.LOAD_MAP -> controller.loadMap();
+      case Window.ADD_DELIVERY_REQUEST -> controller.addDeliveryRequest();
     }
   }
 }

@@ -38,7 +38,7 @@ public class Tour {
      * Adds a new delivery request to the Tour.
      * @param newDeliveryRequest - The delivery request to add to the Tour.
      */
-    public void addDeliveryRequests(DeliveryRequest newDeliveryRequest) {
+    public void addDeliveryRequest(DeliveryRequest newDeliveryRequest) {
         this.deliveryRequests.add(newDeliveryRequest);
     }
 
