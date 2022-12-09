@@ -4,6 +4,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Tour {
+
+    /** The courier of the tour */
+    private Courier courier;
     /** The list of all delivery requests integrated in the tour */
     private List<DeliveryRequest> deliveryRequests;
     /** The list of all intersections that compose the tour */
@@ -16,9 +19,26 @@ public class Tour {
      * The delivery requests list and the intersections list start empty.
      */
     public Tour() {
+        courier = null;
         deliveryRequests = new LinkedList<>();
         intersections = new LinkedList<>();
         tourDuration = 0.0;
+    }
+
+    /**
+     *
+     * @return - The Courier of the tour
+     */
+    public Courier getCourier() {
+        return this.courier;
+    }
+
+    /**
+     *
+     * @param courier
+     */
+    public void setCourier(Courier courier) {
+        this.courier = courier;
     }
 
     /**

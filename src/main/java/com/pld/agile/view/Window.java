@@ -16,22 +16,18 @@ import java.awt.event.ActionListener;
 public class Window extends JFrame {
 
   private MapViewer mapViewer;
-  private final Controller controller;
   private final DeliveryRequestView deliveryRequestView;
   private final DeliveriesView deliveriesView;
-
 
   public final static String LOAD_MAP = "Load a Map";
   public final static String ADD_DELIVERY_REQUEST = "Add a Delivery Request";
   public final static String SAVE_TOUR= "Save the tour";
 
-  public Window(Controller controller) {
+  public Window(CityMap cityMap, Controller controller) {
     super("Delivery Manager");
-    this.controller = controller;
+
     this.mapViewer = new MapViewer(controller);
-
     mapViewer = new MapViewer(controller);
-
 
     //Create the JFrame
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -72,7 +68,7 @@ public class Window extends JFrame {
 
     deliveryRequestView = new DeliveryRequestView();
 
-    deliveriesView = new DeliveriesView();
+    deliveriesView = new DeliveriesView(cityMap, this);
     deliveriesView.setSize(contentPane.getWidth() / 4, contentPane.getHeight());
 
     JPanel leftContainer = new JPanel();

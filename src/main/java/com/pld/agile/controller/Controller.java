@@ -1,9 +1,6 @@
 package com.pld.agile.controller;
 
-import com.pld.agile.model.CityMap;
-import com.pld.agile.model.DeliveryRequest;
-import com.pld.agile.model.Intersection;
-import com.pld.agile.model.Tour;
+import com.pld.agile.model.*;
 import com.pld.agile.model.enums.TimeWindow;
 import com.pld.agile.utils.Algorithm;
 import com.pld.agile.utils.xml.ExceptionXML;
@@ -32,29 +29,34 @@ public class Controller {
   private CityMap cityMap;
   private Map<Long, Intersection> intersections;
   private Long currentIntersectionId;
+  private List<Tour> tourList;
   private List<DeliveryRequest> deliveryRequests;
 
   public Controller() {
-    window = new Window(this);
-    cityMap = new CityMap();
+    new Couriers(1);
+    this.cityMap = new CityMap();
+    this.window = new Window(cityMap, this);
     this.intersections = new HashMap<>();
-    deliveryRequests = new LinkedList<>();
+    this.deliveryRequests = new LinkedList<>();
     window.setVisible(true);
   }
 
   public void addDeliveryRequest() {
     if (currentIntersectionId != null) {
-      TimeWindow tm = (TimeWindow) this.window.getDeliveryRequestView().comboBoxTimeWindow.getSelectedItem();
-      DeliveryRequest deliveryRequest = new DeliveryRequest(tm, this.intersections.get(currentIntersectionId));
+      Courier courier = (Courier) this.window.getDeliveryRequestView().comboBoxCourier.getSelectedItem();
+      TimeWindow selectedTimeWindow = (TimeWindow) this.window.getDeliveryRequestView().comboBoxTimeWindow.getSelectedItem();
+      DeliveryRequest deliveryRequest = new DeliveryRequest(selectedTimeWindow, this.intersections.get(currentIntersectionId));
       // Add delivery request to right panel
       this.deliveryRequests.add(deliveryRequest);
+
       Tour optimalTour = Algorithm.ExecuteAlgorithm(this.cityMap.getWarehouse(), (LinkedList<DeliveryRequest>) deliveryRequests);
+      optimalTour.setCourier(courier);
+      cityMap.updateTourList(optimalTour);
+
       List<Intersection> optimalTourIntersections = optimalTour.getIntersections();
       this.window.getMapViewer().updateTour(optimalTourIntersections.stream().map(intersection -> {
         return new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
       }).toList());
-      this.window.getDeliveriesView().displayTourDuration(optimalTour);
-      this.window.getDeliveriesView().displayRequests(optimalTour.getDeliveryRequests());
 
       /* Add pointer to the map*/
       GeoPosition geoPosition = new GeoPosition(intersections.get(currentIntersectionId).getLatitude(),

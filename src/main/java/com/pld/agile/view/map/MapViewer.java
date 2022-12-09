@@ -96,9 +96,9 @@ public class MapViewer {
         }
     }
 
-    public void updateTour(List<GeoPosition> tourlist){
+    public void updateTour(List<GeoPosition> tourList){
         this.tour.clear();
-        this.tour.addAll(tourlist);
+        this.tour.addAll(tourList);
         update();
     }
 

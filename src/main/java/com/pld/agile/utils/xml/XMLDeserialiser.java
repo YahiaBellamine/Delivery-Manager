@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
-
 public class XMLDeserialiser {
   public static void load(String path, Map<Long, Intersection> intersections, CityMap cityMap) throws ExceptionXML{
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -61,14 +59,6 @@ public class XMLDeserialiser {
         //TODO: QUESTION: We don't need to return the result of creation, right?
         RoadSegment RoadSegment = createRoadSegment((Element) RoadSegmentsList.item(i),intersections);
       }
-
-      // create the CityMap
-      // System.out.println(cityMap.getWarehouse().getId());
-      CityMap temp=createCityMap((Element)warehouse,intersections);
-      //cityMap= (CityMap) temp.clone();
-      CityMap.DeepCopy(temp,cityMap);
-      //System.out.println(cityMap.getWarehouse().getId());
-
 
     } catch (ParserConfigurationException e) {
       e.printStackTrace();
@@ -136,7 +126,7 @@ public class XMLDeserialiser {
     }
     // TODO: to be MODIFIED! 0 0 0 0 will be changed to the max and min for longitude and latitude
     // Map m= new CityMap(0,0,0,0,warehouse) ;
-    return  new CityMap(0,0,0,0,warehouse) ;
+    return  new CityMap(warehouse) ;
 
   }
 }

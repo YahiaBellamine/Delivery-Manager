@@ -1,76 +1,43 @@
 package com.pld.agile.model;
 
+import com.pld.agile.observer.Observable;
+
 import java.util.LinkedList;
 import java.util.List;
 
-public class CityMap {
-    private double minLatitude;
-    private double maxLatitude;
-    private double minLongitude;
-    private double maxLongitude;
+public class CityMap extends Observable {
+
     private Intersection warehouse;
     private List<Tour> tourList;
 
     public CityMap() {
-        this.tourList = new LinkedList<Tour>();
+        this.tourList = new LinkedList<>();
     }
 
-    public CityMap(double minLatitude, double maxLatitude, double minLongitude, double maxLongitude, Intersection warehouse) {
-        this.minLatitude = minLatitude;
-        this.maxLatitude = maxLatitude;
-        this.minLongitude = minLongitude;
-        this.maxLongitude = maxLongitude;
+    public CityMap(Intersection warehouse) {
         this.warehouse = warehouse;
-        tourList = new LinkedList<>();
-    }
-
-    public double getMinLatitude() {
-        return minLatitude;
-    }
-
-    public void setMinLatitude(double minLatitude) {
-        this.minLatitude = minLatitude;
-    }
-
-    public double getMaxLatitude() {
-        return maxLatitude;
-    }
-
-    public void setMaxLatitude(double maxLatitude) {
-        this.maxLatitude = maxLatitude;
-    }
-
-    public double getMinLongitude() {
-        return minLongitude;
-    }
-
-    public void setMinLongitude(double minLongitude) {
-        this.minLongitude = minLongitude;
-    }
-
-    public double getMaxLongitude() {
-        return maxLongitude;
-    }
-
-    public void setMaxLongitude(double maxLongitude) {
-        this.maxLongitude = maxLongitude;
+        this.tourList = new LinkedList<>();
     }
 
     public Intersection getWarehouse() {
-        return warehouse;
+        return this.warehouse;
     }
 
     public void setWarehouse(Intersection warehouse) {
         this.warehouse = warehouse;
     }
 
-    public static void DeepCopy(CityMap temp,CityMap cityMap){
-        cityMap.warehouse=temp.warehouse;
-        cityMap.maxLatitude= temp.maxLatitude;
-        cityMap.minLatitude= temp.minLatitude;
-        cityMap.maxLongitude=temp.maxLongitude;
-        cityMap.minLongitude=temp.minLongitude;
+    public List<Tour> getTourList() { return this.tourList; }
+
+    public void updateTourList(Tour tour){
+        if(!tourList.contains(tour)){
+            tourList.add(tour.getCourier().getCourierId(), tour);
+        } else {
+            tourList.set(tour.getCourier().getCourierId(), tour);
+        }
+        notifyObservers(tour);
     }
+
 //    @Override
 //    public Object clone() throws  CloneNotSupportedException{
 //        CityMap cityMap=new CityMap(minLatitude,maxLatitude,minLongitude,maxLongitude,warehouse);

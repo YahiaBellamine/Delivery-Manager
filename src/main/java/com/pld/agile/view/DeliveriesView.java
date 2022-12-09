@@ -1,7 +1,10 @@
 package com.pld.agile.view;
 
+import com.pld.agile.model.CityMap;
 import com.pld.agile.model.DeliveryRequest;
 import com.pld.agile.model.Tour;
+import com.pld.agile.observer.Observable;
+import com.pld.agile.observer.Observer;
 
 import javax.swing.border.Border;
 import java.util.LinkedList;
@@ -9,7 +12,7 @@ import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 
-public class DeliveriesView extends JPanel {
+public class DeliveriesView extends JPanel implements Observer {
     /** Panel used to display the head infos of the textual view */
     private JPanel textViewHeadPanel;
 
@@ -34,10 +37,12 @@ public class DeliveriesView extends JPanel {
     /** List of delivery requests to display in the GUI */
     private List<DeliveryRequest> deliveryRequests;
 
+    private CityMap cityMap;
+
     /**
      * Constructor of the textual view.
      */
-    public DeliveriesView() {
+    public DeliveriesView(CityMap cityMap, Window window) {
         super();
         deliveryRequests = new LinkedList<>();
 
@@ -91,6 +96,15 @@ public class DeliveriesView extends JPanel {
         constraints.gridwidth = 3;
         constraints.fill = GridBagConstraints.BOTH;
         this.add(requestsScrollPane, constraints);
+
+        cityMap.addObserver(this);
+        this.cityMap = cityMap;
+    }
+
+    public void update(Observable o, Object arg){
+        cityMap.getTourList();
+        displayTourDuration((Tour)arg);
+        displayRequests(((Tour)arg).getDeliveryRequests());
     }
 
     /**
