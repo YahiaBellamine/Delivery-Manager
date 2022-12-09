@@ -34,9 +34,7 @@ public class DeliveriesView extends JPanel implements Observer {
     /** Redo button */
     private JButton redo;
 
-    /** List of delivery requests to display in the GUI */
-    private List<DeliveryRequest> deliveryRequests;
-
+    /** the map */
     private CityMap cityMap;
 
     /**
@@ -44,28 +42,18 @@ public class DeliveriesView extends JPanel implements Observer {
      */
     public DeliveriesView(CityMap cityMap, Window window) {
         super();
-        deliveryRequests = new LinkedList<>();
 
         Border textViewBorder = BorderFactory.createLoweredBevelBorder();
         this.setLayout(new GridBagLayout());
         this.setName("textViewPanel");
         this.setBorder(textViewBorder);
 
+        GridBagConstraints constraints = new GridBagConstraints();
+
+        // Textual view header
         textViewHeadPanel = new JPanel();
         textViewHeadPanel.setName("textViewHeadPanel");
         textViewHeadPanel.setLayout(new FlowLayout());
-
-        tourDuration = new JLabel("");
-        tourDuration.setHorizontalTextPosition(SwingConstants.CENTER);
-
-        deliveryRequestsPanel = new JPanel();
-        deliveryRequestsPanel.setName("deliveryRequestsPanel");
-
-        requestsScrollPane = new JScrollPane();
-        requestsScrollPane.setName("deliveryRequestsScrollPane");
-        requestsScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        requestsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        requestsScrollPane.setViewportView(deliveryRequestsPanel);
 
         viewTitle = new JLabel("Deliveries");
         viewTitle.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -76,12 +64,13 @@ public class DeliveriesView extends JPanel implements Observer {
         redo = new JButton(">");
         redo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        tourDuration = new JLabel("");
+        tourDuration.setHorizontalTextPosition(SwingConstants.CENTER);
+
         textViewHeadPanel.add(viewTitle);
         textViewHeadPanel.add(undo);
         textViewHeadPanel.add(redo);
         textViewHeadPanel.add(tourDuration);
-
-        GridBagConstraints constraints = new GridBagConstraints();
 
         constraints.gridx = 0;
         constraints.gridy = 0;
@@ -90,6 +79,16 @@ public class DeliveriesView extends JPanel implements Observer {
         constraints.fill = GridBagConstraints.BOTH;
         this.add(textViewHeadPanel, constraints);
 
+        // Textual view delivery requests
+        deliveryRequestsPanel = new JPanel();
+        deliveryRequestsPanel.setName("deliveryRequestsPanel");
+
+        requestsScrollPane = new JScrollPane();
+        requestsScrollPane.setName("deliveryRequestsScrollPane");
+        requestsScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        requestsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        requestsScrollPane.setViewportView(deliveryRequestsPanel);
+
         constraints.gridx = 0;
         constraints.gridy = 1;
         constraints.weighty = 0.9;
@@ -97,14 +96,25 @@ public class DeliveriesView extends JPanel implements Observer {
         constraints.fill = GridBagConstraints.BOTH;
         this.add(requestsScrollPane, constraints);
 
+        // DeliveriesView panel
+        constraints.gridx = 3;
+        constraints.gridy = 0;
+        constraints.weightx = 0.1;
+        constraints.weighty = 1;
+        constraints.gridwidth = 1;
+        constraints.fill = GridBagConstraints.BOTH;
+
+        this.setSize(window.getContentPane().getWidth() / 4, window.getContentPane().getHeight());
+        window.getContentPane().add(this, constraints);
+
         cityMap.addObserver(this);
+
         this.cityMap = cityMap;
     }
 
     public void update(Observable o, Object arg){
+        /* TODO : Display tour list in the textual view  */
         cityMap.getTourList();
-        displayTourDuration((Tour)arg);
-        displayRequests(((Tour)arg).getDeliveryRequests());
     }
 
     /**
@@ -115,6 +125,7 @@ public class DeliveriesView extends JPanel implements Observer {
         tourDuration.setText("Tour duration :"+ tour.getFormattedTourDuration());
     }
 
+    /* TODO : Use deliveryRequests as an attribute of tour to display them in the textual view  */
     /**
      * Changes the list of delivery requests to display for a new one.
      * @param requests - The new list of delivery requests to display.

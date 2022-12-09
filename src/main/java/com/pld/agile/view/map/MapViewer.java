@@ -1,6 +1,8 @@
 package com.pld.agile.view.map;
 
 import com.pld.agile.controller.Controller;
+import com.pld.agile.model.CityMap;
+import com.pld.agile.observer.Observable;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.input.CenterMapListener;
@@ -20,7 +22,9 @@ import java.awt.event.MouseEvent;
 import java.util.*;
 import java.util.List;
 
-public class MapViewer {
+import com.pld.agile.observer.Observer;
+
+public class MapViewer implements Observer {
     public JPanel mainPanel;
     public JPanel mapPanel;
     public JButton bottomButton;
@@ -35,10 +39,10 @@ public class MapViewer {
     private HashSet<Marker> tourMarkers;
     private List<GeoPosition> tour;
 
-    private Controller controller;
+    private CityMap cityMap;
 
-    public MapViewer(Controller controller) {
-        this.controller = controller;
+    public MapViewer(CityMap cityMap, Controller controller) {
+        this.cityMap = cityMap;
 
         tourMarkers = new HashSet<>();
         tour = new LinkedList<>();
@@ -94,6 +98,11 @@ public class MapViewer {
             case TOUR -> tourMarkers.add(new Marker(id, pos,ImageUtil.getMarkerImage(Color.GREEN), type));
             case REQUEST -> requestMarker = new Marker(id, pos,ImageUtil.getMarkerImage(Color.ORANGE), type);
         }
+    }
+
+    public void update(Observable o, Object arg){
+        /* TODO : Display tour list in the graphical view  */
+        cityMap.getTourList();
     }
 
     public void updateTour(List<GeoPosition> tourList){

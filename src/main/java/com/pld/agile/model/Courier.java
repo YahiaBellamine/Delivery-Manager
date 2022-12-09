@@ -12,10 +12,6 @@ public class Courier {
         return this.courierId;
     }
 
-    public void setCourierId(Integer courierId) {
-        this.courierId = courierId;
-    }
-
     @Override
     public String toString() {
         return "Courier "+(this.courierId + 1);

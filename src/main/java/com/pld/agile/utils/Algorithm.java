@@ -16,7 +16,7 @@ public class Algorithm {
     static LinkedList<DeliveryRequest> bestSol;
     static Double bestSolCost;
 
-    public static Tour ExecuteAlgorithm(Intersection warehouse, LinkedList<DeliveryRequest> deliveryRequests) {
+    public static Tour ExecuteAlgorithm(Intersection warehouse, List<DeliveryRequest> deliveryRequests) {
 
         // Instantiation of attributes
         optimalTour = new Tour();

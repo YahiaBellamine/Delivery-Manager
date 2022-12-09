@@ -18,7 +18,6 @@ public class Window extends JFrame {
   private MapViewer mapViewer;
   private final DeliveryRequestView deliveryRequestView;
   private final DeliveriesView deliveriesView;
-
   public final static String LOAD_MAP = "Load a Map";
   public final static String ADD_DELIVERY_REQUEST = "Add a Delivery Request";
   public final static String SAVE_TOUR= "Save the tour";
@@ -26,8 +25,7 @@ public class Window extends JFrame {
   public Window(CityMap cityMap, Controller controller) {
     super("Delivery Manager");
 
-    this.mapViewer = new MapViewer(controller);
-    mapViewer = new MapViewer(controller);
+    this.mapViewer = new MapViewer(cityMap, controller);
 
     //Create the JFrame
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,7 +67,6 @@ public class Window extends JFrame {
     deliveryRequestView = new DeliveryRequestView();
 
     deliveriesView = new DeliveriesView(cityMap, this);
-    deliveriesView.setSize(contentPane.getWidth() / 4, contentPane.getHeight());
 
     JPanel leftContainer = new JPanel();
     leftContainer.setLayout(new BoxLayout(leftContainer, BoxLayout.PAGE_AXIS));
@@ -103,15 +100,6 @@ public class Window extends JFrame {
     constraints.gridwidth = 2;
     constraints.fill = GridBagConstraints.BOTH;
     this.add(mapViewer.mainPanel, constraints);
-
-    //Textual view panel
-    constraints.gridx = 3;
-    constraints.gridy = 0;
-    constraints.weightx = 0.1;
-    constraints.weighty = 1;
-    constraints.gridwidth = 1;
-    constraints.fill = GridBagConstraints.BOTH;
-    this.add(deliveriesView, constraints);
 
     this.setVisible(true);
   }

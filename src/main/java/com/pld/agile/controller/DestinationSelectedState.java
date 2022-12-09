@@ -1,8 +1,6 @@
 package com.pld.agile.controller;
 
-import com.pld.agile.model.CityMap;
-import com.pld.agile.model.DeliveryRequest;
-import com.pld.agile.model.Intersection;
+import com.pld.agile.model.*;
 import com.pld.agile.model.enums.TimeWindow;
 import com.pld.agile.utils.Algorithm;
 import com.pld.agile.view.Window;
@@ -15,19 +13,25 @@ public class DestinationSelectedState implements State{
 
   private Long destinationPointId;
   @Override
-  public void selectDestinationPoint(Controller c,Long destinationPointId) {
+  public void selectDestinationPoint(Controller controller, Long destinationPointId) {
     this.setDestinationPointId(destinationPointId);
   };
 
   @Override
-  public void addNewRequest(CityMap cityMap, Controller c, Window w) {
-    TimeWindow tm = (TimeWindow) w.getDeliveryRequestView().comboBoxTimeWindow.getSelectedItem();
-    // TODO: Retrieve courier id from the view (number)
-    DeliveryRequest deliveryRequest = new DeliveryRequest(tm, cityMap.getIntersections().get(this.destinationPointId));
-    cityMap.addDeliveryRequest(deliveryRequest);
-    // TODO: Calculate optimal tour
-    // TODO: Update view with observer pattern (mapViewer + deliveriesView + deliveryRequestView)
-    c.setCurrentState(c.computedTourState);
+  public void addNewRequest(CityMap cityMap, Controller controller, Window window) {
+    TimeWindow timeWindow = (TimeWindow) window.getDeliveryRequestView().comboBoxTimeWindow.getSelectedItem();
+    Courier courier = (Courier) window.getDeliveryRequestView().comboBoxCourier.getSelectedItem();
+
+    DeliveryRequest deliveryRequest = new DeliveryRequest(timeWindow, cityMap.getIntersections().get(this.destinationPointId));
+
+    Tour tour = cityMap.getTour(courier);
+    tour.addDeliveryRequest(deliveryRequest);
+
+    Tour optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
+    optimalTour.setCourier(courier);
+    cityMap.updateTourList(optimalTour);
+
+    controller.setCurrentState(controller.computedTourState);
   }
 
   protected void setDestinationPointId(Long destinationPointId) {
