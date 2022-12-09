@@ -1,164 +1,108 @@
 package com.pld.agile.controller;
 
-import com.pld.agile.model.*;
+import com.pld.agile.model.CityMap;
+import com.pld.agile.model.DeliveryRequest;
+import com.pld.agile.model.Intersection;
 import com.pld.agile.model.enums.TimeWindow;
 import com.pld.agile.utils.Algorithm;
-import com.pld.agile.utils.xml.ExceptionXML;
-import com.pld.agile.utils.xml.XMLDeserialiser;
-import com.pld.agile.utils.xml.XMLSerialiser;
 import com.pld.agile.view.Window;
 import com.pld.agile.view.map.Marker;
 import org.jxmapviewer.viewer.GeoPosition;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.geom.Point2D;
-import java.io.UnsupportedEncodingException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.*;
 
 
 public class Controller {
-
+  private State currentState;
   private Window window;
   private CityMap cityMap;
-  private Map<Long, Intersection> intersections;
-  private Long currentIntersectionId;
-  private List<Tour> tourList;
-  private List<DeliveryRequest> deliveryRequests;
+  private Map<Long, Intersection> intersections;/* TODO: remove attribut (already present in cityMap)*/
+  private Long currentIntersectionId;/* TODO: remove attribut (already present in DestinationSelectedState)*/
+  private List<DeliveryRequest> deliveryRequests; /* TODO: remove attribut (already present in cityMap->Tour)*/
+
+  protected final InitialState initialState = new InitialState();
+  protected final LoadedMapState loadedMapState = new LoadedMapState();
+  protected final DestinationSelectedState destinationSelectedState = new DestinationSelectedState();
+  protected final ComputedTourState computedTourState = new ComputedTourState();
 
   public Controller() {
-    new Couriers(1);
-    this.cityMap = new CityMap();
-    this.window = new Window(cityMap, this);
+    window = new Window(this);
+    cityMap = new CityMap();
     this.intersections = new HashMap<>();
-    this.deliveryRequests = new LinkedList<>();
+    deliveryRequests = new LinkedList<>();
     window.setVisible(true);
   }
 
-  public void addDeliveryRequest() {
-    if (currentIntersectionId != null) {
-      Courier courier = (Courier) this.window.getDeliveryRequestView().comboBoxCourier.getSelectedItem();
-      TimeWindow selectedTimeWindow = (TimeWindow) this.window.getDeliveryRequestView().comboBoxTimeWindow.getSelectedItem();
-      DeliveryRequest deliveryRequest = new DeliveryRequest(selectedTimeWindow, this.intersections.get(currentIntersectionId));
-      // Add delivery request to right panel
-      this.deliveryRequests.add(deliveryRequest);
-
-      Tour optimalTour = Algorithm.ExecuteAlgorithm(this.cityMap.getWarehouse(), (LinkedList<DeliveryRequest>) deliveryRequests);
-      optimalTour.setCourier(courier);
-      cityMap.updateTourList(optimalTour);
-
-      List<Intersection> optimalTourIntersections = optimalTour.getIntersections();
-      this.window.getMapViewer().updateTour(optimalTourIntersections.stream().map(intersection -> {
-        return new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
-      }).toList());
-
-      /* Add pointer to the map*/
-      GeoPosition geoPosition = new GeoPosition(intersections.get(currentIntersectionId).getLatitude(),
-              intersections.get(currentIntersectionId).getLongitude());
-      this.window.getMapViewer().addPoint(geoPosition, currentIntersectionId, Marker.Type.TOUR);
-      this.window.getMapViewer().clearRequestMarker();
-      currentIntersectionId = null;
-      this.window.getDeliveryRequestView().setSelectDestinationPoint("  Select your destination point on the map.");
-
-    } else {
-      this.window.displayMessage("Please select an intersection on the map");
-    }
+  /**
+   * Change the current state of the controller
+   * @param state the new current state
+   */
+  protected void setCurrentState(State state){
+    currentState = state;
   }
 
-  public void saveTour() throws ExceptionXML, ParserConfigurationException, TransformerException {
-//    for(DeliveryRequest d: deliveryRequests){
-//      System.out.println(d.getAddress());
-//    }
-    if(deliveryRequests.size()==0) {
-      throw new ExceptionXML("Add at least one delivery request before saving the tour");
-    }
-    Tour optimalTour = Algorithm.ExecuteAlgorithm(this.cityMap.getWarehouse(), (LinkedList<DeliveryRequest>)deliveryRequests);
-    if(optimalTour==null) {
-      throw new ExceptionXML("No tour to save");
-    }
-    XMLSerialiser.save(optimalTour);
-  }
-  public void resetDeliveryRequests(){
-
+  /**
+   * Create a new delivery request
+   * @param
+   */
+  public void addNewRequest() {
+    currentState.addNewRequest(cityMap, this, window);
   }
 
-  public void loadMap(/*String path*/) throws UnsupportedEncodingException {
-    String path = "src/main/java/com/pld/agile/utils/maps/smallMap.xml";
+  /**
+   * Delete a delivery Request
+   * @param
+   */
+  public void deleteDeliveryRequest(){
+    currentState.deleteDeliveryRequest(cityMap, window);
+  }
 
-    JFileChooser j = new JFileChooser("src/main/java/com/pld/agile/utils/maps");
-    j.setAcceptAllFileFilterUsed(false);
-    j.setDialogTitle("Select a map file (.xml)");
+  /**
+   * Update a delivery request
+   * @param
+   */
+  public void updateDeliveryRequest(){
+    currentState.updateDeliveryRequest(cityMap, window);
+  }
 
-    FileNameExtensionFilter restrict = new FileNameExtensionFilter("Only .xml files", "xml");
-    j.addChoosableFileFilter(restrict);
+  /**
+   * Restore tours from a file
+   * @param
+   */
+  public void restoreTours(){
+    currentState.restoreTours(cityMap, this, window);
+  }
 
-    // invoke the showsOpenDialog function to show the save dialog
-    int r = j.showOpenDialog(null);
+  /**
+   * Save tours to a file
+   * @param
+   */
+  public void saveTours(){
+    currentState.saveTours(cityMap, window);
+  }
 
-    // if the user selects a file
-    if (r == JFileChooser.APPROVE_OPTION) {
-      // set the label to the path of the selected file
-      path = j.getSelectedFile().toURI().getPath();
-     // path = java.net.URLDecoder.decode(path,"utf-8");
-      System.out.println(path);
-    }
-    try {
-      XMLDeserialiser.load(path, intersections, cityMap);
-    } catch (ExceptionXML e) {
-      throw new RuntimeException(e);
-    }
-    window.getMapViewer().clearAll();
-    deliveryRequests.clear();
-    this.window.getDeliveriesView().displayRequests(deliveryRequests);
+  /**
+   * Load a map from a file
+   * @param
+   */
+  public void loadMap() {
+    currentState.loadMap(this, window, intersections ,cityMap);
+  }
 
-    /*for (Intersection intersection : intersections.values()) {
-    deliveryRequests.clear();
-    this.window.getDeliveriesView().displayRequests(deliveryRequests);
-    for (Intersection intersection : intersections.values()) {
-      if(cityMap.getWarehouse().getId() == intersection.getId()) continue;
-      GeoPosition geoPosition = new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
-      this.window.getMapViewer().addPoint(geoPosition, intersection.getId(), Marker.Type.MAP);
-    }*/
-
-    Intersection warehouse = cityMap.getWarehouse();
-//    HashSet<Intersection> settledVertices = new HashSet<>();
-//    HashSet<Intersection> unsettledVertices = new HashSet<>();
-//
-//    unsettledVertices.add(warehouse);
-//
-//    while(unsettledVertices.size()!=0){
-//      Intersection intersection = unsettledVertices.iterator().next();
-//
-//      List<RoadSegment> outgoingSegments = intersection.getOutgoingSegments();
-//
-//      for (RoadSegment outgoingSegment:outgoingSegments) {
-//        Intersection destination = outgoingSegment.getDestination();
-//        if(!settledVertices.contains(destination)) {
-//          if (!unsettledVertices.contains(destination)) {
-//            unsettledVertices.add(destination);
-//          }
-//        }
-//      }
-//      settledVertices.add(intersection);
-//      unsettledVertices.remove(intersection);
-//      GeoPosition geoPosition = new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
-//      this.window.getMapViewer().addPoint(geoPosition, intersection.getId(), Marker.Type.MAP);
-//    }
-
-//    // Define the warehouse marker on the map
-    GeoPosition warehousePosition = new GeoPosition(cityMap.getWarehouse().getLatitude(),
-            cityMap.getWarehouse().getLongitude());
-    this.window.getMapViewer().addPoint(warehousePosition, cityMap.getWarehouse().getId(), Marker.Type.WAREHOUSE);
-    this.window.getMapViewer().recenter();
+  /**
+   * Select a destination point
+   * @param destinationPointId the id of the destination point
+   */
+  public void selectDestinationPoint(Long destinationPointId) {
+    currentState.selectDestinationPoint(this, destinationPointId);
   }
 
   public void selectIntersection(Long currentIntersectionId) {
+    /* TODO: remove and replace by currentState.selectDestinationPoint*/
     this.currentIntersectionId = currentIntersectionId;
     GeoPosition geoPosition = new GeoPosition(intersections.get(currentIntersectionId).getLatitude(),
             intersections.get(currentIntersectionId).getLongitude());
@@ -167,10 +111,7 @@ public class Controller {
     this.window.getDeliveryRequestView().setSelectDestinationPoint("Intersection " + currentIntersectionId);
   }
 
-  public void deleteDeliveryRequest(DeliveryRequest deliveryRequest) {
-    // cityMap.deleteDeliveryRequest(deliveryRequest);
-  }
-
+  // TODO: Remove from here (need to be somewhere else)
   public void searchIntersection(double x, double y){
     double r = Double.MAX_VALUE;
     long id=-1;
@@ -184,6 +125,8 @@ public class Controller {
     }
     if(id!=-1)    selectIntersection(id);
   }
+
+  // TODO: remove all getters and setters (shouldn't be in the controller)
   public Window getWindow() {
     return window;
   }

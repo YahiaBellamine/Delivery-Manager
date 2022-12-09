@@ -12,11 +12,10 @@ public class Intersection {
     private List<RoadSegment> outgoingSegments= new ArrayList<>();
 
     // constructor
-    public Intersection(Long id,double latitude, double longitude, List<RoadSegment> outgoingSegments) {
+    public Intersection(Long id,double latitude, double longitude) {
         this.id = id;
         this.latitude=latitude;
         this.longitude=longitude;
-        this.outgoingSegments=outgoingSegments;
     }
 
     public long getId() {
