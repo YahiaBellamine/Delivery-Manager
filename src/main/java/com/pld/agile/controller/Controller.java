@@ -45,16 +45,16 @@ public class Controller {
    * Delete a delivery Request
    * @param
    */
-  public void deleteDeliveryRequest(){
-    currentState.deleteDeliveryRequest(cityMap, window);
+  public void deleteDeliveryRequest(Courier courier, int indexDeliveryRequest){
+    currentState.deleteDeliveryRequest(cityMap, this, courier, indexDeliveryRequest);
   }
 
   /**
    * Update a delivery request
    * @param
    */
-  public void updateDeliveryRequest(){
-    currentState.updateDeliveryRequest(cityMap, window);
+  public void updateDeliveryRequest(Courier courier, int indexDeliveryRequest){
+    currentState.updateDeliveryRequest(cityMap, this, window, courier, indexDeliveryRequest);
   }
 
   /**

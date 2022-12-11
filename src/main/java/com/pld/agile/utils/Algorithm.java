@@ -41,7 +41,9 @@ public class Algorithm {
         for (DeliveryRequest deliveryRequest : deliveryRequests) {
             destinations.remove(deliveryRequest);
             dijkstra(deliveryRequest, destinations);
+            System.out.println("Je suis ici");
             System.out.println(tspCost);
+            System.out.println("Et ici");
             destinations.add(deliveryRequest);
         }
 

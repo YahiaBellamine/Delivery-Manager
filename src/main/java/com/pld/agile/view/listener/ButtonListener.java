@@ -21,7 +21,7 @@ public class ButtonListener implements ActionListener {
     // Forward the corresponding message to the controller
     switch (e.getActionCommand()) {
       case Window.LOAD_MAP -> controller.loadMap();
-      //case Window.ADD_DELIVERY_REQUEST -> controller.addDeliveryRequest();
+      case Window.ADD_DELIVERY_REQUEST -> controller.addNewRequest();
     }
   }
 }

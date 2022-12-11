@@ -1,5 +1,7 @@
 package com.pld.agile.model;
 
+import com.pld.agile.model.enums.TimeWindow;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -49,6 +51,7 @@ public class Tour {
         return deliveryRequests;
     }
 
+
     /**
      *
      * @return - The list of all delivery requests in the Tour.
@@ -95,6 +98,22 @@ public class Tour {
      */
     public void addDeliveryRequest(DeliveryRequest deliveryRequest) {
         this.deliveryRequests.add(deliveryRequest);
+    }
+
+    /**
+     * Removes DeliveryRequest from the Tour.
+     * @param indexDeliveryRequest - The delivery request index in the Tour List.
+     */
+    public void removeDeliveryRequest(int indexDeliveryRequest) {
+        this.deliveryRequests.remove(indexDeliveryRequest);
+    }
+
+    /**
+     * Removes DeliveryRequest from the Tour.
+     * @param indexDeliveryRequest - The delivery request index in the Tour List.
+     */
+    public void updateDeliveryRequest(TimeWindow newTimeWindow, int indexDeliveryRequest) {
+        this.deliveryRequests.get(indexDeliveryRequest).setTimeWindow(newTimeWindow);
     }
 
     /**

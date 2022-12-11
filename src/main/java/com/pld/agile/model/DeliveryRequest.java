@@ -6,7 +6,7 @@ public class DeliveryRequest {
     /**
      * The TimeWindow of the delivery request
      */
-    private final TimeWindow timeWindow;
+    private TimeWindow timeWindow;
     /**
      * The address of the delivery request
      */
@@ -33,6 +33,13 @@ public class DeliveryRequest {
      */
     public TimeWindow getTimeWindow() {
         return timeWindow;
+    }
+
+    /**
+     * @param - The new TimeWindow of the delivery request.
+     */
+    public void setTimeWindow(TimeWindow newTimeWindow) {
+        this.timeWindow = newTimeWindow;
     }
 
     /**

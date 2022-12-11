@@ -1,16 +1,14 @@
 package com.pld.agile.controller;
 
 import com.pld.agile.model.CityMap;
-import com.pld.agile.model.Intersection;
+import com.pld.agile.model.Courier;
 import com.pld.agile.utils.xml.ExceptionXML;
 import com.pld.agile.utils.xml.XMLDeserialiser;
 import com.pld.agile.view.Window;
-import com.pld.agile.view.map.Marker;
 import org.jxmapviewer.viewer.GeoPosition;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.util.Map;
 
 public interface State {
 
@@ -61,9 +59,9 @@ public interface State {
 
     public default void saveTours(CityMap cityMap, Window window) {};
 
-    public default void deleteDeliveryRequest(CityMap cityMap, Window window) {};
+    public default void deleteDeliveryRequest(CityMap cityMap, Controller c, Courier courier, int indexDeliveryRequest) {};
 
-    public default void updateDeliveryRequest(CityMap cityMap, Window window) {};
+    public default void updateDeliveryRequest(CityMap cityMap, Controller controller, Window w, Courier courier, int indexDeliveryRequest) {};
 }
 
 
