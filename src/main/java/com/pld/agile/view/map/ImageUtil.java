@@ -9,6 +9,10 @@ public class ImageUtil {
 
     public static String warehouse = "src/main/java/com/pld/agile/view/map/warehouse2.png";
     public static String marker = "src/main/java/com/pld/agile/view/map/waypoint_white.png";
+
+    public static String arrow = "src/main/java/com/pld/agile/view/map/arrow.png";
+
+    public static BufferedImage warehouseImg, markerImg, arrowImg;
     public  static BufferedImage convert(BufferedImage loadImg, Color newColor)
     {
         int w = loadImg.getWidth();
@@ -33,8 +37,8 @@ public class ImageUtil {
     public static BufferedImage getWarehouseImage(Color color){
         BufferedImage bfImg=null;
         try{
-             bfImg = ImageIO.read(new File(warehouse));
-             bfImg = convert(bfImg, color);
+             if(warehouseImg == null) warehouseImg = ImageIO.read(new File(warehouse));
+             bfImg = convert(warehouseImg, color);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -44,8 +48,22 @@ public class ImageUtil {
     public static BufferedImage getMarkerImage(Color color){
         BufferedImage bfImg=null;
         try{
-            bfImg = ImageIO.read(new File(marker));
-            bfImg = convert(bfImg, color);
+            if(markerImg == null) markerImg = ImageIO.read(new File(marker));
+            bfImg = convert(markerImg, color);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return bfImg;
+    }
+    public static BufferedImage getArrowImage(Color color){
+        BufferedImage bfImg=null;
+        try{
+            if(arrowImg == null) {
+                arrowImg = ImageIO.read(new File(arrow));
+                System.out.println("getting image");
+            }
+            //bfImg = convert(bfImg, color);
+            return arrowImg;
         }catch (Exception e){
             e.printStackTrace();
         }

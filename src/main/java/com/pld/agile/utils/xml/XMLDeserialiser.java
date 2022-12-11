@@ -16,8 +16,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.Map;
 
-
-
 public class XMLDeserialiser {
   public static void load(String path, CityMap cityMap) throws ExceptionXML{
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -64,7 +62,6 @@ public class XMLDeserialiser {
 
   }
 
-
   private static RoadSegment createRoadSegment(Element e, Map<Long, Intersection> intersections) throws ExceptionXML {
     long destinationID = Long.parseLong(e.getAttribute("destination"));
     if (destinationID < 0) {
@@ -93,7 +90,6 @@ public class XMLDeserialiser {
     origin.addOutgoingSegment(r);
     return r;
   }
-
 
   private static Intersection createIntersection(Element e) throws ExceptionXML {
     double latitude = Double.parseDouble(e.getAttribute("latitude"));

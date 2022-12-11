@@ -16,21 +16,16 @@ import java.awt.event.ActionListener;
 public class Window extends JFrame {
 
   private MapViewer mapViewer;
-  private final Controller controller;
   private final DeliveryRequestView deliveryRequestView;
   private final DeliveriesView deliveriesView;
-
-
   public final static String LOAD_MAP = "Load a Map";
   public final static String ADD_DELIVERY_REQUEST = "Add a Delivery Request";
+  public final static String SAVE_TOUR= "Save the tour";
 
-  public Window(Controller controller) {
+  public Window(CityMap cityMap, Controller controller) {
     super("Delivery Manager");
-    this.controller = controller;
-    this.mapViewer = new MapViewer(controller);
 
-    mapViewer = new MapViewer(controller);
-
+    this.mapViewer = new MapViewer(cityMap, controller);
 
     //Create the JFrame
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -63,10 +58,15 @@ public class Window extends JFrame {
     addDeliveryRequestBtn.setActionCommand(ADD_DELIVERY_REQUEST);
     addDeliveryRequestBtn.addActionListener(buttonListener);
 
+    JButton stockTourBtn = new JButton("Save the tour");
+    stockTourBtn.setMaximumSize(new Dimension(250, 30));
+    stockTourBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+    stockTourBtn.setActionCommand(SAVE_TOUR);
+    stockTourBtn.addActionListener(buttonListener);
+
     deliveryRequestView = new DeliveryRequestView();
 
-    deliveriesView = new DeliveriesView();
-    deliveriesView.setSize(contentPane.getWidth() / 4, contentPane.getHeight());
+    deliveriesView = new DeliveriesView(cityMap, this);
 
     JPanel leftContainer = new JPanel();
     leftContainer.setLayout(new BoxLayout(leftContainer, BoxLayout.PAGE_AXIS));
@@ -78,6 +78,8 @@ public class Window extends JFrame {
     leftContainer.add(Box.createRigidArea(new Dimension(0,20)));
     leftContainer.add(addDeliveryRequestBtn);
     leftContainer.add(Box.createRigidArea(new Dimension(0,100)));
+    leftContainer.add(stockTourBtn);
+    leftContainer.add(Box.createRigidArea(new Dimension(0,50)));
 
     GridBagConstraints constraints = new GridBagConstraints();
 
@@ -98,15 +100,6 @@ public class Window extends JFrame {
     constraints.gridwidth = 2;
     constraints.fill = GridBagConstraints.BOTH;
     this.add(mapViewer.mainPanel, constraints);
-
-    //Textual view panel
-    constraints.gridx = 3;
-    constraints.gridy = 0;
-    constraints.weightx = 0.1;
-    constraints.weighty = 1;
-    constraints.gridwidth = 1;
-    constraints.fill = GridBagConstraints.BOTH;
-    this.add(deliveriesView, constraints);
 
     this.setVisible(true);
   }

@@ -1,37 +1,26 @@
 package com.pld.agile.controller;
 
-import com.pld.agile.model.CityMap;
-import com.pld.agile.model.DeliveryRequest;
-import com.pld.agile.model.Intersection;
+
+import com.pld.agile.model.*;
 import com.pld.agile.view.Window;
 import com.pld.agile.view.map.Marker;
 import org.jxmapviewer.viewer.GeoPosition;
 
 import java.awt.geom.Point2D;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 
 public class Controller {
   private State currentState;
   private Window window;
-  private final CityMap cityMap;
-  private Map<Long, Intersection> intersections;/* TODO: remove attribut (already present in cityMap)*/
-  private Long currentIntersectionId;/* TODO: remove attribut (already present in DestinationSelectedState)*/
-  private List<DeliveryRequest> deliveryRequests; /* TODO: remove attribut (already present in cityMap->Tour)*/
-
+  private CityMap cityMap;
   protected final InitialState initialState = new InitialState();
   protected final LoadedMapState loadedMapState = new LoadedMapState();
   protected final DestinationSelectedState destinationSelectedState = new DestinationSelectedState();
   protected final ComputedTourState computedTourState = new ComputedTourState();
 
   public Controller() {
-    window = new Window(this);
-    cityMap = new CityMap();
-    this.intersections = new HashMap<>();
-    deliveryRequests = new LinkedList<>();
+    new Couriers(1);
+    this.cityMap = new CityMap();
+    this.window = new Window(cityMap, this);
     window.setVisible(true);
   }
 
@@ -88,7 +77,7 @@ public class Controller {
    * @param
    */
   public void loadMap() {
-    currentState.loadMap(this, window ,cityMap);
+    currentState.loadMap(this, window, cityMap);
   }
 
   /**
@@ -102,8 +91,8 @@ public class Controller {
   public void selectIntersection(Long currentIntersectionId) {
     /* TODO: remove and replace by currentState.selectDestinationPoint*/
     this.currentIntersectionId = currentIntersectionId;
-    GeoPosition geoPosition = new GeoPosition(intersections.get(currentIntersectionId).getLatitude(),
-            intersections.get(currentIntersectionId).getLongitude());
+    GeoPosition geoPosition = new GeoPosition(cityMap.getIntersections().get(currentIntersectionId).getLatitude(),
+            cityMap.getIntersections().get(currentIntersectionId).getLongitude());
     this.window.getMapViewer().addPoint(geoPosition, currentIntersectionId, Marker.Type.REQUEST);
     this.window.getMapViewer().update();
     this.window.getDeliveryRequestView().setSelectDestinationPoint("Intersection " + currentIntersectionId);
@@ -113,7 +102,7 @@ public class Controller {
   public void searchIntersection(double x, double y){
     double r = Double.MAX_VALUE;
     long id=-1;
-    for(Intersection i : intersections.values()){
+    for(Intersection i : cityMap.getIntersections().values()){
       double dist = Point2D.distance(x,y,i.getLatitude(),i.getLongitude());
       if(dist<r){
         System.out.println("dist "+dist+ " "+i.getLatitude()+" "+i.getLongitude());
@@ -129,7 +118,4 @@ public class Controller {
     return window;
   }
 
-  public void setWindow(Window window) {
-    this.window = window;
-  }
 }

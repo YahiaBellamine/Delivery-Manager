@@ -1,6 +1,8 @@
 package com.pld.agile.view.map;
 
 import com.pld.agile.controller.Controller;
+import com.pld.agile.model.CityMap;
+import com.pld.agile.observer.Observable;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.input.CenterMapListener;
@@ -20,7 +22,9 @@ import java.awt.event.MouseEvent;
 import java.util.*;
 import java.util.List;
 
-public class MapViewer {
+import com.pld.agile.observer.Observer;
+
+public class MapViewer implements Observer {
     public JPanel mainPanel;
     public JPanel mapPanel;
     public JButton bottomButton;
@@ -29,21 +33,18 @@ public class MapViewer {
     private JButton recenterButton;
     public JXMapViewer mapViewer;
 
-    private HashSet<Marker> map;
-
     private Marker warehouse;
 
     private Marker requestMarker;
     private HashSet<Marker> tourMarkers;
     private List<GeoPosition> tour;
 
-    private Controller controller;
+    private CityMap cityMap;
 
-    public MapViewer(Controller controller) {
-        this.controller = controller;
+    public MapViewer(CityMap cityMap, Controller controller) {
+        this.cityMap = cityMap;
 
         tourMarkers = new HashSet<>();
-        map = new HashSet<>();
         tour = new LinkedList<>();
 
         // Add interactions
@@ -99,9 +100,14 @@ public class MapViewer {
         }
     }
 
-    public void updateTour(List<GeoPosition> tourlist){
+    public void update(Observable o, Object arg){
+        /* TODO : Display tour list in the graphical view  */
+        cityMap.getTourList();
+    }
+
+    public void updateTour(List<GeoPosition> tourList){
         this.tour.clear();
-        this.tour.addAll(tourlist);
+        this.tour.addAll(tourList);
         update();
     }
 
@@ -123,7 +129,6 @@ public class MapViewer {
 
     public void clearAll(){
         clearMarkers();
-        map.clear();
         mapViewer.removeAll();
         update();
     }
@@ -136,7 +141,6 @@ public class MapViewer {
         //the warehouse
         if(warehouse!=null){
             markers.add(warehouse);
-            System.out.println("adding warehouse");
         }
         //the markers
         if(tourMarkers.size() >0){
@@ -146,7 +150,6 @@ public class MapViewer {
         //the request marker
         if(requestMarker!=null){
             markers.add(requestMarker);
-            System.out.println("adding requestMarker");
         }
 
         //the tour

@@ -13,7 +13,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.util.Map;
 
 public interface State {
-    public default void loadMap(Controller c, Window w, CityMap cityMap) {
+
+    public default void loadMap(Controller controller, Window window, CityMap cityMap) {
         JFileChooser j = new JFileChooser("src/main/java/com/pld/agile/utils/maps");
         j.setAcceptAllFileFilterUsed(false);
         j.setDialogTitle("Select a map file (.xml)");
@@ -31,11 +32,11 @@ public interface State {
             path = j.getSelectedFile().toURI().getPath();
             try {
                 XMLDeserialiser.load(path, cityMap);
-                c.setCurrentState(c.loadedMapState);
+                controller.setCurrentState(controller.loadedMapState);
 
             } catch (ExceptionXML e) {
-                c.setCurrentState(c.initialState);
-                w.displayMessage("Error while loading the map");
+                controller.setCurrentState(controller.initialState);
+                window.displayMessage("Error while loading the map");
                 throw new RuntimeException(e);
             }
         }
@@ -52,17 +53,17 @@ public interface State {
 
     }
 
-    public default void selectDestinationPoint(Controller c, Long destinationPointId) {};
+    public default void selectDestinationPoint(Controller controller, Long destinationPointId) {};
 
-    public default void addNewRequest(CityMap cityMap, Controller c, Window w) {};
+    public default void addNewRequest(CityMap cityMap, Controller controller, Window window) {};
 
-    public default void restoreTours(CityMap cityMap, Controller c, Window w) {};
+    public default void restoreTours(CityMap cityMap, Controller controller, Window window) {};
 
     public default void saveTours(CityMap cityMap, Window w) {};
 
-    public default void deleteDeliveryRequest(CityMap cityMap, Window w) {};
+    public default void deleteDeliveryRequest(CityMap cityMap, Window window) {};
 
-    public default void updateDeliveryRequest(CityMap cityMap, Window w) {};
+    public default void updateDeliveryRequest(CityMap cityMap, Window window) {};
 }
 
 
