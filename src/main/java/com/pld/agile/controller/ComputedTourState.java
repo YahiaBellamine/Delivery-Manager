@@ -19,6 +19,7 @@ public class ComputedTourState implements State{
     public void selectDestinationPoint(Controller c, Long destinationPointId) {
         c.setCurrentState(c.destinationSelectedState);
         c.destinationSelectedState.setDestinationPointId(destinationPointId);
+        // TODO: update the view with observer pattern
     };
 
 }

@@ -13,6 +13,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.util.Map;
 
 public interface State {
+
     public default void loadMap(Controller controller, Window window, CityMap cityMap) {
         JFileChooser j = new JFileChooser("src/main/java/com/pld/agile/utils/maps");
         j.setAcceptAllFileFilterUsed(false);
