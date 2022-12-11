@@ -53,13 +53,13 @@ public interface State {
 
     }
 
-    public default void selectDestinationPoint(Controller controller, Long destinationPointId) {};
+    public default void selectDestinationPoint(Controller controller, Window window, GeoPosition pos, CityMap cityMap) {};
 
     public default void addNewRequest(CityMap cityMap, Controller controller, Window window) {};
 
     public default void restoreTours(CityMap cityMap, Controller controller, Window window) {};
 
-    public default void saveTours(CityMap cityMap, Window w) {};
+    public default void saveTours(CityMap cityMap, Window window) {};
 
     public default void deleteDeliveryRequest(CityMap cityMap, Window window) {};
 

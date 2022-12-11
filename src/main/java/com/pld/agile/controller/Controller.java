@@ -21,6 +21,7 @@ public class Controller {
     new Couriers(1);
     this.cityMap = new CityMap();
     this.window = new Window(cityMap, this);
+    currentState = initialState;
     window.setVisible(true);
   }
 
@@ -82,40 +83,16 @@ public class Controller {
 
   /**
    * Select a destination point
-   * @param destinationPointId the id of the destination point
+   * @param pos the geo position of the intersection
    */
-  public void selectDestinationPoint(Long destinationPointId) {
-    currentState.selectDestinationPoint(this, destinationPointId);
-  }
-
-  public void selectIntersection(Long currentIntersectionId) {
-    /* TODO: remove and replace by currentState.selectDestinationPoint*/
-    this.currentIntersectionId = currentIntersectionId;
-    GeoPosition geoPosition = new GeoPosition(cityMap.getIntersections().get(currentIntersectionId).getLatitude(),
-            cityMap.getIntersections().get(currentIntersectionId).getLongitude());
-    this.window.getMapViewer().addPoint(geoPosition, currentIntersectionId, Marker.Type.REQUEST);
-    this.window.getMapViewer().update();
-    this.window.getDeliveryRequestView().setSelectDestinationPoint("Intersection " + currentIntersectionId);
-  }
-
-  // TODO: Remove from here (need to be somewhere else)
-  public void searchIntersection(double x, double y){
-    double r = Double.MAX_VALUE;
-    long id=-1;
-    for(Intersection i : cityMap.getIntersections().values()){
-      double dist = Point2D.distance(x,y,i.getLatitude(),i.getLongitude());
-      if(dist<r){
-        System.out.println("dist "+dist+ " "+i.getLatitude()+" "+i.getLongitude());
-        id = i.getId();
-        r = dist;
-      }
-    }
-    if(id!=-1)    selectIntersection(id);
+  public void selectDestinationPoint(GeoPosition pos) {
+    currentState.selectDestinationPoint(this, window, pos, cityMap);
   }
 
   // TODO: remove all getters and setters (shouldn't be in the controller)
   public Window getWindow() {
     return window;
   }
+
 
 }

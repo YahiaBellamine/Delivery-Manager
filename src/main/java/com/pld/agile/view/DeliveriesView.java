@@ -34,6 +34,9 @@ public class DeliveriesView extends JPanel implements Observer {
     /** Redo button */
     private JButton redo;
 
+    /** List of delivery requests to display in the GUI */
+    private List<DeliveryRequest> deliveryRequests;
+
     /** the map */
     private CityMap cityMap;
 

@@ -1,7 +1,9 @@
 package com.pld.agile.model;
 
 import com.pld.agile.observer.Observable;
+import org.jxmapviewer.viewer.GeoPosition;
 
+import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,6 +14,7 @@ public class CityMap extends Observable {
     private Intersection warehouse;
     private List<Tour> tourList;
     private Map<Long, Intersection> intersections;
+    private Long destinationPointId;
 
     public CityMap() {
         this.warehouse = null;
@@ -40,6 +43,10 @@ public class CityMap extends Observable {
         }
     }
 
+    private void updateSelectedPoint(Long destinationPointId) {
+        this.destinationPointId = destinationPointId;
+    }
+
     public void updateTourList(Tour tour){
         tourList.set(tour.getCourier().getCourierId(), tour);
         notifyObservers(tour);
@@ -51,5 +58,30 @@ public class CityMap extends Observable {
 
     public void addIntersection(Intersection intersection) {
         this.intersections.put(intersection.getId(), intersection);
+    }
+
+    public Intersection searchIntersection(GeoPosition position) {
+        double x = position.getLatitude();
+        double y = position.getLongitude();
+        double r = Double.MAX_VALUE;
+        Intersection intersection = null;
+        for(Intersection i : this.intersections.values()){
+            double dist = Point2D.distance(x,y,i.getLatitude(),i.getLongitude());
+            if(dist<r){
+                System.out.println("dist "+dist+ " "+i.getLatitude()+" "+i.getLongitude());
+                intersection = i;
+                r = dist;
+            }
+        }
+        return intersection;
+    }
+
+    public void reInitializeCityMap(){
+        this.warehouse = null;
+        this.tourList = new LinkedList<>();
+        initializeTourList();
+        this.intersections = new HashMap<>();
+        System.out.println("CityMap reinitialized");
+        notifyObservers();
     }
 }

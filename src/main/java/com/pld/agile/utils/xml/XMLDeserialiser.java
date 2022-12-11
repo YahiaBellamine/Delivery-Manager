@@ -29,7 +29,7 @@ public class XMLDeserialiser {
       // TODO: How can we create Map while initialising the max and min for longitude and latitude here?
 
       //reinitialising the map
-      cityMap.getIntersections().clear();
+      cityMap.reInitializeCityMap();
 
       Node warehouse = document.getElementsByTagName("warehouse").item(0);
       String warehouseAddress=warehouse.getAttributes().getNamedItem("address").getNodeValue();
@@ -52,17 +52,13 @@ public class XMLDeserialiser {
       Long warehouseId = Long.parseLong(warehouseAddress);
       cityMap.setWarehouse(cityMap.getIntersections().get(warehouseId));
 
-    } catch (ParserConfigurationException e) {
-      e.printStackTrace();
-    }catch (SAXException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
+    } catch (ParserConfigurationException | SAXException | IOException e) {
       e.printStackTrace();
     }
 
   }
 
-  private static RoadSegment createRoadSegment(Element e, Map<Long, Intersection> intersections) throws ExceptionXML {
+  private static void createRoadSegment(Element e, Map<Long, Intersection> intersections) throws ExceptionXML {
     long destinationID = Long.parseLong(e.getAttribute("destination"));
     if (destinationID < 0) {
       throw new ExceptionXML("Incorrect destination ID");
@@ -88,7 +84,6 @@ public class XMLDeserialiser {
     }
     RoadSegment r= new RoadSegment(name,length,destination);
     origin.addOutgoingSegment(r);
-    return r;
   }
 
   private static Intersection createIntersection(Element e) throws ExceptionXML {

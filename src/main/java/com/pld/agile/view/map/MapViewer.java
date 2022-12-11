@@ -42,7 +42,9 @@ public class MapViewer implements Observer {
     private CityMap cityMap;
 
     public MapViewer(CityMap cityMap, Controller controller) {
+        super();
         this.cityMap = cityMap;
+        this.cityMap.addObserver(this);
 
         tourMarkers = new HashSet<>();
         tour = new LinkedList<>();
@@ -102,7 +104,12 @@ public class MapViewer implements Observer {
 
     public void update(Observable o, Object arg){
         /* TODO : Display tour list in the graphical view  */
-        cityMap.getTourList();
+        if (arg != null) {
+
+        }
+        System.out.println("MapViewer : update");
+        update();
+        //cityMap.getTourList();
     }
 
     public void updateTour(List<GeoPosition> tourList){

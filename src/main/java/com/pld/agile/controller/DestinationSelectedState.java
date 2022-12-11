@@ -11,10 +11,12 @@ import java.util.LinkedList;
 
 public class DestinationSelectedState implements State{
 
-  private Long destinationPointId;
+  private Intersection selectedIntersection;
   @Override
-  public void selectDestinationPoint(Controller controller, Long destinationPointId) {
-    this.setDestinationPointId(destinationPointId);
+  public void selectDestinationPoint(Controller controller, Window window, GeoPosition position, CityMap cityMap) {
+    Intersection selectedIntersection = cityMap.searchIntersection(position);
+    this.selectedIntersection = selectedIntersection;
+    window.updateSelectedPoint(selectedIntersection);
   };
 
   @Override
@@ -22,7 +24,7 @@ public class DestinationSelectedState implements State{
     TimeWindow timeWindow = (TimeWindow) window.getDeliveryRequestView().comboBoxTimeWindow.getSelectedItem();
     Courier courier = (Courier) window.getDeliveryRequestView().comboBoxCourier.getSelectedItem();
 
-    DeliveryRequest deliveryRequest = new DeliveryRequest(timeWindow, cityMap.getIntersections().get(this.destinationPointId));
+    DeliveryRequest deliveryRequest = new DeliveryRequest(timeWindow, selectedIntersection);
 
     Tour tour = cityMap.getTour(courier);
     if(tour == null) tour = new Tour();
@@ -35,11 +37,7 @@ public class DestinationSelectedState implements State{
     controller.setCurrentState(controller.computedTourState);
   }
 
-  protected void setDestinationPointId(Long destinationPointId) {
-    this.destinationPointId = destinationPointId;
-  }
-
-  protected Long getDestinationPointId() {
-    return destinationPointId;
+  protected void setSelectedIntersection(Intersection selectedIntersection) {
+    this.selectedIntersection = selectedIntersection;
   }
 }

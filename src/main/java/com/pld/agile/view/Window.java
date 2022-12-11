@@ -112,12 +112,19 @@ public class Window extends JFrame {
     return deliveryRequestView;
   }
 
-  public DeliveriesView getDeliveriesView() {
-    return deliveriesView;
-  }
+//  public DeliveriesView getDeliveriesView() {
+//    return deliveriesView;
+//  }
 
   public void displayMessage(String message){
     JOptionPane.showMessageDialog(this, message);
   }
+
+  public void updateSelectedPoint(Intersection intersection) {
+    this.mapViewer.addPoint(intersection.getGeoPosition(), intersection.getId(), Marker.Type.REQUEST);
+    this.mapViewer.update();
+    this.deliveryRequestView.setSelectDestinationPoint("Intersection " + intersection.getId());
+  }
+
 }
 

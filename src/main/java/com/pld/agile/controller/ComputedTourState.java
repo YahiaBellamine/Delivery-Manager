@@ -1,7 +1,9 @@
 package com.pld.agile.controller;
 
 import com.pld.agile.model.CityMap;
+import com.pld.agile.model.Intersection;
 import com.pld.agile.view.Window;
+import org.jxmapviewer.viewer.GeoPosition;
 
 public class ComputedTourState implements State{
 
@@ -16,10 +18,11 @@ public class ComputedTourState implements State{
     public void updateDeliveryRequest(CityMap cityMap, Window w) {};
 
     @Override
-    public void selectDestinationPoint(Controller c, Long destinationPointId) {
+    public void selectDestinationPoint(Controller c, Window window, GeoPosition position, CityMap cityMap) {
         c.setCurrentState(c.destinationSelectedState);
-        c.destinationSelectedState.setDestinationPointId(destinationPointId);
-        // TODO: update the view with observer pattern
+        Intersection selectedIntersection = cityMap.searchIntersection(position);
+        c.destinationSelectedState.setSelectedIntersection(selectedIntersection);
+        window.updateSelectedPoint(selectedIntersection);
     };
 
 }

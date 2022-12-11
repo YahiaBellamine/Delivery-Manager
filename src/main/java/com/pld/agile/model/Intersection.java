@@ -1,5 +1,7 @@
 package com.pld.agile.model;
 
+import org.jxmapviewer.viewer.GeoPosition;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -66,6 +68,10 @@ public class Intersection {
         if (!(o instanceof Intersection)) return false;
         Intersection that = (Intersection) o;
         return getId() == that.getId() && getLatitude()==that.getLatitude() && getLongitude()==that.getLongitude();
+    }
+
+    public GeoPosition getGeoPosition(){
+        return new GeoPosition(this.latitude, this.longitude);
     }
 
     @Override
