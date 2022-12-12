@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <map>
 <warehouse address="25303831"/>
-<intersection id="2" latitude="45.75406" longitude="4.857418"/>
+<intersection id="25175791" latitude="45.75406" longitude="4.857418"/>
 <intersection id="2129259178" latitude="45.750404" longitude="4.8744674"/>
 <intersection id="26086130" latitude="45.75871" longitude="4.8704023"/>
 <intersection id="2129259176" latitude="45.75171" longitude="4.8718166"/>
@@ -398,7 +398,7 @@
 <segment destination="26317228" length="79.975136" name="Rue de Carry" origin="26317209"/>
 <segment destination="26317207" length="251.37651" name="Rue de la Métallurgie" origin="26317209"/>
 <segment destination="26317209" length="251.37651" name="Rue de la Métallurgie" origin="26317207"/>
-<segment destination="26125366" length="174.88742" name="Rue David" origin="26317207"/>
+<segment destination="26125366" length="174.88742" name="Rue David" origin="26317207a"/>
 <segment destination="26057106" length="120.3281" name="Rue Paul Bert" origin="2672660419"/>
 <segment destination="55475018" length="28.9105" name="Place Marengo" origin="55475004"/>
 <segment destination="55474989" length="14.101396" name="Place Marengo" origin="55475004"/>
