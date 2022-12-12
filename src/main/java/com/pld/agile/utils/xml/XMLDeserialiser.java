@@ -1,9 +1,8 @@
 package com.pld.agile.utils.xml;
 
 import com.pld.agile.controller.Controller;
-import com.pld.agile.model.CityMap;
-import com.pld.agile.model.Intersection;
-import com.pld.agile.model.RoadSegment;
+import com.pld.agile.model.*;
+import com.pld.agile.model.enums.TimeWindow;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -16,11 +15,12 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 public class XMLDeserialiser {
-  public static void load(String path, CityMap cityMap) throws ExceptionXML, ParserConfigurationException, IOException, SAXException {
+  public static void loadMap(String path, CityMap cityMap) throws ExceptionXML, ParserConfigurationException, IOException, SAXException {
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
       // create db, instance of DocumentBuilder
@@ -37,7 +37,6 @@ public class XMLDeserialiser {
       if(map==null){
         throw new ExceptionXML("No map");
       }
-      // TODO: How can we create Map while initialising the max and min for longitude and latitude here?
 
       //reinitialising the map
       cityMap.reInitializeCityMap();
@@ -120,4 +119,86 @@ public class XMLDeserialiser {
     }
     return new Intersection(id, latitude,longitude);
   }
+
+  public static void loadTours(String path, List<Tour> tours,CityMap cityMap) throws ExceptionXML, ParserConfigurationException, IOException, SAXException {
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    // create db, instance of DocumentBuilder
+    DocumentBuilder db = dbf.newDocumentBuilder();
+    // charge the required .xml
+    Document document = db.parse(path);
+    // verify if we found the document
+    if(document==null){
+      throw new ExceptionXML("Empty file");
+    }
+    // obtain the tours
+    NodeList toursList = document.getElementsByTagName("tour");
+    // verify if the document starts with "map"
+    if(tours==null){
+      throw new ExceptionXML("No tours");
+    }
+
+    for (int i = 0; i < toursList.getLength(); i++) {
+      Tour cityTour = new Tour();
+      //List deliveryRequests=new LinkedList<>();
+      //List intersections=new LinkedList<>();
+      Node tour=toursList.item(i);
+      if(tour.getNodeType()==Node.ELEMENT_NODE){
+        for(Node node=tour.getFirstChild();node!=null;node=node.getNextSibling()){
+          Element element = null;
+          if(node instanceof Element)  element=(Element)node;
+          if(node.getNodeType()==Node.ELEMENT_NODE){
+            if(node.getNodeName().equals("delivery_request")){
+              DeliveryRequest deliveryRequest = createDeliveryRequest(element,cityMap);
+              cityTour.addDeliveryRequest(deliveryRequest);
+            }
+            if(node.getNodeName().equals("intersection")){
+              Intersection intersection = createIntersection(element);
+              cityTour.addIntersection(intersection);
+            }
+          }
+        }
+      }
+      tours.add(cityTour);
+    }
+  }
+
+  private static DeliveryRequest createDeliveryRequest(Element element,CityMap cityMap) throws ExceptionXML {
+
+    String tw = element.getAttribute("time_window");
+    // default value
+    TimeWindow timeWindow = TimeWindow.TW_8_9;
+    switch (tw.charAt(0)){
+      case '8':
+        // timeWindow=TimeWindow.TW_8_9;
+        break;
+      case '9':
+        timeWindow=TimeWindow.TW_9_10;
+        break;
+      case '1':
+        if(tw.charAt(1)=='0') timeWindow=TimeWindow.TW_10_11;
+        else if(tw.charAt(1)=='1') timeWindow=TimeWindow.TW_11_12;
+        break;
+      default:
+        timeWindow=TimeWindow.TW_8_9;
+        break;
+    }
+
+    long id = Long.parseLong(element.getAttribute("id_intersection"));
+    Intersection intersection=cityMap.getIntersections().get(id);
+
+    String time=element.getAttribute("delivery_time");
+    System.out.println(time);
+    String h=time.substring(0,2);
+    String min=time.substring(3,5);
+    String s=time.substring(6,8);
+    System.out.println(h+' '+min+' '+s);
+    System.out.println();
+    double arrival_time=Integer.parseInt(h)*3600+Integer.parseInt(min)*60+Integer.parseInt(s);
+    if (id < 0) {
+      throw new ExceptionXML("Invalid Intersection ID");
+    }
+
+    return new DeliveryRequest(timeWindow,intersection,arrival_time);
+  }
+
 }

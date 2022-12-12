@@ -32,7 +32,7 @@ public interface State {
             // set the label to the path of the selected file
             path = j.getSelectedFile().toURI().getPath();
             try {
-                XMLDeserialiser.load(path, cityMap);
+                XMLDeserialiser.loadMap(path, cityMap);
                 controller.setCurrentState(controller.loadedMapState);
 
             } catch (ExceptionXML e) {
@@ -69,7 +69,7 @@ public interface State {
 
     public default void addNewRequest(CityMap cityMap, Controller controller, Window window) {};
 
-    public default void restoreTours(CityMap cityMap, Controller controller, Window window) {};
+    public default void loadTours(CityMap cityMap, Controller controller, Window window) {};
 
     public default void saveTours(CityMap cityMap, Controller c, Window window) {};
 

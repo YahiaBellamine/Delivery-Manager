@@ -97,8 +97,8 @@ public class Controller {
    * Restore tours from a file
    * @param
    */
-  public void restoreTours(){
-    currentState.restoreTours(cityMap, this, window);
+  public void loadTours(){
+    currentState.loadTours(cityMap, this, window);
   }
 
   /**

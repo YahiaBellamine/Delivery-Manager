@@ -28,6 +28,12 @@ public class DeliveryRequest {
         arrivalTime = 0.0;
     }
 
+    public DeliveryRequest(TimeWindow deliveryTimeWindow, Intersection deliveryAddress, Double deliveryArrivalTime) {
+        timeWindow = deliveryTimeWindow;
+        address = deliveryAddress;
+        arrivalTime = deliveryArrivalTime;
+    }
+
     /**
      * @return - The valid TimeWindow of the delivery request.
      */
