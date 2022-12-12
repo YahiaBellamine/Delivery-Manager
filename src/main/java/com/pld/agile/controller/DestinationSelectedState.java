@@ -3,6 +3,7 @@ package com.pld.agile.controller;
 import com.pld.agile.model.*;
 import com.pld.agile.model.enums.TimeWindow;
 import com.pld.agile.utils.Algorithm;
+import com.pld.agile.utils.InaccessibleDestinationException;
 import com.pld.agile.view.Window;
 import com.pld.agile.view.map.Marker;
 import org.jxmapviewer.viewer.GeoPosition;
@@ -30,11 +31,14 @@ public class DestinationSelectedState implements State{
     if(tour == null) tour = new Tour();
     tour.addDeliveryRequest(deliveryRequest);
 
-    Tour optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
-    optimalTour.setCourier(courier);
-    cityMap.updateTourList(optimalTour);
-
-    controller.setCurrentState(controller.computedTourState);
+    try{
+      Tour optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
+      optimalTour.setCourier(courier);
+      cityMap.updateTourList(optimalTour);
+      controller.setCurrentState(controller.computedTourState);
+    } catch (InaccessibleDestinationException e){
+      window.displayMessage(e.getMessage());
+    }
   }
 
   protected void setSelectedIntersection(Intersection selectedIntersection) {

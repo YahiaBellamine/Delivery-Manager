@@ -1,14 +1,9 @@
 package com.pld.agile;
 
-
 import com.pld.agile.controller.Controller;
 import java.awt.*;
 
-
-
 public class Main {
-
-
   public static void main(String[] args) {
     EventQueue.invokeLater(new Runnable() {
       @Override
@@ -16,8 +11,5 @@ public class Main {
         Controller controller = new Controller();
       }
     });
-
   }
-
-
 }
