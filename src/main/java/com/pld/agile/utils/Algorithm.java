@@ -259,7 +259,7 @@ public class Algorithm {
      * @return a lower bound of the cost of paths in the graph of delivery locations starting from <code>lastVisitedVertex</code>, visiting
      * every vertex in <code>unvisited</code> exactly once, and returning to <code>warehouse</code>.
      */
-    private static Double bound(DeliveryRequest lastVisitedVertex, List<DeliveryRequest> unvisited, DeliveryRequest warehouse) {
+    private static Double bound(DeliveryRequest lastVisitedVertex, List<DeliveryRequest> unvisited, DeliveryRequest warehouse) throws InaccessibleDestinationException {
         Double lowerBound = Double.MAX_VALUE;
 
         //int unvisitedSize = unvisited.size();
@@ -273,6 +273,9 @@ public class Algorithm {
         for (DeliveryRequest vertex : unvisited) {
             if (isArc(lastVisitedVertex, vertex, unvisited)) {
                 distance = tspCost.get(lastVisitedVertex.getAddress().getId()).get(vertex.getAddress().getId());
+                if(distance == null) {
+                    throw new InaccessibleDestinationException("L'intersection selectionnée est inaccessible.");
+                }
                 if (distance < lowerBound) {
                     lowerBound = distance;
                 }

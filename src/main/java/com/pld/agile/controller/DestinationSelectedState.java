@@ -30,7 +30,11 @@ public class DestinationSelectedState implements State{
     if(tour == null) tour = new Tour();
     tour.addDeliveryRequest(deliveryRequest);
 
-    Tour optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
+    try{
+      Tour optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
+    } catch (InaccessibleDestinationException e){
+      window.displayMessage(e);
+    }
     optimalTour.setCourier(courier);
     cityMap.updateTourList(optimalTour);
 
