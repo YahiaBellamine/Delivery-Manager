@@ -90,22 +90,22 @@ public class MapViewer implements Observer {
         //cityMap.getTourList();
     }
 
-    public void updateTour(List<GeoPosition> tourList){
-        this.tour.clear();
-        this.tour.addAll(tourList);
-        update();
-    }
-
-    public List<GeoPosition> getTour(){
-        return this.tour;
-    }
-
-    public void clearMarkers(){
-        tourMarkers.clear();
-        tour.clear();
-        requestMarker = null;
-        update();
-    }
+//    public void updateTour(List<GeoPosition> tourList){
+//        this.tour.clear();
+//        this.tour.addAll(tourList);
+//        update();
+//    }
+//
+//    public List<GeoPosition> getTour(){
+//        return this.tour;
+//    }
+//
+//    public void clearMarkers(){
+//        tourMarkers.clear();
+//        tour.clear();
+//        requestMarker = null;
+//        update();
+//    }
 
     public void clearRequestMarker(){
         requestMarker = null;
