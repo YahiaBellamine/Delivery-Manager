@@ -32,6 +32,7 @@ public class CityMap extends Observable {
 
     public void setWarehouse(Intersection warehouse) {
         this.warehouse = warehouse;
+        notifyObservers(warehouse);
     }
 
     public List<Tour> getTourList() { return this.tourList; }
