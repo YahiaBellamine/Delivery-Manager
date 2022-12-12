@@ -22,7 +22,8 @@ public class Window extends JFrame {
 
   public final static String LOAD_MAP = "Load a Map";
   public final static String ADD_DELIVERY_REQUEST = "Add a Delivery Request";
-  public final static String SAVE_TOUR= "Save the tour";
+  public final static String SAVE_TOURS= "Save the tours";
+  public final static String LOAD_TOURS= "Load the tours";
   public final static String RECENTER_MAP = "Recenter the Map";
 
   public Window(CityMap cityMap, Controller controller) {
@@ -56,7 +57,11 @@ public class Window extends JFrame {
     loadMap.setActionCommand(LOAD_MAP);
     loadMap.addActionListener(buttonListener);
     JMenuItem loadTours = new JMenuItem("Load Tours");
+    loadTours.setActionCommand(LOAD_TOURS);
+    loadTours.addActionListener(buttonListener);
     JMenuItem saveTours = new JMenuItem("Save Tours");
+    saveTours.setActionCommand(SAVE_TOURS);
+    saveTours.addActionListener(buttonListener);
     JMenu actionsMenu = new JMenu("Actions");
     JMenuItem recenterMap = new JMenuItem("Recenter Map");
     recenterMap.setActionCommand(RECENTER_MAP);
@@ -68,18 +73,11 @@ public class Window extends JFrame {
     menuBar.add(fileMenu);
     menuBar.add(actionsMenu);
 
-
     JButton addDeliveryRequestBtn = new JButton("Add a Delivery Request");
     addDeliveryRequestBtn.setMaximumSize(new Dimension(250, 30));
     addDeliveryRequestBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
     addDeliveryRequestBtn.setActionCommand(ADD_DELIVERY_REQUEST);
     addDeliveryRequestBtn.addActionListener(buttonListener);
-
-    JButton stockTourBtn = new JButton("Save the tour");
-    stockTourBtn.setMaximumSize(new Dimension(250, 30));
-    stockTourBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-    stockTourBtn.setActionCommand(SAVE_TOUR);
-    stockTourBtn.addActionListener(buttonListener);
 
     deliveryRequestView = new DeliveryRequestView();
 
@@ -93,8 +91,6 @@ public class Window extends JFrame {
     leftContainer.add(Box.createRigidArea(new Dimension(0,20)));
     leftContainer.add(addDeliveryRequestBtn);
     leftContainer.add(Box.createRigidArea(new Dimension(0,100)));
-    leftContainer.add(stockTourBtn);
-    leftContainer.add(Box.createRigidArea(new Dimension(0,50)));
 
     GridBagConstraints constraints = new GridBagConstraints();
 
