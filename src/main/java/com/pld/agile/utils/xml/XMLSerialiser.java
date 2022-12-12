@@ -13,6 +13,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,6 +35,7 @@ public class XMLSerialiser {
     public static void save(List<Tour> optimalTours) throws ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException, ExceptionXML{
         File xml = XMLFileOpener.getInstance().open(false);
         StreamResult result = new StreamResult(xml);
+        // StreamResult result = new StreamResult(new FileOutputStream(url));
         document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         int counter = 1;
         Element tours = document.createElement("tours");

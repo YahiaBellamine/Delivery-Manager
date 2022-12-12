@@ -144,7 +144,8 @@ public class XMLDeserialiser {
       Node tour=toursList.item(i);
       if(tour.getNodeType()==Node.ELEMENT_NODE){
         for(Node node=tour.getFirstChild();node!=null;node=node.getNextSibling()){
-          Element element=(Element)node;
+          Element element = null;
+          if(node instanceof Element)  element=(Element)node;
           if(node.getNodeType()==Node.ELEMENT_NODE){
             if(node.getNodeName().equals("delivery_request")){
               DeliveryRequest deliveryRequest = createDeliveryRequest(element,cityMap);
@@ -157,7 +158,7 @@ public class XMLDeserialiser {
           }
         }
       }
-      tours.set(i, cityTour);
+      tours.add(cityTour);
     }
   }
 
@@ -167,13 +168,13 @@ public class XMLDeserialiser {
     // default value
     TimeWindow timeWindow = TimeWindow.TW_8_9;
     switch (tw.charAt(0)){
-      case 8:
+      case '8':
         // timeWindow=TimeWindow.TW_8_9;
         break;
-      case 9:
+      case '9':
         timeWindow=TimeWindow.TW_9_10;
         break;
-      case 1:
+      case '1':
         if(tw.charAt(1)=='0') timeWindow=TimeWindow.TW_10_11;
         else if(tw.charAt(1)=='1') timeWindow=TimeWindow.TW_11_12;
         break;
@@ -182,14 +183,16 @@ public class XMLDeserialiser {
         break;
     }
 
-
     long id = Long.parseLong(element.getAttribute("id_intersection"));
     Intersection intersection=cityMap.getIntersections().get(id);
 
     String time=element.getAttribute("delivery_time");
-    String h=time.substring(0,1);
-    String min=time.substring(3,4);
-    String s=time.substring(6,7);
+    System.out.println(time);
+    String h=time.substring(0,2);
+    String min=time.substring(3,5);
+    String s=time.substring(6,8);
+    System.out.println(h+' '+min+' '+s);
+    System.out.println();
     double arrival_time=Integer.parseInt(h)*3600+Integer.parseInt(min)*60+Integer.parseInt(s);
     if (id < 0) {
       throw new ExceptionXML("Invalid Intersection ID");

@@ -70,8 +70,17 @@ public class ComputedTourState implements State{
             // set the label to the path of the selected file
             path = j.getSelectedFile().toURI().getPath();
             try {
+                //TODO: the list tours should be global instead of local?
                 List<Tour> tours = new LinkedList<>();
                 XMLDeserialiser.loadTours(path, tours, cityMap);
+//                System.out.println(tours.size());
+//                System.out.println(tours.get(0).getDeliveryRequests().size());
+//                System.out.println(tours.get(0).getIntersections().size());
+//
+//                for(int i=0;i<6;i++)                { // i<6 for test2
+//                    System.out.println(tours.get(0).getDeliveryRequests().get(i).getTimeWindow());
+//                    System.out.println(tours.get(0).getDeliveryRequests().get(i).getArrivalTime());
+//                }
 
             } catch (ExceptionXML | ParserConfigurationException | IOException | SAXException e) {
 
