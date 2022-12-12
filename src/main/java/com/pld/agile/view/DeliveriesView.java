@@ -12,6 +12,8 @@ import javax.swing.tree.TreeSelectionModel;
 import javax.swing.border.Border;
 import javax.swing.*;
 import java.awt.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DeliveriesView extends JPanel implements Observer {
 
@@ -27,6 +29,9 @@ public class DeliveriesView extends JPanel implements Observer {
     /** the map */
     private CityMap cityMap;
 
+    public static final String UPDATE_DELIVERY_REQUEST = "Update a delivery request";
+    public static final String DELETE_DELIVERY_REQUEST = "Delete a delivery request";
+
     /**
      * Constructor of the textual view.
      */
@@ -39,9 +44,6 @@ public class DeliveriesView extends JPanel implements Observer {
         this.setBorder(textViewBorder);
 
         GridBagConstraints constraints = new GridBagConstraints();
-
-        //Tree panel
-        /*toursTree = new JTree(new DefaultMutableTreeNode("Tours information"));*/
 
         requestsScrollPane = new JScrollPane(toursTree);
         requestsScrollPane.setName("toursScrollPane");
@@ -72,9 +74,9 @@ public class DeliveriesView extends JPanel implements Observer {
         this.add(detailsPanel, constraints);
 
         //Constraints to add this panel to the main view
-        constraints.gridx = 3;
+        constraints.gridx = 4;
         constraints.gridy = 1;
-        constraints.weightx = 0.2;
+        constraints.weightx = 0.5;
         constraints.weighty = 0.99;
         constraints.gridwidth = 1;
         constraints.fill = GridBagConstraints.BOTH;
@@ -185,8 +187,23 @@ public class DeliveriesView extends JPanel implements Observer {
 
                 String node = (String) ((DefaultMutableTreeNode) detail).getUserObject();
 
-                if (node.startsWith("Delivery")) {
-                    int deliveryNumber =  Integer.parseInt(node.substring(node.length() - 1));
+                if (node.startsWith("Delivery n°")) {
+                    Pattern nodeNameToNumber = Pattern.compile("n°\\d+");
+
+                    Matcher nameMatcher = nodeNameToNumber.matcher(node);
+                    int deliveryNumber = -1;
+                    if(nameMatcher.find()) {
+                        Pattern numberToInt = Pattern.compile("\\d+");
+                        Matcher numberMatcher = numberToInt.matcher(nameMatcher.group(0));
+
+                        if(numberMatcher.find()) {
+                            deliveryNumber = Integer.parseInt(numberMatcher.group(0));
+                        }
+                    }
+                    /*TODO - implement proper error handling*/
+                    else {
+                        return;
+                    }
                     int tourNumber = ((DefaultMutableTreeNode) detail).getParent().getParent().getIndex(((DefaultMutableTreeNode) detail).getParent());
                     DeliveryRequest delivery = cityMap.getTourList().get(tourNumber).getDeliveryRequests().get(deliveryNumber - 1);
 
@@ -203,8 +220,13 @@ public class DeliveriesView extends JPanel implements Observer {
                     deliveryArrivalTime.setHorizontalTextPosition(SwingConstants.LEFT);
 
                     JButton update = new JButton("Update");
+                    update.setActionCommand(UPDATE_DELIVERY_REQUEST);
+                    Window parent = (Window)(this.getParent().getParent().getParent().getParent());
+                    update.addActionListener(parent.getButtonListener());
 
                     JButton delete = new JButton("Delete");
+                    delete.setActionCommand(DELETE_DELIVERY_REQUEST);
+                    delete.addActionListener(parent.getButtonListener());
 
                     GridBagConstraints constraints = new GridBagConstraints();
 
