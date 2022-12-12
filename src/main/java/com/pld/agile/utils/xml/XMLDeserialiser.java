@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 public class XMLDeserialiser {
-  public static void load(String path, CityMap cityMap) throws ExceptionXML, ParserConfigurationException, IOException, SAXException {
+  public static void loadMap(String path, CityMap cityMap) throws ExceptionXML, ParserConfigurationException, IOException, SAXException {
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
       // create db, instance of DocumentBuilder
@@ -37,7 +37,6 @@ public class XMLDeserialiser {
       if(map==null){
         throw new ExceptionXML("No map");
       }
-      // TODO: How can we create Map while initialising the max and min for longitude and latitude here?
 
       //reinitialising the map
       cityMap.reInitializeCityMap();
@@ -120,4 +119,5 @@ public class XMLDeserialiser {
     }
     return new Intersection(id, latitude,longitude);
   }
+
 }
