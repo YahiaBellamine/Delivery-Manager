@@ -79,7 +79,7 @@ public class TourPainter implements Painter<JXMapViewer>
                     {
                         first = false;
                     }
-                    else
+                    else if(Point2D.distance(lastX,lastY, pt.getX(), pt.getY())>1)
                     {
                         g.drawLine(lastX, lastY, (int) (pt.getX()), (int) (pt.getY()) );
                     }
@@ -106,7 +106,7 @@ public class TourPainter implements Painter<JXMapViewer>
                     }
                     else
                     {
-                        if(dist>50){
+                        if(dist>50 && Point2D.distance(lastX,lastY, pt.getX(), pt.getY())>1){
                             dist=0;
                             double a = Math.atan2(lastY-pt.getY(),lastX-pt.getX()) + Math.PI/4;
                             int dx = (int) (d*Math.sin(a));
