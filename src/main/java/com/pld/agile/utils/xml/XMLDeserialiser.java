@@ -15,10 +15,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class XMLDeserialiser {
-  public static void load(String path, CityMap cityMap) throws ExceptionXML{
+  public static void load(String path, CityMap cityMap) throws ExceptionXML, ParserConfigurationException, IOException, SAXException {
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
       // create db, instance of DocumentBuilder
@@ -65,10 +67,6 @@ public class XMLDeserialiser {
       Long warehouseId = Long.parseLong(warehouseAddress);
       cityMap.setWarehouse(cityMap.getIntersections().get(warehouseId));
 
-    } catch (ParserConfigurationException | SAXException | IOException e) {
-      e.printStackTrace();
-    }
-
   }
 
   private static void createRoadSegment(Element e, Map<Long, Intersection> intersections) throws ExceptionXML {
@@ -93,9 +91,9 @@ public class XMLDeserialiser {
     if (originID < 0) {
       throw new ExceptionXML("Incorrect origin ID");
     }
-    if(originID==destinationID){
-      throw new ExceptionXML("Same origin ID and destination ID");
-    }
+//    if(originID==destinationID){
+//      throw new ExceptionXML("Same origin ID and destination ID");
+//    }
     Intersection origin = intersections.get(originID);
     if (origin == null) {
       throw new ExceptionXML("Unknown Intersection");
