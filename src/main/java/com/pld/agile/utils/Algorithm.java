@@ -16,7 +16,7 @@ public class Algorithm {
     static LinkedList<DeliveryRequest> bestSol;
     static Double bestSolCost;
 
-    public static Tour ExecuteAlgorithm(Intersection warehouse, LinkedList<DeliveryRequest> deliveryRequests) {
+    public static Tour ExecuteAlgorithm(Intersection warehouse, List<DeliveryRequest> deliveryRequests) {
 
         // Instantiation of attributes
         optimalTour = new Tour();
@@ -41,7 +41,9 @@ public class Algorithm {
         for (DeliveryRequest deliveryRequest : deliveryRequests) {
             destinations.remove(deliveryRequest);
             dijkstra(deliveryRequest, destinations);
+            System.out.println("Je suis ici");
             System.out.println(tspCost);
+            System.out.println("Et ici");
             destinations.add(deliveryRequest);
         }
 

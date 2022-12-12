@@ -1,97 +1,89 @@
 package com.pld.agile.controller;
 
-import com.pld.agile.model.CityMap;
-import com.pld.agile.model.DeliveryRequest;
-import com.pld.agile.model.Intersection;
-import com.pld.agile.model.Tour;
-import com.pld.agile.model.enums.TimeWindow;
-import com.pld.agile.utils.Algorithm;
-import com.pld.agile.utils.xml.ExceptionXML;
-import com.pld.agile.utils.xml.XMLDeserialiser;
-import com.pld.agile.utils.xml.XMLSerialiser;
+
+import com.pld.agile.model.*;
 import com.pld.agile.view.Window;
 import com.pld.agile.view.map.Marker;
 import org.jxmapviewer.viewer.GeoPosition;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.geom.Point2D;
-import java.io.UnsupportedEncodingException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.*;
-
 
 public class Controller {
-
+  private State currentState;
   private Window window;
   private CityMap cityMap;
-  private Map<Long, Intersection> intersections;
-  private Long currentIntersectionId;
-  private List<DeliveryRequest> deliveryRequests;
+  protected final InitialState initialState = new InitialState();
+  protected final LoadedMapState loadedMapState = new LoadedMapState();
+  protected final DestinationSelectedState destinationSelectedState = new DestinationSelectedState();
+  protected final ComputedTourState computedTourState = new ComputedTourState();
 
   public Controller() {
-    window = new Window(this);
-    cityMap = new CityMap();
-    this.intersections = new HashMap<>();
-    deliveryRequests = new LinkedList<>();
+    new Couriers(1);
+    this.cityMap = new CityMap();
+    this.window = new Window(cityMap, this);
+    currentState = initialState;
     window.setVisible(true);
   }
 
-  public void addDeliveryRequest() {
-    if (currentIntersectionId != null) {
-      TimeWindow tm = (TimeWindow) this.window.getDeliveryRequestView().comboBoxTimeWindow.getSelectedItem();
-      DeliveryRequest deliveryRequest = new DeliveryRequest(tm, this.intersections.get(currentIntersectionId));
-      // Add delivery request to right panel
-      this.deliveryRequests.add(deliveryRequest);
-      Tour optimalTour = Algorithm.ExecuteAlgorithm(this.cityMap.getWarehouse(), (LinkedList<DeliveryRequest>) deliveryRequests);
-      // TODO: when we have several delivery men, the index should be modified
-      System.out.println(CityMap.getTourList().size());
-      CityMap.setTour(0,optimalTour);
-      List<Intersection> optimalTourIntersections = optimalTour.getIntersections();
-      this.window.getMapViewer().updateTour(optimalTourIntersections.stream().map(intersection -> {
-        return new GeoPosition(intersection.getLatitude(), intersection.getLongitude());
-      }).toList());
-      this.window.getDeliveriesView().displayTourDuration(optimalTour);
-      this.window.getDeliveriesView().displayRequests(optimalTour.getDeliveryRequests());
 
-      /* Add pointer to the map*/
-      GeoPosition geoPosition = new GeoPosition(intersections.get(currentIntersectionId).getLatitude(),
-              intersections.get(currentIntersectionId).getLongitude());
-      this.window.getMapViewer().addPoint(geoPosition, currentIntersectionId, Marker.Type.TOUR);
-      this.window.getMapViewer().clearRequestMarker();
-      currentIntersectionId = null;
-      this.window.getDeliveryRequestView().setSelectDestinationPoint("  Select your destination point on the map.");
+  /**
+   * Change the current state of the controller
+   * @param state the new current state
+   */
+  protected void setCurrentState(State state){
+    currentState = state;
+  }
 
-    } else {
-      this.window.displayMessage("Please select an intersection on the map");
-    }
+  /**
+   * Create a new delivery request
+   * @param
+   */
+  public void addNewRequest() {
+    currentState.addNewRequest(cityMap, this, window);
+  }
+
+  /**
+   * Delete a delivery Request
+   * @param
+   */
+  public void deleteDeliveryRequest(Courier courier, int indexDeliveryRequest){
+    currentState.deleteDeliveryRequest(cityMap, this, courier, indexDeliveryRequest);
   }
 
   public void saveTour() throws ExceptionXML, ParserConfigurationException, TransformerException {
 //    for(DeliveryRequest d: deliveryRequests){
 //      System.out.println(d.getAddress());
 //    }
-      if(deliveryRequests.size()==0) {
-        this.window.displayMessage("Add at least one delivery request before saving the tour");
-        return;
-      }
+     // if(deliveryRequests.size()==0) {
+     //   this.window.displayMessage("Add at least one delivery request before saving the tour");
+       // return;
+     // }
     // TODO: when we have several delivery men, the index should be modified  and call function save in a loop
-    Tour optimalTour = CityMap.getTour(0);
-    if(optimalTour==null) {
-      this.window.displayMessage("No tour to save");
-      return;
-    }
-    XMLSerialiser.save(optimalTour);
-  }
-  public void resetDeliveryRequests(){
+    // Tour optimalTour = CityMap.getTour(0);
+    // if(optimalTour==null) {
+     // this.window.displayMessage("No tour to save");
+     // return;
+   // }
+   // XMLSerialiser.save(optimalTour);
 
   }
 
+  /**
+   * Update a delivery request
+   * @param
+   */
+  public void updateDeliveryRequest(Courier courier, int indexDeliveryRequest){
+    currentState.updateDeliveryRequest(cityMap, this, window, courier, indexDeliveryRequest);
+  }
+
+  /**
+   * Restore tours from a file
+   * @param
+   */
+  public void restoreTours(){
+    currentState.restoreTours(cityMap, this, window);
+  }
+  
   public void loadMap(/*String path*/) throws UnsupportedEncodingException {
     String path = "src/main/java/com/pld/agile/utils/maps/smallMap.xml";
 
@@ -164,37 +156,34 @@ public class Controller {
     this.window.getMapViewer().recenter();
   }
 
-  public void selectIntersection(Long currentIntersectionId) {
-    this.currentIntersectionId = currentIntersectionId;
-    GeoPosition geoPosition = new GeoPosition(intersections.get(currentIntersectionId).getLatitude(),
-            intersections.get(currentIntersectionId).getLongitude());
-    this.window.getMapViewer().addPoint(geoPosition, currentIntersectionId, Marker.Type.REQUEST);
-    this.window.getMapViewer().update();
-    this.window.getDeliveryRequestView().setSelectDestinationPoint("Intersection " + currentIntersectionId);
+  /**
+   * Save tours to a file
+   * @param
+   */
+  public void saveTours(){
+    currentState.saveTours(cityMap, window);
   }
 
-  public void deleteDeliveryRequest(DeliveryRequest deliveryRequest) {
-    // cityMap.deleteDeliveryRequest(deliveryRequest);
+  /**
+   * Load a map from a file
+   * @param
+   */
+  public void loadMap() {
+    currentState.loadMap(this, window, cityMap);
   }
 
-  public void searchIntersection(double x, double y){
-    double r = Double.MAX_VALUE;
-    long id=-1;
-    for(Intersection i : intersections.values()){
-      double dist = Point2D.distance(x,y,i.getLatitude(),i.getLongitude());
-      if(dist<r){
-        System.out.println("dist "+dist+ " "+i.getLatitude()+" "+i.getLongitude());
-        id = i.getId();
-        r = dist;
-      }
-    }
-    if(id!=-1)    selectIntersection(id);
+  /**
+   * Select a destination point
+   * @param pos the geo position of the intersection
+   */
+  public void selectDestinationPoint(GeoPosition pos) {
+    currentState.selectDestinationPoint(this, window, pos, cityMap);
   }
+
+  // TODO: remove all getters and setters (shouldn't be in the controller)
   public Window getWindow() {
     return window;
   }
 
-  public void setWindow(Window window) {
-    this.window = window;
-  }
+
 }

@@ -1,7 +1,10 @@
 package com.pld.agile.view;
 
+import com.pld.agile.model.CityMap;
 import com.pld.agile.model.DeliveryRequest;
 import com.pld.agile.model.Tour;
+import com.pld.agile.observer.Observable;
+import com.pld.agile.observer.Observer;
 
 import javax.swing.border.Border;
 import java.util.LinkedList;
@@ -9,7 +12,7 @@ import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 
-public class DeliveriesView extends JPanel {
+public class DeliveriesView extends JPanel implements Observer {
     /** Panel used to display the head infos of the textual view */
     private JPanel textViewHeadPanel;
 
@@ -34,33 +37,26 @@ public class DeliveriesView extends JPanel {
     /** List of delivery requests to display in the GUI */
     private List<DeliveryRequest> deliveryRequests;
 
+    /** the map */
+    private CityMap cityMap;
+
     /**
      * Constructor of the textual view.
      */
-    public DeliveriesView() {
+    public DeliveriesView(CityMap cityMap, Window window) {
         super();
-        deliveryRequests = new LinkedList<>();
 
         Border textViewBorder = BorderFactory.createLoweredBevelBorder();
         this.setLayout(new GridBagLayout());
         this.setName("textViewPanel");
         this.setBorder(textViewBorder);
 
+        GridBagConstraints constraints = new GridBagConstraints();
+
+        // Textual view header
         textViewHeadPanel = new JPanel();
         textViewHeadPanel.setName("textViewHeadPanel");
         textViewHeadPanel.setLayout(new FlowLayout());
-
-        tourDuration = new JLabel("");
-        tourDuration.setHorizontalTextPosition(SwingConstants.CENTER);
-
-        deliveryRequestsPanel = new JPanel();
-        deliveryRequestsPanel.setName("deliveryRequestsPanel");
-
-        requestsScrollPane = new JScrollPane();
-        requestsScrollPane.setName("deliveryRequestsScrollPane");
-        requestsScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        requestsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        requestsScrollPane.setViewportView(deliveryRequestsPanel);
 
         viewTitle = new JLabel("Deliveries");
         viewTitle.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -71,12 +67,13 @@ public class DeliveriesView extends JPanel {
         redo = new JButton(">");
         redo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        tourDuration = new JLabel("");
+        tourDuration.setHorizontalTextPosition(SwingConstants.CENTER);
+
         textViewHeadPanel.add(viewTitle);
         textViewHeadPanel.add(undo);
         textViewHeadPanel.add(redo);
         textViewHeadPanel.add(tourDuration);
-
-        GridBagConstraints constraints = new GridBagConstraints();
 
         constraints.gridx = 0;
         constraints.gridy = 0;
@@ -85,12 +82,42 @@ public class DeliveriesView extends JPanel {
         constraints.fill = GridBagConstraints.BOTH;
         this.add(textViewHeadPanel, constraints);
 
+        // Textual view delivery requests
+        deliveryRequestsPanel = new JPanel();
+        deliveryRequestsPanel.setName("deliveryRequestsPanel");
+
+        requestsScrollPane = new JScrollPane();
+        requestsScrollPane.setName("deliveryRequestsScrollPane");
+        requestsScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        requestsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        requestsScrollPane.setViewportView(deliveryRequestsPanel);
+
         constraints.gridx = 0;
         constraints.gridy = 1;
         constraints.weighty = 0.9;
         constraints.gridwidth = 3;
         constraints.fill = GridBagConstraints.BOTH;
         this.add(requestsScrollPane, constraints);
+
+        // DeliveriesView panel
+        constraints.gridx = 3;
+        constraints.gridy = 0;
+        constraints.weightx = 0.1;
+        constraints.weighty = 1;
+        constraints.gridwidth = 1;
+        constraints.fill = GridBagConstraints.BOTH;
+
+        this.setSize(window.getContentPane().getWidth() / 4, window.getContentPane().getHeight());
+        window.getContentPane().add(this, constraints);
+
+        cityMap.addObserver(this);
+
+        this.cityMap = cityMap;
+    }
+
+    public void update(Observable o, Object arg){
+        /* TODO : Display tour list in the textual view  */
+        cityMap.getTourList();
     }
 
     /**
@@ -101,6 +128,7 @@ public class DeliveriesView extends JPanel {
         tourDuration.setText("Tour duration :"+ tour.getFormattedTourDuration());
     }
 
+    /* TODO : Use deliveryRequests as an attribute of tour to display them in the textual view  */
     /**
      * Changes the list of delivery requests to display for a new one.
      * @param requests - The new list of delivery requests to display.
