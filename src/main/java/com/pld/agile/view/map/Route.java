@@ -64,7 +64,7 @@ public class Route {
         for(DeliveryRequest delivery : tour.getDeliveryRequests()){
             Intersection i = delivery.getAddress();
             GeoPosition gp = new GeoPosition(i.getLatitude(),i.getLongitude());
-            routeMarkers.add(new Marker(i.getId(),gp,ImageUtil.getMarkerImage(defaultColor), Marker.Type.TOUR));
+            routeMarkers.add(new Marker(gp,ImageUtil.getMarkerImage(defaultColor)));
         }
     }
 

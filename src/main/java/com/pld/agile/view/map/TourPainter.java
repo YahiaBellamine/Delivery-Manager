@@ -97,18 +97,23 @@ public class TourPainter implements Painter<JXMapViewer>
         for(Route r : tracks){
             boolean first = true;
             double dist = 0;
+            double lastAngle=0;
+            double currentAngle=0;
             for(List<GeoPosition> segment : r.getRouteSegments()){
                 for(GeoPosition gp : segment){
                     Point2D pt = map.getTileFactory().geoToPixel(gp, map.getZoom());
                     if (first)
                     {
                         first = false;
+                        dist = -100;
                     }
                     else
                     {
-                        if(dist>50 && Point2D.distance(lastX,lastY, pt.getX(), pt.getY())>1){
+                        currentAngle = Math.atan2(lastY-pt.getY(),lastX-pt.getX());
+                        if((((Math.abs(currentAngle-lastAngle))>0.1&&dist>20) || dist>200)
+                                && Point2D.distance(lastX,lastY, pt.getX(), pt.getY())>10){
                             dist=0;
-                            double a = Math.atan2(lastY-pt.getY(),lastX-pt.getX()) + Math.PI/4;
+                            double a = currentAngle + Math.PI/4;
                             int dx = (int) (d*Math.sin(a));
                             int dy =(int) (-d*Math.cos(a));
                             a -= 2*Math.PI /4;
@@ -123,6 +128,7 @@ public class TourPainter implements Painter<JXMapViewer>
                         }
                     }
                     dist+= Point2D.distance(lastX,lastY,pt.getX(),pt.getY());
+                    lastAngle = currentAngle;
                     lastX = (int) pt.getX();
                     lastY = (int) pt.getY();
                 }

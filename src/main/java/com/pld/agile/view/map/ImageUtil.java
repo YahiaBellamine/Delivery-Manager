@@ -12,7 +12,7 @@ public class ImageUtil {
 
     public static BufferedImage warehouseImg, markerImg;
 
-    public static Color[] colors= {Color.blue, Color.CYAN, Color.green, Color.magenta, Color.orange,
+    public static Color[] colors= {Color.blue, Color.CYAN, Color.green, Color.magenta,
     Color.pink,Color.red,Color.yellow};
     private static int colorInd=0;
 

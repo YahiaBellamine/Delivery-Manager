@@ -71,14 +71,8 @@ public class MapViewer implements Observer {
         mapPanel = mapViewer;
     }
 
-    public void addPoint(GeoPosition pos, long id, Marker.Type type){
-        switch (type){
-            case WAREHOUSE -> {
-                warehouse = new Marker(id,pos,ImageUtil.getWarehouseImage(Color.yellow),Marker.Type.WAREHOUSE);
-                setCenter(pos);
-            }
-            case REQUEST -> requestMarker = new Marker(id, pos,ImageUtil.getMarkerImage(Color.ORANGE), type);
-        }
+    public void setRequestMarker(GeoPosition pos){
+        requestMarker = new Marker(pos,ImageUtil.getMarkerImage(Color.ORANGE));
     }
 
     public void update(Observable o, Object arg){
@@ -88,8 +82,8 @@ public class MapViewer implements Observer {
                 Intersection wh = cityMap.getWarehouse();
                 System.out.println(wh);
                 if(wh!=null){
-                    warehouse = new Marker(wh.getId(),wh.getGeoPosition(),ImageUtil.getWarehouseImage(Color.BLACK), Marker.Type.WAREHOUSE);
-                    System.out.println("update warehouse");
+                    warehouse = new Marker(wh.getGeoPosition(),ImageUtil.getWarehouseImage(Color.BLACK));
+                    mapViewer.setAddressLocation(wh.getGeoPosition());
                 }
             }
             else if(arg instanceof Tour){
@@ -99,9 +93,7 @@ public class MapViewer implements Observer {
                 }
             }
         }
-        System.out.println("MapViewer : update");
         update();
-        //cityMap.getTourList();
     }
 
 //    public void updateTour(List<GeoPosition> tourList){
@@ -139,23 +131,6 @@ public class MapViewer implements Observer {
             routes.add(new Route(ImageUtil.getColor()));
         }
         routes.get(tour.getCourier().getCourierId()).updateRouteSegments(tour);
-       // routes = new ArrayList<>(cityMap.getTourList().size());
-
-//        Iterator<Route> it = routes.iterator();
-//        if(cityMap.getTourList()!=null){
-//            int counter = 0;
-//            for(Tour t : cityMap.getTourList()){
-//                if(counter==routes.size()){
-//                    routes.add(new Route(ImageUtil.getColor()));
-//                }
-//                if(t!=null){
-//                    routes.get(counter).updateRouteSegments(t);
-//                }
-//                counter++;
-//            }
-//        }
-
-
     }
     public void update(){
         List<Painter<JXMapViewer>> painters = new ArrayList<Painter<JXMapViewer>>();
