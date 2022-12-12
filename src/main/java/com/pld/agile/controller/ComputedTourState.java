@@ -6,8 +6,16 @@ import com.pld.agile.model.Intersection;
 import com.pld.agile.model.Tour;
 import com.pld.agile.model.enums.TimeWindow;
 import com.pld.agile.utils.Algorithm;
+import com.pld.agile.utils.xml.ExceptionXML;
+import com.pld.agile.utils.xml.XMLDeserialiser;
+import com.pld.agile.utils.xml.XMLSerialiser;
 import com.pld.agile.view.Window;
 import org.jxmapviewer.viewer.GeoPosition;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import java.io.IOException;
 
 public class ComputedTourState implements State{
 
@@ -26,7 +34,15 @@ public class ComputedTourState implements State{
     };
 
     @Override
-    public void saveTours(CityMap cityMap, Window w) {};
+    public void saveTours(CityMap cityMap, Controller c, Window w) {
+        try{
+            XMLSerialiser.save(cityMap.getTourList());
+            c.setCurrentState(c.computedTourState);
+        } catch (TransformerException | ExceptionXML | ParserConfigurationException e) {
+            w.displayMessage("System error in saving Tours");
+            throw new RuntimeException(e);
+        }
+    };
 
     @Override
     public void updateDeliveryRequest(CityMap cityMap, Controller controller, Window window, Courier previousCourier, int indexDeliveryRequest) {

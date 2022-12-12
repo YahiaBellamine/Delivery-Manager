@@ -106,7 +106,7 @@ public class Controller {
    * @param
    */
   public void saveTours(){
-    currentState.saveTours(cityMap, window);
+    currentState.saveTours(cityMap, this, window);
   }
 
   /**
