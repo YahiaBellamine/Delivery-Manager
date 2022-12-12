@@ -34,9 +34,6 @@ public class XMLSerialiser {
         File xml = XMLFileOpener.getInstance().open(false);
         StreamResult result = new StreamResult(xml);
         document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-        if(optimalTour==null) {
-            throw new ExceptionXML("No tour to save");
-        }
         Element tour = document.createElement("tour");
         for(DeliveryRequest de:optimalTour.getDeliveryRequests()){
             Element delivery=document.createElement("delivery_request");
@@ -52,7 +49,7 @@ public class XMLSerialiser {
             double min=decimal*60-decimal*60%1;
             double s=(decimal*60-min)*60;
             time=String.format("%02d",(int)h)+":"+String.format("%02d",(int)min)+":"+String.format("%02d",(int)s);
-            createAttribute(delivery,"passing_time",time);
+            createAttribute(delivery,"delivery_time",time);
             tour.appendChild(delivery);
         }
 
@@ -70,49 +67,10 @@ public class XMLSerialiser {
         xformer.setOutputProperty(OutputKeys.INDENT, "yes");
         xformer.transform(source, result);
     }
-
-//    private Element createPlanElt(Plan plan) {
-//        Element racine = document.createElement("plan");
-//        createAttribute(racine,"height",Integer.toString(plan.getHeight()));
-//        createAttribute(racine,"width",Integer.toString(plan.getWidth()));
-//        Iterator<Shape> it = plan.getShapeIterator();
-//        while (it.hasNext()){
-//            it.next().display(this);
-//            racine.appendChild(shapeRoot);
-//        }
-//        return racine;
-//    }
-//
     private static void createAttribute(Element root, String name, String value){
         Attr attribute = document.createAttribute(name);
         root.setAttributeNode(attribute);
         attribute.setValue(value);
     }
-//
-//    @Override
-//    public void display(Circle c) {
-//        shapeRoot = document.createElement("circle");
-//        createAttribute(shapeRoot,"x",Integer.toString(c.getCenter().getX()));
-//        createAttribute(shapeRoot,"y",Integer.toString(c.getCenter().getY()));
-//        createAttribute(shapeRoot,"radius",Integer.toString(c.getRadius()));
-//    }
-//
-//    @Override
-//    public void display(Rectangle r) {
-//        shapeRoot = document.createElement("rectangle");
-//        createAttribute(shapeRoot,"x",Integer.toString(r.getCorner().getX()));
-//        createAttribute(shapeRoot,"y",Integer.toString(r.getCorner().getY()));
-//        createAttribute(shapeRoot,"width",Integer.toString(r.getWidth()));
-//        createAttribute(shapeRoot,"height",Integer.toString(r.getHeight()));
-//    }private Element shapeRoot;
-//    private Document document;
-//    private static XMLSerialiser instance = null;
-//    private XMLSerialiser(){}
-//    public static XMLSerialiser getInstance(){
-//        if (instance == null)
-//            instance = new XMLSerialiser();
-//        return instance;
-//    }
-
 
 }
