@@ -16,7 +16,7 @@ public class Algorithm {
     static LinkedList<DeliveryRequest> bestSol;
     static Double bestSolCost;
 
-    public static Tour ExecuteAlgorithm(Intersection warehouse, List<DeliveryRequest> deliveryRequests) {
+    public static Tour ExecuteAlgorithm(Intersection warehouse, List<DeliveryRequest> deliveryRequests) throws InaccessibleDestinationException  {
 
         // Instantiation of attributes
         optimalTour = new Tour();
@@ -259,7 +259,7 @@ public class Algorithm {
      * @return a lower bound of the cost of paths in the graph of delivery locations starting from <code>lastVisitedVertex</code>, visiting
      * every vertex in <code>unvisited</code> exactly once, and returning to <code>warehouse</code>.
      */
-    private static Double bound(DeliveryRequest lastVisitedVertex, List<DeliveryRequest> unvisited, DeliveryRequest warehouse) {
+    private static Double bound(DeliveryRequest lastVisitedVertex, List<DeliveryRequest> unvisited, DeliveryRequest warehouse) throws InaccessibleDestinationException {
         Double lowerBound = Double.MAX_VALUE;
 
         //int unvisitedSize = unvisited.size();
@@ -273,6 +273,9 @@ public class Algorithm {
         for (DeliveryRequest vertex : unvisited) {
             if (isArc(lastVisitedVertex, vertex, unvisited)) {
                 distance = tspCost.get(lastVisitedVertex.getAddress().getId()).get(vertex.getAddress().getId());
+                if(distance == null) {
+                    throw new InaccessibleDestinationException();
+                }
                 if (distance < lowerBound) {
                     lowerBound = distance;
                 }
@@ -304,7 +307,7 @@ public class Algorithm {
      * @param unvisited   the set of vertex that have not yet been visited
      * @param currentCost the tspCost of the path corresponding to <code>visited</code>
      */
-    private static void branchAndBound(LinkedList<DeliveryRequest> visited, LinkedList<DeliveryRequest> unvisited, Double currentCost) {
+    private static void branchAndBound(LinkedList<DeliveryRequest> visited, LinkedList<DeliveryRequest> unvisited, Double currentCost) throws InaccessibleDestinationException {
         int visitedSize = visited.size();
         int unvisitedSize = unvisited.size();
         LinkedList<DeliveryRequest> unvisitedBeforePermutation = new LinkedList<>(unvisited);
