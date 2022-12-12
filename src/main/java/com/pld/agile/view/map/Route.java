@@ -112,4 +112,8 @@ public class Route {
     public List<Color> getRouteMarkersColors() {
         return routeMarkersColors;
     }
+
+    public Color getDefaultColor() {
+        return defaultColor;
+    }
 }

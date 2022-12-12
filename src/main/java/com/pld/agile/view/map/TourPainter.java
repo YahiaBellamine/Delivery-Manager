@@ -21,7 +21,7 @@ import javax.swing.*;
  */
 public class TourPainter implements Painter<JXMapViewer>
 {
-    private Color color = Color.RED;
+    //private Color color = Color.RED;
     private boolean antiAlias = true;
 
     private List<Route> tracks;
@@ -46,7 +46,7 @@ public class TourPainter implements Painter<JXMapViewer>
         if (antiAlias)
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         // do the drawing
-        g.setColor(color);
+        //g.setColor();
         g.setStroke(new BasicStroke(15/(map.getZoom()+1)));
         drawRoute(g, map);
         // do the drawing again
@@ -72,6 +72,7 @@ public class TourPainter implements Painter<JXMapViewer>
             int lastY = 0;
             boolean first = true;
             for(List<GeoPosition> segment : r.getRouteSegments()){
+                g.setColor(r.getDefaultColor());
                 for(GeoPosition gp : segment){
                     Point2D pt = map.getTileFactory().geoToPixel(gp, map.getZoom());
                     if (first)
@@ -95,7 +96,7 @@ public class TourPainter implements Painter<JXMapViewer>
         int lastY = 0;
         for(Route r : tracks){
             boolean first = true;
-            boolean jump = true;
+            double dist = 0;
             for(List<GeoPosition> segment : r.getRouteSegments()){
                 for(GeoPosition gp : segment){
                     Point2D pt = map.getTileFactory().geoToPixel(gp, map.getZoom());
@@ -105,7 +106,8 @@ public class TourPainter implements Painter<JXMapViewer>
                     }
                     else
                     {
-                        if(jump){
+                        if(dist>50){
+                            dist=0;
                             double a = Math.atan2(lastY-pt.getY(),lastX-pt.getX()) + Math.PI/4;
                             int dx = (int) (d*Math.sin(a));
                             int dy =(int) (-d*Math.cos(a));
@@ -120,7 +122,7 @@ public class TourPainter implements Painter<JXMapViewer>
                             g.drawLine(x,y, x-dx2, y-dy2);
                         }
                     }
-                    jump = !jump;
+                    dist+= Point2D.distance(lastX,lastY,pt.getX(),pt.getY());
                     lastX = (int) pt.getX();
                     lastY = (int) pt.getY();
                 }
