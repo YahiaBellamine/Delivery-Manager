@@ -1,15 +1,18 @@
 package com.pld.agile.model;
 
+
 import com.pld.agile.observer.Observable;
 import org.jxmapviewer.viewer.GeoPosition;
 
 import java.awt.geom.Point2D;
 import java.util.HashMap;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 public class CityMap extends Observable {
+
 
     private Intersection warehouse;
     private List<Tour> tourList;
@@ -55,6 +58,7 @@ public class CityMap extends Observable {
     public Tour getTour(Courier courier){
         return tourList.get(courier.getCourierId());
     }
+
 
     public void addIntersection(Intersection intersection) {
         this.intersections.put(intersection.getId(), intersection);
