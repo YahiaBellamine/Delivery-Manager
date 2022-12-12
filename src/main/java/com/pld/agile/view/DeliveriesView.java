@@ -5,37 +5,18 @@ import com.pld.agile.model.DeliveryRequest;
 import com.pld.agile.model.Tour;
 import com.pld.agile.observer.Observable;
 import com.pld.agile.observer.Observer;
-
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.border.Border;
-import java.util.LinkedList;
-import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 
 public class DeliveriesView extends JPanel implements Observer {
-    /** Panel used to display the head infos of the textual view */
-    private JPanel textViewHeadPanel;
-
-    /** Panel used to display the delivery requests of a tour */
-    private JPanel deliveryRequestsPanel;
 
     /** Scrollable panel to display the delivery requests of a tour */
     private JScrollPane requestsScrollPane;
 
-    /** Main label of the textual view */
-    private JLabel viewTitle;
-
-    /** Label for displaying tour duration */
-    private JLabel tourDuration;
-
-    /** Undo button */
-    private JButton undo;
-
-    /** Redo button */
-    private JButton redo;
-
-    /** List of delivery requests to display in the GUI */
-    private List<DeliveryRequest> deliveryRequests;
+    /** Tree to display the information about all the tours and their delivery requests */
+    private JTree toursTree;
 
     /** the map */
     private CityMap cityMap;
@@ -50,56 +31,25 @@ public class DeliveriesView extends JPanel implements Observer {
         this.setLayout(new GridBagLayout());
         this.setName("textViewPanel");
         this.setBorder(textViewBorder);
+        this.setBackground(Color.CYAN);
 
         GridBagConstraints constraints = new GridBagConstraints();
 
-        // Textual view header
-        textViewHeadPanel = new JPanel();
-        textViewHeadPanel.setName("textViewHeadPanel");
-        textViewHeadPanel.setLayout(new FlowLayout());
-
-        viewTitle = new JLabel("Deliveries");
-        viewTitle.setHorizontalTextPosition(SwingConstants.CENTER);
-
-        undo = new JButton("<");
-        undo.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        redo = new JButton(">");
-        redo.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        tourDuration = new JLabel("");
-        tourDuration.setHorizontalTextPosition(SwingConstants.CENTER);
-
-        textViewHeadPanel.add(viewTitle);
-        textViewHeadPanel.add(undo);
-        textViewHeadPanel.add(redo);
-        textViewHeadPanel.add(tourDuration);
-
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.weighty = 0.1;
-        constraints.gridwidth = 3;
-        constraints.fill = GridBagConstraints.BOTH;
-        this.add(textViewHeadPanel, constraints);
-
-        // Textual view delivery requests
-        deliveryRequestsPanel = new JPanel();
-        deliveryRequestsPanel.setName("deliveryRequestsPanel");
-
-        requestsScrollPane = new JScrollPane();
+        requestsScrollPane = new JScrollPane(toursTree);
         requestsScrollPane.setName("deliveryRequestsScrollPane");
         requestsScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         requestsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        requestsScrollPane.setViewportView(deliveryRequestsPanel);
+        requestsScrollPane.setSize(this.getWidth(), this.getHeight());
 
         constraints.gridx = 0;
-        constraints.gridy = 1;
+        constraints.gridy = 0;
+        constraints.weightx = 1;
         constraints.weighty = 0.9;
         constraints.gridwidth = 3;
         constraints.fill = GridBagConstraints.BOTH;
         this.add(requestsScrollPane, constraints);
 
-        // DeliveriesView panel
+        // Constraints to add this panel to the main view
         constraints.gridx = 3;
         constraints.gridy = 0;
         constraints.weightx = 0.1;
@@ -115,57 +65,85 @@ public class DeliveriesView extends JPanel implements Observer {
         this.cityMap = cityMap;
     }
 
+    private void updateTree() {
+        if(cityMap != null) {
+            DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode("Tours information");
+            int indexCourier = 1;
+            for (Tour tour : cityMap.getTourList()) {
+                if(tour != null) {
+                    DefaultMutableTreeNode treeTour = new DefaultMutableTreeNode("Courier n°" + indexCourier);
+                    int indexDelivery = 1;
+                    for (DeliveryRequest deliveryRequest : tour.getDeliveryRequests()) {
+                        treeTour.add(new DefaultMutableTreeNode("Delivery n°" + indexDelivery));
+                        ++indexDelivery;
+                    }
+                    treeRoot.add(treeTour);
+                    ++indexCourier;
+                }
+            }
+            toursTree = new JTree(treeRoot);
+            requestsScrollPane .setViewportView(toursTree);
+            toursTree.revalidate();
+            toursTree.repaint();
+            requestsScrollPane.revalidate();
+            requestsScrollPane.repaint();
+        }
+    }
+
     public void update(Observable o, Object arg){
-        /* TODO : Display tour list in the textual view  */
-        cityMap.getTourList();
+        repaint();
     }
 
     /**
      * Changes the tour duration
-     * @param tour - The new tour
+     * @param //tour - The new tour
      */
-    public void displayTourDuration(Tour tour) {
+    /*public void displayTourDuration(Tour tour) {
         tourDuration.setText("Tour duration :"+ tour.getFormattedTourDuration());
-    }
+    }*/
 
+    @Override
+    public void repaint() {
+        updateTree();
+    }
     /* TODO : Use deliveryRequests as an attribute of tour to display them in the textual view  */
     /**
      * Changes the list of delivery requests to display for a new one.
      * @param requests - The new list of delivery requests to display.
      */
-    public void displayRequests(List<DeliveryRequest> requests) {
+    /*public void displayRequests(List<DeliveryRequest> requests) {
         deliveryRequests.clear();
         deliveryRequests.addAll(requests);
         clearDeliveryGUI();
         updateDeliveryPanelLayout();
         paintRequests();
-    }
+    }*/
 
     /**
      * Clears the GUI part where the list of delivery requests is displayed.
      */
-    private  void clearDeliveryGUI() {
+    /*private  void clearDeliveryGUI() {
         Component[] guiDeliveries = deliveryRequestsPanel.getComponents();
         for(Component component : guiDeliveries) {
             deliveryRequestsPanel.remove(component);
         }
         deliveryRequestsPanel.revalidate();
         deliveryRequestsPanel.repaint();
-    }
+    }*/
 
     /**
      * Updates the layout of the panel in charge to display the delivery requests list.
      * The new layout is updated depending on the number of deliveries to display.
      */
-    private void updateDeliveryPanelLayout() {
+    /*private void updateDeliveryPanelLayout() {
         System.out.println("New layout - number of rows: " + deliveryRequests.size());
         deliveryRequestsPanel.setLayout(new GridBagLayout());
-    }
+    }*/
 
     /**
      * Updates the display of the delivery requests in the GUI.
      */
-    private void paintRequests() {
+   /* private void paintRequests() {
         if(!deliveryRequests.isEmpty()) {
             Border deliveryPanelBorder = BorderFactory.createRaisedBevelBorder();
 
@@ -193,7 +171,7 @@ public class DeliveriesView extends JPanel implements Observer {
                 requestArrivalTime.setText("Arrival time: " + request.getFormattedArrivalTime());
 
                 //DEBUG
-                /*System.out.println("Added delivery request: name:" + requestTag.getText() + " ; timeW:" + requestTime.getText());*/
+                *//*System.out.println("Added delivery request: name:" + requestTag.getText() + " ; timeW:" + requestTime.getText());*//*
 
                 requestPanel.add(requestTag);
                 requestPanel.add(requestTime);
@@ -213,5 +191,5 @@ public class DeliveriesView extends JPanel implements Observer {
             deliveryRequestsPanel.revalidate();
             deliveryRequestsPanel.repaint();
         }
-    }
+    }*/
 }
