@@ -82,6 +82,7 @@ public class Window extends JFrame {
     deliveryRequestView = new DeliveryRequestView();
 
     deliveriesView = new DeliveriesView(cityMap, this);
+    deliveriesView.setSize(new Dimension(this.getContentPane().getWidth() / 4, this.getContentPane().getHeight()));
 
     JPanel leftContainer = new JPanel();
     leftContainer.setLayout(new BoxLayout(leftContainer, BoxLayout.PAGE_AXIS));
@@ -121,14 +122,14 @@ public class Window extends JFrame {
     constraints.fill = GridBagConstraints.BOTH;
     this.add(mapViewer.mainPanel, constraints);
 
-    //Textual view panel
+    /*//Textual view panel
     constraints.gridx = 3;
     constraints.gridy = 1;
     constraints.weightx = 0.1;
     constraints.weighty = 0.99;
     constraints.gridwidth = 1;
     constraints.fill = GridBagConstraints.BOTH;
-    this.add(deliveriesView, constraints);
+    this.add(deliveriesView, constraints);*/
 
     this.setVisible(true);
   }

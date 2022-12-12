@@ -5,7 +5,10 @@ import com.pld.agile.model.DeliveryRequest;
 import com.pld.agile.model.Tour;
 import com.pld.agile.observer.Observable;
 import com.pld.agile.observer.Observer;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeSelectionModel;
 import javax.swing.border.Border;
 import javax.swing.*;
 import java.awt.*;
@@ -17,6 +20,9 @@ public class DeliveriesView extends JPanel implements Observer {
 
     /** Tree to display the information about all the tours and their delivery requests */
     private JTree toursTree;
+
+    /** Panel to display details about delivery requests or tours */
+    private JPanel detailsPanel;
 
     /** the map */
     private CityMap cityMap;
@@ -31,12 +37,14 @@ public class DeliveriesView extends JPanel implements Observer {
         this.setLayout(new GridBagLayout());
         this.setName("textViewPanel");
         this.setBorder(textViewBorder);
-        this.setBackground(Color.CYAN);
 
         GridBagConstraints constraints = new GridBagConstraints();
 
+        //Tree panel
+        /*toursTree = new JTree(new DefaultMutableTreeNode("Tours information"));*/
+
         requestsScrollPane = new JScrollPane(toursTree);
-        requestsScrollPane.setName("deliveryRequestsScrollPane");
+        requestsScrollPane.setName("toursScrollPane");
         requestsScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         requestsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         requestsScrollPane.setSize(this.getWidth(), this.getHeight());
@@ -44,27 +52,60 @@ public class DeliveriesView extends JPanel implements Observer {
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.weightx = 1;
-        constraints.weighty = 0.9;
+        constraints.weighty = 0.6;
         constraints.gridwidth = 3;
         constraints.fill = GridBagConstraints.BOTH;
         this.add(requestsScrollPane, constraints);
 
-        // Constraints to add this panel to the main view
+        //Details panel
+        detailsPanel = new JPanel();
+        detailsPanel.setName("detailsPane");
+        detailsPanel.setSize(this.getWidth(), this.getHeight());
+        detailsPanel.setLayout(new GridBagLayout());
+
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        constraints.weightx = 1;
+        constraints.weighty = 0.4;
+        constraints.gridwidth = 3;
+        constraints.fill = GridBagConstraints.BOTH;
+        this.add(detailsPanel, constraints);
+
+        //Constraints to add this panel to the main view
         constraints.gridx = 3;
-        constraints.gridy = 0;
-        constraints.weightx = 0.1;
-        constraints.weighty = 1;
+        constraints.gridy = 1;
+        constraints.weightx = 0.2;
+        constraints.weighty = 0.99;
         constraints.gridwidth = 1;
         constraints.fill = GridBagConstraints.BOTH;
-
-        this.setSize(window.getContentPane().getWidth() / 4, window.getContentPane().getHeight());
-        window.getContentPane().add(this, constraints);
+        window.add(this, constraints);
 
         cityMap.addObserver(this);
 
         this.cityMap = cityMap;
     }
 
+    /**
+     * Method triggered by an update in the model class CityMap.
+     * @param o
+     * @param arg
+     */
+    public void update(Observable o, Object arg){
+        repaint();
+    }
+
+    /**
+     * Repaint the component.
+     */
+    @Override
+    public void repaint() {
+        updateTree();
+        updateDetails(null);
+    }
+
+    /**
+     * Update the tree view depending on the CityMap
+     */
     private void updateTree() {
         if(cityMap != null) {
             DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode("Tours information");
@@ -74,7 +115,35 @@ public class DeliveriesView extends JPanel implements Observer {
                     DefaultMutableTreeNode treeTour = new DefaultMutableTreeNode("Courier n°" + indexCourier);
                     int indexDelivery = 1;
                     for (DeliveryRequest deliveryRequest : tour.getDeliveryRequests()) {
-                        treeTour.add(new DefaultMutableTreeNode("Delivery n°" + indexDelivery));
+                        String deliveryString = "Delivery n°" + indexDelivery;
+                        if((deliveryRequest.getArrivalTime() > deliveryRequest.getTimeWindow().getEnd()) || (deliveryRequest.getArrivalTime() < deliveryRequest.getTimeWindow().getStart())) {
+                            deliveryString += "(Out of Time Window!)";
+                        }
+                        DefaultMutableTreeNode treeLeaf = new DefaultMutableTreeNode(deliveryString);
+
+                        //Check if the courier has to wait
+                        String previousNode = (String) treeTour.getLastLeaf().getUserObject();
+                        if(previousNode.startsWith("Delivery")) {
+                            int previousDeliveryNumber = treeTour.getLastLeaf().getParent().getIndex(treeTour.getLastLeaf());
+                            DeliveryRequest previousDelivery = cityMap.getTourList().get(indexCourier - 1).getDeliveryRequests().get(previousDeliveryNumber);
+                            //5 minutes = 0.08
+                            double departureTime = previousDelivery.getArrivalTime() + 0.08;
+                            double arrivalTime = deliveryRequest.getArrivalTime();
+                            double waitingTime = arrivalTime - departureTime;
+                            //If the courier has to wait more than 30 minutes we notify it in the tree
+                            if(waitingTime > 0.5) {
+                                //Format the waiting time for display
+                                double temp = waitingTime;
+                                int hours = (int) temp;
+                                temp -= hours;
+                                int minutes = (int) (temp * 60);
+                                temp = temp * 60 - minutes;
+                                int seconds = (int) (temp * 60);
+                                DefaultMutableTreeNode waitLeaf = new DefaultMutableTreeNode("Wait for: " + hours + "h" + minutes + "min" + seconds + "s");
+                                treeTour.add(waitLeaf);
+                            }
+                        }
+                        treeTour.add(treeLeaf);
                         ++indexDelivery;
                     }
                     treeRoot.add(treeTour);
@@ -82,114 +151,131 @@ public class DeliveriesView extends JPanel implements Observer {
                 }
             }
             toursTree = new JTree(treeRoot);
-            requestsScrollPane .setViewportView(toursTree);
-            toursTree.revalidate();
-            toursTree.repaint();
-            requestsScrollPane.revalidate();
-            requestsScrollPane.repaint();
-        }
-    }
-
-    public void update(Observable o, Object arg){
-        repaint();
-    }
-
-    /**
-     * Changes the tour duration
-     * @param //tour - The new tour
-     */
-    /*public void displayTourDuration(Tour tour) {
-        tourDuration.setText("Tour duration :"+ tour.getFormattedTourDuration());
-    }*/
-
-    @Override
-    public void repaint() {
-        updateTree();
-    }
-    /* TODO : Use deliveryRequests as an attribute of tour to display them in the textual view  */
-    /**
-     * Changes the list of delivery requests to display for a new one.
-     * @param requests - The new list of delivery requests to display.
-     */
-    /*public void displayRequests(List<DeliveryRequest> requests) {
-        deliveryRequests.clear();
-        deliveryRequests.addAll(requests);
-        clearDeliveryGUI();
-        updateDeliveryPanelLayout();
-        paintRequests();
-    }*/
-
-    /**
-     * Clears the GUI part where the list of delivery requests is displayed.
-     */
-    /*private  void clearDeliveryGUI() {
-        Component[] guiDeliveries = deliveryRequestsPanel.getComponents();
-        for(Component component : guiDeliveries) {
-            deliveryRequestsPanel.remove(component);
-        }
-        deliveryRequestsPanel.revalidate();
-        deliveryRequestsPanel.repaint();
-    }*/
-
-    /**
-     * Updates the layout of the panel in charge to display the delivery requests list.
-     * The new layout is updated depending on the number of deliveries to display.
-     */
-    /*private void updateDeliveryPanelLayout() {
-        System.out.println("New layout - number of rows: " + deliveryRequests.size());
-        deliveryRequestsPanel.setLayout(new GridBagLayout());
-    }*/
-
-    /**
-     * Updates the display of the delivery requests in the GUI.
-     */
-   /* private void paintRequests() {
-        if(!deliveryRequests.isEmpty()) {
-            Border deliveryPanelBorder = BorderFactory.createRaisedBevelBorder();
-
-            GridBagConstraints constraints = new GridBagConstraints();
-            constraints.gridx = 0;
-            constraints.weightx = 1;
-            constraints.weighty = 1 / deliveryRequests.size();
-            constraints.gridwidth = 1;
-            constraints.fill = GridBagConstraints.HORIZONTAL;
-
-            int requestsCounter = 1;
-            for(DeliveryRequest request : deliveryRequests) {
-                JPanel requestPanel = new JPanel();
-                JLabel requestTag = new JLabel();
-                JLabel requestTime = new JLabel();
-                JLabel requestArrivalTime = new JLabel();
-
-                requestPanel.setLayout(new BoxLayout(requestPanel, BoxLayout.PAGE_AXIS));
-                requestPanel.setBorder(deliveryPanelBorder);
-                requestPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-                requestPanel.setAlignmentY(Component.TOP_ALIGNMENT);
-
-                requestTag.setText("Delivery request n°" + requestsCounter);
-                requestTime.setText("Time Window: [" + request.getTimeWindow().getStart() + " - " +request.getTimeWindow().getEnd() + "]");
-                requestArrivalTime.setText("Arrival time: " + request.getFormattedArrivalTime());
-
-                //DEBUG
-                *//*System.out.println("Added delivery request: name:" + requestTag.getText() + " ; timeW:" + requestTime.getText());*//*
-
-                requestPanel.add(requestTag);
-                requestPanel.add(requestTime);
-                requestPanel.add(requestArrivalTime);
-
-                constraints.gridy = requestsCounter - 1;
-                deliveryRequestsPanel.add(requestPanel, constraints);
-
-                requestPanel.setPreferredSize(new Dimension(requestPanel.getParent().getWidth(), requestPanel.getParent().getHeight() / 10));
-                requestPanel.revalidate();
-
-                ++requestsCounter;
+            toursTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+            toursTree.addTreeSelectionListener(new TreeSelectionListener() {
+                public void valueChanged(TreeSelectionEvent e) {
+                    DefaultMutableTreeNode node = (DefaultMutableTreeNode)toursTree.getLastSelectedPathComponent();
+                    //If nothing is selected
+                    if (node == null) {
+                        return;
+                    }
+                    updateDetails(node);
+                }
+            });
+            toursTree.setCellRenderer(new DeliveriesTreeCellRenderer());
+            //Expand the tree
+            for (int i = 0; i < toursTree.getRowCount(); i++) {
+                toursTree.expandRow(i);
             }
-            requestsScrollPane.setViewportView(deliveryRequestsPanel);
-            requestsScrollPane.revalidate();
-            requestsScrollPane.repaint();
-            deliveryRequestsPanel.revalidate();
-            deliveryRequestsPanel.repaint();
+            requestsScrollPane.setViewportView(toursTree);
         }
-    }*/
+    }
+
+    /**
+     * Update the details panel depending on the selected node in the tree.
+     * @param detail The object we need the details to be displayed.
+     */
+    public void updateDetails(Object detail) {
+        if(detailsPanel != null) {
+            Font titleFont = new Font("Courier", Font.BOLD, 15);
+            if (detail != null) {
+                for (Component component : detailsPanel.getComponents()) {
+                    detailsPanel.remove(component);
+                }
+
+                String node = (String) ((DefaultMutableTreeNode) detail).getUserObject();
+
+                if (node.startsWith("Delivery")) {
+                    int deliveryNumber =  Integer.parseInt(node.substring(node.length() - 1));
+                    int tourNumber = ((DefaultMutableTreeNode) detail).getParent().getParent().getIndex(((DefaultMutableTreeNode) detail).getParent());
+                    DeliveryRequest delivery = cityMap.getTourList().get(tourNumber).getDeliveryRequests().get(deliveryNumber - 1);
+
+                    JLabel detailsTitle = new JLabel("Tour n°" + (tourNumber + 1) + " - Delivery n°" + deliveryNumber);
+                    detailsTitle.setFont(titleFont);
+
+                    JLabel deliveryArrivalTime = new JLabel(" Arrival Time: " + delivery.getFormattedArrivalTime());
+                    deliveryArrivalTime.setHorizontalTextPosition(SwingConstants.LEFT);
+
+                    JLabel deliveryTimeWindow = new JLabel(" Time Window: " + delivery.getTimeWindow().getStart() + "h - " + delivery.getTimeWindow().getEnd() + "h");
+                    deliveryArrivalTime.setHorizontalTextPosition(SwingConstants.LEFT);
+
+                    JLabel deliveryCourier = new JLabel(" Courier: " + (tourNumber + 1));
+                    deliveryArrivalTime.setHorizontalTextPosition(SwingConstants.LEFT);
+
+                    JButton update = new JButton("Update");
+
+                    JButton delete = new JButton("Delete");
+
+                    GridBagConstraints constraints = new GridBagConstraints();
+
+                    constraints.gridx = 1;
+                    constraints.gridy = 0;
+                    constraints.weightx = 0.2;
+                    constraints.weighty = 1;
+                    constraints.gridwidth = 2;
+                    constraints.fill = GridBagConstraints.NONE;
+                    detailsPanel.add(detailsTitle, constraints);
+
+                    constraints.gridx = 0;
+                    constraints.gridy = 1;
+                    constraints.weightx = 0.2;
+                    constraints.weighty = 1;
+                    constraints.gridwidth = 2;
+                    constraints.fill = GridBagConstraints.HORIZONTAL;
+                    detailsPanel.add(deliveryArrivalTime, constraints);
+
+                    constraints.gridx = 0;
+                    constraints.gridy = 2;
+                    constraints.weightx = 0.2;
+                    constraints.weighty = 1;
+                    constraints.gridwidth = 2;
+                    constraints.fill = GridBagConstraints.HORIZONTAL;
+                    detailsPanel.add(deliveryTimeWindow, constraints);
+
+                    constraints.gridx = 0;
+                    constraints.gridy = 3;
+                    constraints.weightx = 0.2;
+                    constraints.weighty = 1;
+                    constraints.gridwidth = 2;
+                    constraints.fill = GridBagConstraints.HORIZONTAL;
+                    detailsPanel.add(deliveryCourier, constraints);
+
+                    constraints.gridx = 0;
+                    constraints.gridy = 5;
+                    constraints.weightx = 0.2;
+                    constraints.weighty = 1;
+                    constraints.gridwidth = 2;
+                    constraints.fill = GridBagConstraints.NONE;
+                    detailsPanel.add(update, constraints);
+
+                    constraints.gridx = 2;
+                    constraints.gridy = 5;
+                    constraints.weightx = 0.2;
+                    constraints.weighty = 1;
+                    constraints.gridwidth = 2;
+                    constraints.fill = GridBagConstraints.NONE;
+                    detailsPanel.add(delete, constraints);
+                }
+
+                if (node.startsWith("Courier")) {
+                    int tourNumber = ((DefaultMutableTreeNode) detail).getParent().getIndex((DefaultMutableTreeNode) detail);
+
+                    JLabel tourDuration = new JLabel(" Tour Duration: " + cityMap.getTourList().get(tourNumber).getFormattedTourDuration());
+                    tourDuration.setFont(titleFont);
+                    tourDuration.setHorizontalTextPosition(SwingConstants.CENTER);
+
+                    GridBagConstraints constraints = new GridBagConstraints();
+
+                    constraints.gridx = 0;
+                    constraints.gridy = 0;
+                    constraints.weightx = 1;
+                    constraints.weighty = 1;
+                    constraints.gridwidth = 4;
+                    constraints.fill = GridBagConstraints.BOTH;
+                    detailsPanel.add(tourDuration, constraints);
+                }
+            }
+            detailsPanel.revalidate();
+        }
+    }
 }
