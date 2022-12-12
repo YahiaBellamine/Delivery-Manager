@@ -10,7 +10,7 @@ public enum TimeWindow {
   private int end;
 
   /**
-   * TImeWindow constructor.
+   * TimeWindow constructor.
    * @param start - The starting time of the TimeWindow.
    * @param end - The ending time of the TimeWindow.
    */
@@ -35,11 +35,6 @@ public enum TimeWindow {
       return end;
   }
 
-  @Override
-  public String toString() {
-    return this.start+"h - " + this.end + "h";
-  }
-
   public int isBefore(TimeWindow timeWindow){
     if(this.start < timeWindow.start){
       return -1;
@@ -47,5 +42,10 @@ public enum TimeWindow {
       return 1;
     }
     return 0;
+  }
+
+  @Override
+  public String toString() {
+    return this.start+"h - " + this.end + "h";
   }
 }

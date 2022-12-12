@@ -1,87 +1,91 @@
 package com.pld.agile.model;
 
+
+import com.pld.agile.observer.Observable;
+import org.jxmapviewer.viewer.GeoPosition;
+
+import java.awt.geom.Point2D;
+import java.util.HashMap;
+
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
-public class CityMap {
-    private double minLatitude;
-    private double maxLatitude;
-    private double minLongitude;
-    private double maxLongitude;
+public class CityMap extends Observable {
+
+
     private Intersection warehouse;
     private List<Tour> tourList;
+    private Map<Long, Intersection> intersections;
+    private Long destinationPointId;
 
     public CityMap() {
+        this.warehouse = null;
         this.tourList = new LinkedList<>();
-    }
-
-    public CityMap(double minLatitude, double maxLatitude, double minLongitude, double maxLongitude, Intersection warehouse) {
-        this.minLatitude = minLatitude;
-        this.maxLatitude = maxLatitude;
-        this.minLongitude = minLongitude;
-        this.maxLongitude = maxLongitude;
-        this.warehouse = warehouse;
-        tourList = new LinkedList<>();
-    }
-
-    public double getMinLatitude() {
-        return minLatitude;
-    }
-
-    public void setMinLatitude(double minLatitude) {
-        this.minLatitude = minLatitude;
-    }
-
-    public double getMaxLatitude() {
-        return maxLatitude;
-    }
-
-    public void setMaxLatitude(double maxLatitude) {
-        this.maxLatitude = maxLatitude;
-    }
-
-    public double getMinLongitude() {
-        return minLongitude;
-    }
-
-    public void setMinLongitude(double minLongitude) {
-        this.minLongitude = minLongitude;
-    }
-
-    public double getMaxLongitude() {
-        return maxLongitude;
-    }
-
-    public void setMaxLongitude(double maxLongitude) {
-        this.maxLongitude = maxLongitude;
+        initializeTourList();
+        this.intersections = new HashMap<>();
     }
 
     public Intersection getWarehouse() {
-        return warehouse;
+        return this.warehouse;
     }
 
     public void setWarehouse(Intersection warehouse) {
         this.warehouse = warehouse;
     }
 
-    public List<Tour> getTourList() {
-        return tourList;
+    public List<Tour> getTourList() { return this.tourList; }
+
+    public Map<Long, Intersection> getIntersections() {
+        return this.intersections;
     }
 
-    public static void DeepCopy(CityMap temp, CityMap cityMap){
-        cityMap.warehouse=temp.warehouse;
-        cityMap.maxLatitude= temp.maxLatitude;
-        cityMap.minLatitude= temp.minLatitude;
-        cityMap.maxLongitude=temp.maxLongitude;
-        cityMap.minLongitude=temp.minLongitude;
+    private void initializeTourList(){
+        for(int i = 0;  i < Couriers.courierList.size(); i++){
+            tourList.add(null);
+        }
     }
-//    @Override
-//    public Object clone() throws  CloneNotSupportedException{
-//        CityMap cityMap=new CityMap(minLatitude,maxLatitude,minLongitude,maxLongitude,warehouse);
-//        return  cityMap;
-//
-//
-//    }
+
+    private void updateSelectedPoint(Long destinationPointId) {
+        this.destinationPointId = destinationPointId;
+    }
+
+    public void updateTourList(Tour tour){
+        tourList.set(tour.getCourier().getCourierId(), tour);
+        notifyObservers(tour);
+    }
+
+    public Tour getTour(Courier courier){
+        return tourList.get(courier.getCourierId());
+    }
 
 
+    public void addIntersection(Intersection intersection) {
+        this.intersections.put(intersection.getId(), intersection);
+    }
+
+    public Intersection searchIntersection(GeoPosition position) {
+        double x = position.getLatitude();
+        double y = position.getLongitude();
+        double r = Double.MAX_VALUE;
+        Intersection intersection = null;
+        for(Intersection i : this.intersections.values()){
+            double dist = Point2D.distance(x,y,i.getLatitude(),i.getLongitude());
+            if(dist<r){
+                System.out.println("dist "+dist+ " "+i.getLatitude()+" "+i.getLongitude());
+                intersection = i;
+                r = dist;
+            }
+        }
+        return intersection;
+    }
+
+    public void reInitializeCityMap(){
+        this.warehouse = null;
+        this.tourList = new LinkedList<>();
+        initializeTourList();
+        this.intersections = new HashMap<>();
+        System.out.println("CityMap reinitialized");
+        notifyObservers();
+    }
 }

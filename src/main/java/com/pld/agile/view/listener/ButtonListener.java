@@ -1,12 +1,9 @@
 package com.pld.agile.view.listener;
 
 import com.pld.agile.controller.Controller;
-import com.pld.agile.utils.xml.ExceptionXML;
 import com.pld.agile.view.Window;
 import com.pld.agile.view.map.MapViewer;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.UnsupportedEncodingException;
@@ -34,7 +31,7 @@ public class ButtonListener implements ActionListener {
         }
         break;
       case Window.ADD_DELIVERY_REQUEST:
-        controller.addDeliveryRequest();
+        controller.addNewRequest();
         break;
       case Window.SAVE_TOUR:
         try {

@@ -3,6 +3,7 @@ package com.pld.agile.view.map;
 import com.pld.agile.controller.Controller;
 import com.pld.agile.model.CityMap;
 import com.pld.agile.model.Tour;
+import com.pld.agile.observer.Observable;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.input.CenterMapListener;
@@ -22,7 +23,9 @@ import java.awt.*;
 import java.util.*;
 
 
-public class MapViewer {
+import com.pld.agile.observer.Observer;
+
+public class MapViewer implements Observer {
     public JPanel mainPanel;
     public JPanel mapPanel;
     public JPanel centerPanel;
@@ -33,14 +36,13 @@ public class MapViewer {
     private Marker requestMarker;
 
     private List<Route> routes;
-
     private CityMap cityMap;
 
-
-    public MapViewer(Controller controller, CityMap cm) {
-        cityMap = cm;
+    public MapViewer(CityMap cityMap, Controller controller) {
+        super();
+        this.cityMap = cityMap;
+        this.cityMap.addObserver(this);
         routes = new ArrayList<>();
-
 
         // Add interactions
         MouseInputListener mia = new PanMouseInputListener(mapViewer);
@@ -76,6 +78,33 @@ public class MapViewer {
             }
             case REQUEST -> requestMarker = new Marker(id, pos,ImageUtil.getMarkerImage(Color.ORANGE), type);
         }
+    }
+
+    public void update(Observable o, Object arg){
+        /* TODO : Display tour list in the graphical view  */
+        if (arg != null) {
+
+        }
+        System.out.println("MapViewer : update");
+        update();
+        //cityMap.getTourList();
+    }
+
+    public void updateTour(List<GeoPosition> tourList){
+        this.tour.clear();
+        this.tour.addAll(tourList);
+        update();
+    }
+
+    public List<GeoPosition> getTour(){
+        return this.tour;
+    }
+
+    public void clearMarkers(){
+        tourMarkers.clear();
+        tour.clear();
+        requestMarker = null;
+        update();
     }
 
     public void clearRequestMarker(){

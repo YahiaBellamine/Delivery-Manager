@@ -12,7 +12,6 @@ import java.awt.*;
 public class Window extends JFrame {
 
   private MapViewer mapViewer;
-  private final Controller controller;
   private final DeliveryRequestView deliveryRequestView;
   private final DeliveriesView deliveriesView;
 
@@ -24,10 +23,10 @@ public class Window extends JFrame {
   public final static String SAVE_TOUR= "Save the tour";
   public final static String RECENTER_MAP = "Recenter the Map";
 
-  public Window(Controller controller, CityMap cm) {
+  public Window(CityMap cityMap, Controller controller) {
     super("Delivery Manager");
-    this.controller = controller;
-    mapViewer = new MapViewer(controller,cm);
+
+    this.mapViewer = new MapViewer(cityMap, controller);
 
     //Create the JFrame
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -82,8 +81,7 @@ public class Window extends JFrame {
 
     deliveryRequestView = new DeliveryRequestView();
 
-    deliveriesView = new DeliveriesView();
-    deliveriesView.setSize(contentPane.getWidth() / 4, contentPane.getHeight());
+    deliveriesView = new DeliveriesView(cityMap, this);
 
     JPanel leftContainer = new JPanel();
     leftContainer.setLayout(new BoxLayout(leftContainer, BoxLayout.PAGE_AXIS));
@@ -145,12 +143,19 @@ public class Window extends JFrame {
     return deliveryRequestView;
   }
 
-  public DeliveriesView getDeliveriesView() {
-    return deliveriesView;
-  }
+//  public DeliveriesView getDeliveriesView() {
+//    return deliveriesView;
+//  }
 
   public void displayMessage(String message){
     JOptionPane.showMessageDialog(this, message);
   }
+
+  public void updateSelectedPoint(Intersection intersection) {
+    this.mapViewer.addPoint(intersection.getGeoPosition(), intersection.getId(), Marker.Type.REQUEST);
+    this.mapViewer.update();
+    this.deliveryRequestView.setSelectDestinationPoint("Intersection " + intersection.getId());
+  }
+
 }
 

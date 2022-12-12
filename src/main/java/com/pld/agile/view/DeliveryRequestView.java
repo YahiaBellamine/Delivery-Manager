@@ -1,5 +1,8 @@
 package com.pld.agile.view;
 
+import com.pld.agile.model.CityMap;
+import com.pld.agile.model.Courier;
+import com.pld.agile.model.Couriers;
 import com.pld.agile.model.enums.TimeWindow;
 
 import java.awt.*;
@@ -8,9 +11,9 @@ import javax.swing.*;
 public class DeliveryRequestView extends JPanel{
 
   JPanel subPanelRequest;
-
   JLabel selectDestinationPoint;
   public JComboBox<TimeWindow> comboBoxTimeWindow;
+  public JComboBox<Courier> comboBoxCourier;
 
   public DeliveryRequestView(){
     this.setLayout(new BorderLayout());
@@ -32,15 +35,16 @@ public class DeliveryRequestView extends JPanel{
     this.subPanelRequest.add(emptyPanel);
 
 
-    JComboBox<String> comboBoxCourier = new JComboBox<>();
+    comboBoxCourier = new JComboBox<Courier>();
     ((JLabel) comboBoxCourier.getRenderer()).setHorizontalAlignment(JLabel.LEFT);
-    comboBoxCourier.addItem("Courier 1");
+    for (Courier courier : Couriers.courierList) {
+      comboBoxCourier.addItem(courier);
+    }
 
     JLabel enterCourier = new JLabel("  Select a courier:");
     enterCourier.setBackground(Color.gray);
     this.subPanelRequest.add(enterCourier);
     this.subPanelRequest.add(comboBoxCourier);
-
 
     comboBoxTimeWindow = new JComboBox<TimeWindow>();
     ((JLabel) comboBoxTimeWindow.getRenderer()).setHorizontalAlignment(JLabel.LEFT);
@@ -48,8 +52,6 @@ public class DeliveryRequestView extends JPanel{
     comboBoxTimeWindow.addItem(TimeWindow.TW_9_10);
     comboBoxTimeWindow.addItem(TimeWindow.TW_10_11);
     comboBoxTimeWindow.addItem(TimeWindow.TW_11_12);
-
-
 
     JLabel enterTimeWindow = new JLabel("  Select a TimeWindow:");
     enterTimeWindow.setBackground(Color.gray);
