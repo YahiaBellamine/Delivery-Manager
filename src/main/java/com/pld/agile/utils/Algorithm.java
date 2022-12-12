@@ -16,7 +16,7 @@ public class Algorithm {
     static LinkedList<DeliveryRequest> bestSol;
     static Double bestSolCost;
 
-    public static Tour ExecuteAlgorithm(Intersection warehouse, List<DeliveryRequest> deliveryRequests) {
+    public static Tour ExecuteAlgorithm(Intersection warehouse, List<DeliveryRequest> deliveryRequests) throws InaccessibleDestinationException  {
 
         // Instantiation of attributes
         optimalTour = new Tour();
@@ -274,7 +274,7 @@ public class Algorithm {
             if (isArc(lastVisitedVertex, vertex, unvisited)) {
                 distance = tspCost.get(lastVisitedVertex.getAddress().getId()).get(vertex.getAddress().getId());
                 if(distance == null) {
-                    throw new InaccessibleDestinationException("L'intersection selectionnée est inaccessible.");
+                    throw new InaccessibleDestinationException();
                 }
                 if (distance < lowerBound) {
                     lowerBound = distance;
@@ -307,7 +307,7 @@ public class Algorithm {
      * @param unvisited   the set of vertex that have not yet been visited
      * @param currentCost the tspCost of the path corresponding to <code>visited</code>
      */
-    private static void branchAndBound(LinkedList<DeliveryRequest> visited, LinkedList<DeliveryRequest> unvisited, Double currentCost) {
+    private static void branchAndBound(LinkedList<DeliveryRequest> visited, LinkedList<DeliveryRequest> unvisited, Double currentCost) throws InaccessibleDestinationException {
         int visitedSize = visited.size();
         int unvisitedSize = unvisited.size();
         LinkedList<DeliveryRequest> unvisitedBeforePermutation = new LinkedList<>(unvisited);

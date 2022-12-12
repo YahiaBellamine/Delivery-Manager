@@ -6,6 +6,7 @@ import com.pld.agile.model.Intersection;
 import com.pld.agile.model.Tour;
 import com.pld.agile.model.enums.TimeWindow;
 import com.pld.agile.utils.Algorithm;
+import com.pld.agile.utils.InaccessibleDestinationException;
 import com.pld.agile.view.Window;
 import org.jxmapviewer.viewer.GeoPosition;
 
@@ -17,12 +18,15 @@ public class ComputedTourState implements State{
         if(tour != null && tour.getDeliveryRequests().size() > indexDeliveryRequest) {
             tour.removeDeliveryRequest(indexDeliveryRequest);
 
-            Tour optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
-            optimalTour.setCourier(courier);
-            cityMap.updateTourList(optimalTour);
-        }
+            try {
+                Tour optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
+                optimalTour.setCourier(courier);
+                cityMap.updateTourList(optimalTour);
+                controller.setCurrentState(controller.computedTourState);
+            } catch (InaccessibleDestinationException e){
 
-        controller.setCurrentState(controller.computedTourState);
+            }
+        }
     };
 
     @Override
@@ -42,20 +46,27 @@ public class ComputedTourState implements State{
                 Tour newTour = cityMap.getTour(newCourier);
                 newTour.addDeliveryRequest(tour.getDeliveryRequests().get(indexDeliveryRequest));
 
-                Tour newOptimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), newTour.getDeliveryRequests());
-                newOptimalTour.setCourier(newCourier);
-                cityMap.updateTourList(newOptimalTour);
+                try {
+                    Tour newOptimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), newTour.getDeliveryRequests());
+                    newOptimalTour.setCourier(newCourier);
+                    cityMap.updateTourList(newOptimalTour);
+                    tour.removeDeliveryRequest(indexDeliveryRequest);
+                    controller.setCurrentState(controller.computedTourState);
+                } catch (InaccessibleDestinationException e) {
 
-                tour.removeDeliveryRequest(indexDeliveryRequest);
+                }
             }
 
-            Tour optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
-            optimalTour.setCourier(previousCourier);
-            cityMap.updateTourList(optimalTour);
-        }
+            try {
+                Tour optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
+                optimalTour.setCourier(previousCourier);
+                cityMap.updateTourList(optimalTour);
+                controller.setCurrentState(controller.computedTourState);
+            } catch (InaccessibleDestinationException e) {
 
-        controller.setCurrentState(controller.computedTourState);
-    };
+            }
+        }
+    }
 
     @Override
     public void selectDestinationPoint(Controller c, Window window, GeoPosition position, CityMap cityMap) {
