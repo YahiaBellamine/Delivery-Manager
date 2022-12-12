@@ -71,7 +71,7 @@ public interface State {
 
     public default void restoreTours(CityMap cityMap, Controller controller, Window window) {};
 
-    public default void saveTours(CityMap cityMap, Window window) {};
+    public default void saveTours(CityMap cityMap, Controller c, Window window) {};
 
     public default void deleteDeliveryRequest(CityMap cityMap, Controller c, Courier courier, int indexDeliveryRequest) {};
 
