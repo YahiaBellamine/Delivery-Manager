@@ -25,6 +25,7 @@ public class Window extends JFrame {
   public final static String SAVE_TOURS= "Save the tours";
   public final static String LOAD_TOURS= "Load the tours";
   public final static String RECENTER_MAP = "Recenter the Map";
+  public final static String ADD_COURIER = "Add a courier";
 
   public Window(CityMap cityMap, Controller controller) {
     super("Delivery Manager");
@@ -52,6 +53,7 @@ public class Window extends JFrame {
 
     //Creation of the menu bar
     menuBar = new JMenuBar();
+
     JMenu fileMenu = new JMenu("File");
     JMenuItem loadMap = new JMenuItem("Load Map");
     loadMap.setActionCommand(LOAD_MAP);
@@ -62,14 +64,22 @@ public class Window extends JFrame {
     JMenuItem saveTours = new JMenuItem("Save Tours");
     saveTours.setActionCommand(SAVE_TOURS);
     saveTours.addActionListener(buttonListener);
+
     JMenu actionsMenu = new JMenu("Actions");
     JMenuItem recenterMap = new JMenuItem("Recenter Map");
     recenterMap.setActionCommand(RECENTER_MAP);
     recenterMap.addActionListener(buttonListener);
+    JMenuItem addCourier = new JMenuItem("Add Courier");
+    addCourier.setActionCommand(ADD_COURIER);
+    addCourier.addActionListener(buttonListener);
+
     fileMenu.add(loadMap);
     fileMenu.add(loadTours);
     fileMenu.add(saveTours);
+
     actionsMenu.add(recenterMap);
+    actionsMenu.add(addCourier);
+
     menuBar.add(fileMenu);
     menuBar.add(actionsMenu);
 
