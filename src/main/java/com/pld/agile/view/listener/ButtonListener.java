@@ -6,12 +6,11 @@ import com.pld.agile.view.map.MapViewer;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.UnsupportedEncodingException;
 
 public class ButtonListener implements ActionListener {
 
-  private Controller controller;
-  private MapViewer mapViewer;
+  private final Controller controller;
+  private final MapViewer mapViewer;
 
   public ButtonListener(Controller controller, MapViewer mapViewer) {
     this.controller = controller;
@@ -22,31 +21,11 @@ public class ButtonListener implements ActionListener {
   public void actionPerformed(ActionEvent e) {
     // Method called by the button listener each time a button is clicked
     // Forward the corresponding message to the controller
-    switch (e.getActionCommand()){
-      case Window.LOAD_MAP:
-        try {
-          controller.loadMap();
-        } catch (UnsupportedEncodingException ex) {
-          throw new RuntimeException(ex);
-        }
-        break;
-      case Window.ADD_DELIVERY_REQUEST:
-        controller.addNewRequest();
-        break;
-      case Window.SAVE_TOUR:
-        try {
-          controller.saveTour();
-        } catch (ExceptionXML ex) {
-          throw new RuntimeException(ex);
-        } catch (ParserConfigurationException ex) {
-          throw new RuntimeException(ex);
-        } catch (TransformerException ex) {
-          throw new RuntimeException(ex);
-        }
-        break;
-      case Window.RECENTER_MAP:
-        mapViewer.recenter();
-        break;
+    switch (e.getActionCommand()) {
+      case Window.LOAD_MAP -> controller.loadMap();
+      case Window.ADD_DELIVERY_REQUEST -> controller.addNewRequest();
+      case Window.SAVE_TOUR -> controller.saveTours();
+      case Window.RECENTER_MAP -> mapViewer.recenter();
     }
   }
 }
