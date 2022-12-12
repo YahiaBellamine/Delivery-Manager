@@ -69,7 +69,7 @@ public interface State {
 
     public default void addNewRequest(CityMap cityMap, Controller controller, Window window) {};
 
-    public default void restoreTours(CityMap cityMap, Controller controller, Window window) {};
+    public default void loadTours(CityMap cityMap, Controller controller, Window window) {};
 
     public default void saveTours(CityMap cityMap, Controller c, Window window) {};
 

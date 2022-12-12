@@ -8,7 +8,7 @@ import org.jxmapviewer.viewer.GeoPosition;
 public class LoadedMapState implements State{
 
     @Override
-    public void restoreTours(CityMap cityMap, Controller c, Window w) {
+    public void loadTours(CityMap cityMap, Controller c, Window w) {
         // Appel d'une fonction restore dans XMLDeserializer
         // try {
         //    XMLDeserialiser.load(path, intersections, cityMap);
