@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<map>
+<warehouse address="1"/>
+<intersection id="1" latitude="45.5" longitude="4.8"/>
+<intersection id="2" latitude="45.6" longitude="4.9"/>
+<intersection id="3" latitude="45.7" longitude="5"/>
+<intersection id="4" latitude="45.5" longitude="5"/>
+<intersection id="5" latitude="45.6" longitude="5"/>
+<intersection id="6" latitude="45.8" longitude="4.8"/>
+<intersection id="7" latitude="45.8" longitude="5"/>
+<intersection id="8" latitude ="45.9" longitude="5.1"/>
+<intersection id="9" latitude ="45.1" longitude="5.2"/>
+<segment destination="6" length="20" name="Rue Matthieu Roux" origin="1"/>
+<segment destination="7" length="25" name="Rue de Cpp" origin="6"/>
+<segment destination="3" length="40" name="Boulevard Java" origin="7"/>
+<segment destination="5" length="30" name="Boulevard Python" origin="3"/>
+<segment destination="2" length="75" name="Chemin de liste" origin="5"/>
+<segment destination="5" length="10" name="Route de C" origin="2"/>
+<segment destination="4" length="15" name="Avenue Erreur" origin="5"/>
+<segment destination="8" length="35" name="Boulevard Maranzana" origin="1"/>
+<segment destination="9" length="40" name="Place SGBD" origin="1"/>
+<segment destination="9" length="55" name="Place De Gaulle" origin="4"/>
+<segment destination="1" length="50" name="Route Prolog" origin="9"/>
+<segment destination="2" length="5" name="Chemin des pointeurs" origin="8"/>
+<segment destination="7" length="15" name="Dilemme" origin="9"/>
+<segment destination="1" length="25" name="Avenue de la Paix" origin="8"/>
+</map>

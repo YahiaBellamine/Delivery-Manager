@@ -22,22 +22,22 @@ import java.util.Map;
 
 
 public class XMLDeserialiser {
-  public static void load(String path, Map<Long, Intersection> intersections, CityMap cityMap) throws ExceptionXML{
+  public static void load(String path, Map<Long, Intersection> intersections, CityMap cityMap) throws ExceptionXML, ParserConfigurationException, IOException, SAXException {
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    try {
+
       // create db, instance of DocumentBuilder
       DocumentBuilder db = dbf.newDocumentBuilder();
       // charge the required .xml
       Document document = db.parse(path);
       // verify if we found the document
       if(document==null){
-        throw new ExceptionXML("Error file is null");
+        throw new ExceptionXML("Empty file");
       }
       // obtain the map
       Node map = document.getElementsByTagName("map").item(0);
       // verify if the document starts with "map"
       if(map==null){
-        throw new ExceptionXML("This is not a map");
+        throw new ExceptionXML("No map");
       }
       // TODO: How can we create Map while initialising the max and min for longitude and latitude here?
 
@@ -45,8 +45,12 @@ public class XMLDeserialiser {
       intersections.clear();
 
       Node warehouse = document.getElementsByTagName("warehouse").item(0);
+      if(warehouse==null){
+        throw new ExceptionXML("No warehouse");
+      }
       String warehouseAddress=warehouse.getAttributes().getNamedItem("address").getNodeValue();
-      System.out.println("The address of our warehouse: "+warehouseAddress);
+      //System.out.println("The address of our warehouse: "+warehouseAddress);
+
 
       //build intersections
       NodeList intersectionsList = document.getElementsByTagName("intersection");
@@ -66,18 +70,15 @@ public class XMLDeserialiser {
       // create the CityMap
       // System.out.println(cityMap.getWarehouse().getId());
       CityMap temp=createCityMap((Element)warehouse,intersections);
+      if(temp==null){
+        throw new ExceptionXML("Format error");
+      }
       //cityMap= (CityMap) temp.clone();
       CityMap.DeepCopy(temp,cityMap);
       //System.out.println(cityMap.getWarehouse().getId());
 
 
-    } catch (ParserConfigurationException e) {
-      e.printStackTrace();
-    }catch (SAXException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+
 
   }
 
@@ -100,8 +101,12 @@ public class XMLDeserialiser {
 
     // update the outgoingSegment in Intersection
     long originID = Long.parseLong(e.getAttribute("origin"));
+
     if (originID < 0) {
       throw new ExceptionXML("Incorrect origin ID");
+    }
+    if(originID==destinationID){
+      throw new ExceptionXML("Same origin ID and destination ID");
     }
     Intersection origin = intersections.get(originID);
     if (origin == null) {
@@ -121,8 +126,9 @@ public class XMLDeserialiser {
     double longitude = Double.parseDouble(e.getAttribute("longitude"));
     long id = Long.parseLong(e.getAttribute("id"));
     List<RoadSegment> outgoingSegments = new ArrayList<RoadSegment>();
+    System.out.println(id);
     if (id < 0) {
-      throw new ExceptionXML("Invalid ID");
+      throw new ExceptionXML("Invalid Intersection ID");
     }
     if(latitude<-90||latitude>90){
       throw new ExceptionXML(("Invalid latitude"));
@@ -140,7 +146,7 @@ public class XMLDeserialiser {
     }
     Intersection warehouse=intersections.get(warehouseID);
     if (warehouse == null) {
-      throw new ExceptionXML("Unknown Intersection for warehouse");
+      throw new ExceptionXML("Unknown Intersection of warehouse");
     }
     // TODO: to be MODIFIED! 0 0 0 0 will be changed to the max and min for longitude and latitude
     // Map m= new CityMap(0,0,0,0,warehouse) ;

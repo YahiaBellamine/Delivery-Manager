@@ -12,10 +12,12 @@ import com.pld.agile.utils.xml.XMLSerialiser;
 import com.pld.agile.view.Window;
 import com.pld.agile.view.map.Marker;
 import org.jxmapviewer.viewer.GeoPosition;
+import org.xml.sax.SAXException;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.geom.Point2D;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -99,6 +101,7 @@ public class Controller {
     j.setAcceptAllFileFilterUsed(false);
     j.setDialogTitle("Select a map file (.xml)");
 
+    // only file of .xml can be selected
     FileNameExtensionFilter restrict = new FileNameExtensionFilter("Only .xml files", "xml");
     j.addChoosableFileFilter(restrict);
 
@@ -118,6 +121,17 @@ public class Controller {
 //      throw new RuntimeException(e);
       this.window.displayMessage(e.getMessage()+" detected");
       return;
+    } catch (ParserConfigurationException e) {
+      this.window.displayMessage("System error in XML parse");
+      throw new RuntimeException(e);
+    } catch (IOException e) {
+      this.window.displayMessage("System error in XML parse");
+      throw new RuntimeException(e);
+    } catch (SAXException e) {
+      this.window.displayMessage("System error in XML parse");
+      throw new RuntimeException(e);
+    } catch (NumberFormatException e){
+      this.window.displayMessage("Error in format");
     }
     window.getMapViewer().clearAll();
     deliveryRequests.clear();
