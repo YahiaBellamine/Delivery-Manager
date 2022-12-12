@@ -2,6 +2,7 @@ package com.pld.agile.view.map;
 
 import com.pld.agile.controller.Controller;
 import com.pld.agile.model.CityMap;
+import com.pld.agile.model.Tour;
 import com.pld.agile.observer.Observable;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
@@ -11,43 +12,37 @@ import org.jxmapviewer.input.PanMouseInputListener;
 import org.jxmapviewer.input.ZoomMouseWheelListenerCursor;
 import org.jxmapviewer.painter.CompoundPainter;
 import org.jxmapviewer.painter.Painter;
-import org.jxmapviewer.viewer.*;
-
-import javax.swing.*;
 import javax.swing.event.MouseInputListener;
-import java.awt.*;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import org.jxmapviewer.viewer.*;
+import javax.swing.*;
+import java.awt.*;
 import java.util.*;
-import java.util.List;
+
 
 import com.pld.agile.observer.Observer;
 
 public class MapViewer implements Observer {
     public JPanel mainPanel;
     public JPanel mapPanel;
-    public JButton bottomButton;
     public JPanel centerPanel;
-    public JPanel bottomPanel;
-    private JButton recenterButton;
     public JXMapViewer mapViewer;
 
     private Marker warehouse;
 
     private Marker requestMarker;
-    private HashSet<Marker> tourMarkers;
-    private List<GeoPosition> tour;
 
+    private List<Route> routes;
     private CityMap cityMap;
 
     public MapViewer(CityMap cityMap, Controller controller) {
         super();
         this.cityMap = cityMap;
         this.cityMap.addObserver(this);
-
-        tourMarkers = new HashSet<>();
-        tour = new LinkedList<>();
+        routes = new ArrayList<>();
 
         // Add interactions
         MouseInputListener mia = new PanMouseInputListener(mapViewer);
@@ -59,22 +54,6 @@ public class MapViewer implements Observer {
         mapViewer.addMouseWheelListener(new ZoomMouseWheelListenerCursor(mapViewer));
         mapViewer.addMouseListener(new MarkerMouseListener(controller));
 
-        //mapViewer.addKeyListener(new PanKeyListener(mapViewer));
-
-//        // Add a selection painter
-//        SelectionAdapter sa = new SelectionAdapter(mapViewer);
-//        SelectionPainter sp = new SelectionPainter(sa);
-//        mapViewer.addMouseListener(sa);
-//        mapViewer.addMouseMotionListener(sa);
-//        mapViewer.setOverlayPainter(sp);
-
-        //recenter();
-        recenterButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                recenter();
-            }
-        });
     }
 
     private void createUIComponents() {
@@ -97,7 +76,6 @@ public class MapViewer implements Observer {
                 warehouse = new Marker(id,pos,ImageUtil.getWarehouseImage(Color.yellow),Marker.Type.WAREHOUSE);
                 setCenter(pos);
             }
-            case TOUR -> tourMarkers.add(new Marker(id, pos,ImageUtil.getMarkerImage(Color.GREEN), type));
             case REQUEST -> requestMarker = new Marker(id, pos,ImageUtil.getMarkerImage(Color.ORANGE), type);
         }
     }
@@ -135,11 +113,23 @@ public class MapViewer implements Observer {
     }
 
     public void clearAll(){
-        clearMarkers();
+        warehouse = null;
+        requestMarker = null;
+        routes.clear();
         mapViewer.removeAll();
         update();
     }
 
+    public void updateRoutes(){
+        routes = new ArrayList<>(cityMap.getTourList().size());
+
+//        Iterator<Route> it = routes.iterator();
+        for(Tour t : cityMap.getTourList()){
+            Route r = new Route(Color.blue);
+            r.updateRouteSegments(t);
+            routes.add(r);
+        }
+    }
     public void update(){
         List<Painter<JXMapViewer>> painters = new ArrayList<Painter<JXMapViewer>>();
 
@@ -149,10 +139,6 @@ public class MapViewer implements Observer {
         if(warehouse!=null){
             markers.add(warehouse);
         }
-        //the markers
-        if(tourMarkers.size() >0){
-            markers.addAll(tourMarkers);
-        }
 
         //the request marker
         if(requestMarker!=null){
@@ -160,8 +146,8 @@ public class MapViewer implements Observer {
         }
 
         //the tour
-        if(tour.size()>1){
-            TourPainter tourPainter = new TourPainter(tour);
+        if(routes.size()>0){
+            TourPainter tourPainter = new TourPainter(routes);
             painters.add(tourPainter);
         }
 
@@ -197,12 +183,11 @@ public class MapViewer implements Observer {
         recenter();
     }
 
-    public HashSet<GeoPosition> getPositions(HashSet<Marker> ms){
-        HashSet<GeoPosition> positions = new HashSet<>();
-        for(Marker m : ms){
-            positions.add(m.getPosition());
-        }
-        return positions;
+    public List<Route> getRoutes() {
+        return routes;
     }
 
+    public void setRoutes(List<Route> routes) {
+        this.routes = routes;
+    }
 }

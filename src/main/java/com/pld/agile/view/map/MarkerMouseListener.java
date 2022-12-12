@@ -21,8 +21,6 @@ public class MarkerMouseListener implements MouseInputListener {
     @Override public void mouseClicked(MouseEvent e) {
         switch (e.getButton()) {
             case MouseEvent.BUTTON1:
-//                JXMapViewer mv =controller.getWindow().getMapViewer().mapViewer;
-//                Rectangle bounds = controller.getWindow().getMapViewer().mapViewer.getViewportBounds();
                 int x =e.getX();
                 int y =e.getY();
                 GeoPosition pos = controller.getWindow().getMapViewer().mapViewer.convertPointToGeoPosition(new Point(x,y));
