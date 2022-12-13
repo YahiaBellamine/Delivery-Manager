@@ -42,6 +42,13 @@ public class ComputedTourState implements State{
         }
     };
 
+    /**
+     * Save tours from cityMap in a xml file
+     *
+     * @param cityMap
+     * @param c
+     * @param w
+     */
     @Override
     public void saveTours(CityMap cityMap, Controller c, Window w) {
         try{
@@ -53,6 +60,13 @@ public class ComputedTourState implements State{
         }
     };
 
+    /**
+     * Loads saved tours from a xml file
+     *
+     * @param cityMap
+     * @param c
+     * @param w
+     */
     public void loadTours(CityMap cityMap, Controller c,Window w) {
         JFileChooser j = new JFileChooser("src/main/java/com/pld/agile/utils/tours");
         j.setAcceptAllFileFilterUsed(false);

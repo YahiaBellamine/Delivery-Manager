@@ -34,8 +34,7 @@ public class DeliveryRequestView extends JPanel{
     emptyPanel.setBackground(Color.white);
     this.subPanelRequest.add(emptyPanel);
 
-
-    comboBoxCourier = new JComboBox<Courier>();
+    comboBoxCourier = new JComboBox<>();
     ((JLabel) comboBoxCourier.getRenderer()).setHorizontalAlignment(JLabel.LEFT);
     for (Courier courier : Couriers.courierList) {
       comboBoxCourier.addItem(courier);
@@ -68,6 +67,14 @@ public class DeliveryRequestView extends JPanel{
 
   public void setSelectDestinationPoint(String text){
     this.selectDestinationPoint.setText(text);
+  }
+
+  public void updateCouriers() {
+    comboBoxCourier.removeAllItems();
+    for (Courier courier : Couriers.courierList) {
+      comboBoxCourier.addItem(courier);
+    }
+    repaint();
   }
 
 }
