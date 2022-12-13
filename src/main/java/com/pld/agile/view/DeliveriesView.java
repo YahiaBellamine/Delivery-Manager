@@ -42,10 +42,11 @@ public class DeliveriesView extends JPanel implements Observer {
         this.setLayout(new GridBagLayout());
         this.setName("textViewPanel");
         this.setBorder(textViewBorder);
+        this.setMaximumSize(new Dimension(window.getMaximumSize().width / 5, window.getMaximumSize().height));
 
         GridBagConstraints constraints = new GridBagConstraints();
 
-        requestsScrollPane = new JScrollPane(toursTree);
+        requestsScrollPane = new JScrollPane();
         requestsScrollPane.setName("toursScrollPane");
         requestsScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         requestsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -53,7 +54,7 @@ public class DeliveriesView extends JPanel implements Observer {
 
         constraints.gridx = 0;
         constraints.gridy = 0;
-        constraints.weightx = 1;
+        constraints.weightx = 0.3;
         constraints.weighty = 0.6;
         constraints.gridwidth = 3;
         constraints.fill = GridBagConstraints.BOTH;
@@ -62,12 +63,13 @@ public class DeliveriesView extends JPanel implements Observer {
         //Details panel
         detailsPanel = new JPanel();
         detailsPanel.setName("detailsPane");
-        detailsPanel.setSize(this.getWidth(), this.getHeight());
+        detailsPanel.setMaximumSize(new Dimension(this.getMaximumSize().width / 2, this.getMaximumSize().height / 2));
+        detailsPanel.setPreferredSize(new Dimension(this.getMaximumSize().width / 2, this.getMaximumSize().height / 2));
         detailsPanel.setLayout(new GridBagLayout());
 
         constraints.gridx = 0;
         constraints.gridy = 1;
-        constraints.weightx = 1;
+        constraints.weightx = 0.2;
         constraints.weighty = 0.4;
         constraints.gridwidth = 3;
         constraints.fill = GridBagConstraints.BOTH;
@@ -76,7 +78,7 @@ public class DeliveriesView extends JPanel implements Observer {
         //Constraints to add this panel to the main view
         constraints.gridx = 4;
         constraints.gridy = 1;
-        constraints.weightx = 0.5;
+        constraints.weightx = 0.3;
         constraints.weighty = 0.99;
         constraints.gridwidth = 1;
         constraints.fill = GridBagConstraints.BOTH;
@@ -153,6 +155,9 @@ public class DeliveriesView extends JPanel implements Observer {
                 }
             }
             toursTree = new JTree(treeRoot);
+            toursTree.setMaximumSize(this.getMaximumSize());
+            toursTree.setMinimumSize(this.getMaximumSize());
+            toursTree.setPreferredSize(this.getMaximumSize());
             toursTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
             toursTree.addTreeSelectionListener(new TreeSelectionListener() {
                 public void valueChanged(TreeSelectionEvent e) {
@@ -208,15 +213,18 @@ public class DeliveriesView extends JPanel implements Observer {
                     DeliveryRequest delivery = cityMap.getTourList().get(tourNumber).getDeliveryRequests().get(deliveryNumber - 1);
 
                     JLabel detailsTitle = new JLabel("Tour n°" + (tourNumber + 1) + " - Delivery n°" + deliveryNumber);
+                    detailsTitle.setName("detailsTitle");
                     detailsTitle.setFont(titleFont);
 
                     JLabel deliveryArrivalTime = new JLabel(" Arrival Time: " + delivery.getFormattedArrivalTime());
                     deliveryArrivalTime.setHorizontalTextPosition(SwingConstants.LEFT);
 
                     JLabel deliveryTimeWindow = new JLabel(" Time Window: " + delivery.getTimeWindow().getStart() + "h - " + delivery.getTimeWindow().getEnd() + "h");
+                    deliveryTimeWindow.setName("detailsTimeWindow");
                     deliveryArrivalTime.setHorizontalTextPosition(SwingConstants.LEFT);
 
-                    JLabel deliveryCourier = new JLabel(" Courier: " + (tourNumber + 1));
+                    JLabel deliveryCourier = new JLabel(" Courier (id): " + cityMap.getTourList().get(tourNumber).getCourier().getCourierId());
+                    deliveryCourier.setName("detailsCourier");
                     deliveryArrivalTime.setHorizontalTextPosition(SwingConstants.LEFT);
 
                     JButton update = new JButton("Update");
