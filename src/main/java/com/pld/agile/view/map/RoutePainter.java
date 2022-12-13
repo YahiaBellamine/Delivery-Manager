@@ -2,24 +2,18 @@
 package com.pld.agile.view.map;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.GeoPosition;
 import org.jxmapviewer.painter.Painter;
 
-import javax.swing.*;
-
 /**
  * Paints a route
  * @author Martin Steiger
  */
-public class TourPainter implements Painter<JXMapViewer>
+public class RoutePainter implements Painter<JXMapViewer>
 {
     //private Color color = Color.RED;
     private boolean antiAlias = true;
@@ -29,7 +23,7 @@ public class TourPainter implements Painter<JXMapViewer>
     /**
      * @param tracks the tracks
      */
-    public TourPainter(List<Route> tracks)
+    public RoutePainter(List<Route> tracks)
     {
         // copy the list so that changes in the 
         // original list do not have an effect here

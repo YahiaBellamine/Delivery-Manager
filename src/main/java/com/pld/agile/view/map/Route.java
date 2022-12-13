@@ -29,6 +29,7 @@ public class Route {
     /**
      * Default Route constructor.
      * The route starts empty.
+     * @param c - the color of the route
      */
     public Route(Color c) {
         routeSegments = new LinkedList<>();

@@ -23,7 +23,7 @@ public class MarkerMouseListener implements MouseInputListener {
             case MouseEvent.BUTTON1:
                 int x =e.getX();
                 int y =e.getY();
-                GeoPosition pos = controller.getWindow().getMapViewer().mapViewer.convertPointToGeoPosition(new Point(x,y));
+                GeoPosition pos = controller.getWindow().getMapViewer().getMapViewer().convertPointToGeoPosition(new Point(x,y));
                 controller.selectDestinationPoint(pos);
                 break;
         }
