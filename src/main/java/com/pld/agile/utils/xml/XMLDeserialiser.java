@@ -143,6 +143,9 @@ public class XMLDeserialiser {
       //List intersections=new LinkedList<>();
       Node tour=toursList.item(i);
       if(tour.getNodeType()==Node.ELEMENT_NODE){
+        String idCourierString = tour.getAttributes().getNamedItem("id_courier").getNodeValue();
+        Integer idCourierInteger = Integer.parseInt(idCourierString);
+        cityTour.setCourier(new Courier(idCourierInteger));
         for(Node node=tour.getFirstChild();node!=null;node=node.getNextSibling()){
           Element element = null;
           if(node instanceof Element)  element=(Element)node;
@@ -153,13 +156,18 @@ public class XMLDeserialiser {
             }
             if(node.getNodeName().equals("intersection")){
               Intersection intersection = createIntersection(element);
-              cityTour.addIntersection(intersection);
+              if(cityMap.getIntersections().containsValue(intersection)){
+                cityTour.addIntersection(intersection);
+              }else{
+                throw new ExceptionXML("You try to restore tours saved from a different map. Please reload map and then restore your tours.");
+              }
             }
           }
         }
       }
       tours.add(cityTour);
     }
+    cityMap.setTourList(tours);
   }
 
   private static DeliveryRequest createDeliveryRequest(Element element,CityMap cityMap) throws ExceptionXML {
@@ -192,8 +200,11 @@ public class XMLDeserialiser {
     String min=time.substring(3,5);
     String s=time.substring(6,8);
     System.out.println(h+' '+min+' '+s);
+
+    double arrival_time=Integer.parseInt(h)+Double.parseDouble(min)/60+Double.parseDouble(s)/3600;
+    System.out.println("arrival timeeeeeeee" + arrival_time);
+
     System.out.println();
-    double arrival_time=Integer.parseInt(h)*3600+Integer.parseInt(min)*60+Integer.parseInt(s);
     if (id < 0) {
       throw new ExceptionXML("Invalid Intersection ID");
     }
