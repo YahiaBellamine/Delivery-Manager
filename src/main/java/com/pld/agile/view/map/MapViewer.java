@@ -21,6 +21,11 @@ import java.util.List;
 import java.awt.*;
 import java.util.*;
 
+/**
+ * the MapViewer contains the map to display
+ * and all the functions for configuring
+ * and interacting with the map
+ */
 public class MapViewer implements Observer {
     /** The main panel that contains the map */
     private JXMapViewer mapViewer;
