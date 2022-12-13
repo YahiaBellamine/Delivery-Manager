@@ -13,11 +13,20 @@ import java.awt.*;
 
 public class Window extends JFrame {
 
+  /** The map for the GUI */
   private MapViewer mapViewer;
+
+  /** The graphical view of the GUI */
   private final DeliveryRequestView deliveryRequestView;
+
+  /** The textual view of the GUI */
   private final DeliveriesView deliveriesView;
 
+  /** The menu bar of the GUI */
   private final JMenuBar menuBar;
+
+  /** The button listener of the GUI */
+  private ButtonListener buttonListener;
 
 
   public final static String LOAD_MAP = "Load a Map";
@@ -25,6 +34,7 @@ public class Window extends JFrame {
   public final static String SAVE_TOURS= "Save the tours";
   public final static String LOAD_TOURS= "Load the tours";
   public final static String RECENTER_MAP = "Recenter the Map";
+  public final static String ADD_COURIER = "Add a courier";
 
   public Window(CityMap cityMap, Controller controller) {
     super("Delivery Manager");
@@ -35,11 +45,11 @@ public class Window extends JFrame {
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setResizable(false);
     Dimension screenDimensions = Toolkit.getDefaultToolkit().getScreenSize();
-    this.setSize((int)(screenDimensions.width * 0.9), (int)(screenDimensions.height * 0.9));
+    this.setSize((int)(screenDimensions.width * 0.95), (int)(screenDimensions.height * 0.95));
     this.setLayout(null);
 
     int x = (int) ((screenDimensions.getWidth() - this.getWidth()) / 2);
-    int y = (int) ((screenDimensions.getHeight() - this.getHeight()) / 2);
+    int y = (int) ((screenDimensions.getHeight() - this.getHeight() - 45) / 2);
     this.setLocation(x, y);
 
     JPanel contentPane = new JPanel(new GridBagLayout());
@@ -48,10 +58,11 @@ public class Window extends JFrame {
     mapViewer.recenter();
     this.getContentPane().add(mapViewer.mainPanel);
 
-    ButtonListener buttonListener = new ButtonListener(controller, mapViewer);
+    buttonListener = new ButtonListener(controller, mapViewer);
 
     //Creation of the menu bar
     menuBar = new JMenuBar();
+
     JMenu fileMenu = new JMenu("File");
     JMenuItem loadMap = new JMenuItem("Load Map");
     loadMap.setActionCommand(LOAD_MAP);
@@ -62,14 +73,22 @@ public class Window extends JFrame {
     JMenuItem saveTours = new JMenuItem("Save Tours");
     saveTours.setActionCommand(SAVE_TOURS);
     saveTours.addActionListener(buttonListener);
+
     JMenu actionsMenu = new JMenu("Actions");
     JMenuItem recenterMap = new JMenuItem("Recenter Map");
     recenterMap.setActionCommand(RECENTER_MAP);
     recenterMap.addActionListener(buttonListener);
+    JMenuItem addCourier = new JMenuItem("Add Courier");
+    addCourier.setActionCommand(ADD_COURIER);
+    addCourier.addActionListener(buttonListener);
+
     fileMenu.add(loadMap);
     fileMenu.add(loadTours);
     fileMenu.add(saveTours);
+
     actionsMenu.add(recenterMap);
+    actionsMenu.add(addCourier);
+
     menuBar.add(fileMenu);
     menuBar.add(actionsMenu);
 
@@ -82,6 +101,7 @@ public class Window extends JFrame {
     deliveryRequestView = new DeliveryRequestView();
 
     deliveriesView = new DeliveriesView(cityMap, this);
+    deliveriesView.setSize(new Dimension(this.getContentPane().getWidth() / 4, this.getContentPane().getHeight()));
 
     JPanel leftContainer = new JPanel();
     leftContainer.setLayout(new BoxLayout(leftContainer, BoxLayout.PAGE_AXIS));
@@ -97,9 +117,9 @@ public class Window extends JFrame {
     //Menu bar
     constraints.gridx = 0;
     constraints.gridy = 0;
-    constraints.weightx = 0.1;
+    constraints.weightx = 1;
     constraints.weighty = 0.01;
-    constraints.gridwidth = 4;
+    constraints.gridwidth = 5;
     constraints.fill = GridBagConstraints.BOTH;
     this.add(menuBar, constraints);
 
@@ -115,20 +135,20 @@ public class Window extends JFrame {
     //Graphical view (Map) panel
     constraints.gridx = 1;
     constraints.gridy = 1;
-    constraints.weightx = 0.8;
+    constraints.weightx = 1;
     constraints.weighty = 0.99;
-    constraints.gridwidth = 2;
+    constraints.gridwidth = 3;
     constraints.fill = GridBagConstraints.BOTH;
     this.add(mapViewer.mainPanel, constraints);
 
-    //Textual view panel
+    /*//Textual view panel
     constraints.gridx = 3;
     constraints.gridy = 1;
     constraints.weightx = 0.1;
     constraints.weighty = 0.99;
     constraints.gridwidth = 1;
     constraints.fill = GridBagConstraints.BOTH;
-    this.add(deliveriesView, constraints);
+    this.add(deliveriesView, constraints);*/
 
     this.setVisible(true);
   }
@@ -155,5 +175,8 @@ public class Window extends JFrame {
     this.deliveryRequestView.setSelectDestinationPoint("Intersection " + intersection.getId());
   }
 
+  public ButtonListener getButtonListener() {
+    return buttonListener;
+  }
 }
 
