@@ -37,6 +37,13 @@ public class CityMap extends Observable {
 
     public List<Tour> getTourList() { return this.tourList; }
 
+    public void setTourList(List<Tour> newTourList) {
+        this.tourList = newTourList;
+        for(int i = 0; i < newTourList.size(); i++) {
+            notifyObservers(newTourList.get(i));
+        }
+    }
+
     public Map<Long, Intersection> getIntersections() {
         return this.intersections;
     }
