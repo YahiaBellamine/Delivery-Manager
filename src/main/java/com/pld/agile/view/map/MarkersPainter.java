@@ -18,13 +18,14 @@ import org.jxmapviewer.viewer.WaypointPainter;
 
 
 /**
- * A fancy waypoint painter
+ * A Marker painter - defines how the markers are painted on the map
  */
 public class MarkersPainter extends WaypointPainter<Marker> {
 
     @Override
     protected void doPaint(Graphics2D g, JXMapViewer viewer, int width, int height) {
-        // g = (Graphics2D)g.create();
+        //if there is no marker to show on the map (meaning no map file is loaded)
+        //then darken the map and display a "please load a map" message
         if(getWaypoints().isEmpty()){
             Rectangle rect = viewer.getViewportBounds();
             Color c = g.getColor();
@@ -41,17 +42,19 @@ public class MarkersPainter extends WaypointPainter<Marker> {
             g.drawString(text, x, y);
 
             g.setColor(c);
-        }
-        for (Marker w : getWaypoints()) {
-            Point2D point = viewer.getTileFactory().geoToPixel(w.getPosition(), viewer.getZoom());
-            int zoom = viewer.getZoom();
-            int imgW = 100/(zoom+1);
-            int imgH = (w.getImg().getHeight()*imgW)/w.getImg().getWidth();
-            Rectangle rectangle = viewer.getViewportBounds();
-            int x = (int)(point.getX() - rectangle.getX());
-            int y = (int)(point.getY() - rectangle.getY());
-            Image img = w.getImg().getScaledInstance(imgW,imgH,Image.SCALE_SMOOTH);
-            g.drawImage(img, x -img.getWidth(null) / 2, y -img.getHeight(null), null);
+        }else{
+            for (Marker w : getWaypoints()) {
+                if(w == null ) continue;
+                Point2D point = viewer.getTileFactory().geoToPixel(w.getPosition(), viewer.getZoom());
+                int zoom = viewer.getZoom();
+                int imgW = 100/(zoom+1);
+                int imgH = (w.getImg().getHeight()*imgW)/w.getImg().getWidth();
+                Rectangle rectangle = viewer.getViewportBounds();
+                int x = (int)(point.getX() - rectangle.getX());
+                int y = (int)(point.getY() - rectangle.getY());
+                Image img = w.getImg().getScaledInstance(imgW,imgH,Image.SCALE_SMOOTH);
+                g.drawImage(img, x -img.getWidth(null) / 2, y -img.getHeight(null), null);
+            }
         }
     }
 

@@ -1,26 +1,23 @@
-
 package com.pld.agile.view.map;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import com.pld.agile.controller.Controller;
 import org.jxmapviewer.viewer.DefaultWaypoint;
 import org.jxmapviewer.viewer.GeoPosition;
 
-import javax.swing.*;
 
 /**
- * A waypoint that also has a color and a label
- * @author Martin Steiger
+ * A Marker that can be placed on a JXMapViewer
+ * it has a GeoPosition and an image
  */
 public class Marker extends DefaultWaypoint
 {
+    /** the marker image */
     private BufferedImage img;
 
     /**
-     * @param img the image
-     * @param position the coordinate
+     * @param position - the GeoPosition coordinates on the map
+     * @param img - the marker image
      */
     public Marker( GeoPosition position, BufferedImage img)
     {
@@ -29,7 +26,7 @@ public class Marker extends DefaultWaypoint
     }
 
     /**
-     * @return the image
+     * @return the marker image
      */
     public BufferedImage getImg() {
         return img;
