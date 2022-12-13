@@ -26,7 +26,7 @@ public class ButtonListener implements ActionListener {
       case Window.LOAD_MAP -> controller.loadMap();
       case Window.ADD_DELIVERY_REQUEST -> controller.addNewRequest();
       case Window.SAVE_TOURS -> controller.saveTours()/*System.out.println("Save tours call")*/;
-      case Window.LOAD_TOURS ->/* controller.loadTours()*/System.out.println("Load tours call");
+      case Window.LOAD_TOURS -> controller.loadTours()/*System.out.println("Load tours call")*/;
       case Window.RECENTER_MAP -> mapViewer.recenter();
       case Window.ADD_COURIER ->/* controller.addCourier()*/System.out.println("Add a courier");
       case DeliveriesView.UPDATE_DELIVERY_REQUEST -> /*controller.updateDeliveryRequest()*/System.out.println("Update a delivery request");

@@ -6,9 +6,12 @@ import com.pld.agile.utils.xml.ExceptionXML;
 import com.pld.agile.utils.xml.XMLDeserialiser;
 import com.pld.agile.view.Window;
 import org.jxmapviewer.viewer.GeoPosition;
+import org.xml.sax.SAXException;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 
 public interface State {
 
@@ -29,13 +32,24 @@ public interface State {
             // set the label to the path of the selected file
             path = j.getSelectedFile().toURI().getPath();
             try {
-                XMLDeserialiser.load(path, cityMap);
+                XMLDeserialiser.loadMap(path, cityMap);
                 controller.setCurrentState(controller.loadedMapState);
 
             } catch (ExceptionXML e) {
                 controller.setCurrentState(controller.initialState);
-                window.displayMessage("Error while loading the map");
+                window.displayMessage("Error while loading the map"+e);
                 throw new RuntimeException(e);
+            } catch (ParserConfigurationException e) {
+                window.displayMessage("System error in parse XML");
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                window.displayMessage("System error in parse XML");
+                throw new RuntimeException(e);
+            } catch (SAXException e) {
+                window.displayMessage("System error in parse XML");
+                throw new RuntimeException(e);
+            } catch (NumberFormatException e){
+                window.displayMessage("Number format error");
             }
         }
         // previous version for updating the view
@@ -55,9 +69,9 @@ public interface State {
 
     public default void addNewRequest(CityMap cityMap, Controller controller, Window window) {};
 
-    public default void restoreTours(CityMap cityMap, Controller controller, Window window) {};
+    public default void loadTours(CityMap cityMap, Controller controller, Window window) {};
 
-    public default void saveTours(CityMap cityMap, Window window) {};
+    public default void saveTours(CityMap cityMap, Controller c, Window window) {};
 
     public default void deleteDeliveryRequest(CityMap cityMap, Controller c, Courier courier, int indexDeliveryRequest) {};
 

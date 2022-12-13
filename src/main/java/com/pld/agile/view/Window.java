@@ -170,7 +170,7 @@ public class Window extends JFrame {
   }
 
   public void updateSelectedPoint(Intersection intersection) {
-    this.mapViewer.addPoint(intersection.getGeoPosition(), intersection.getId(), Marker.Type.REQUEST);
+    this.mapViewer.setRequestMarker(intersection.getGeoPosition());
     this.mapViewer.update();
     this.deliveryRequestView.setSelectDestinationPoint("Intersection " + intersection.getId());
   }

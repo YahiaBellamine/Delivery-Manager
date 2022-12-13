@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <map>
 <warehouse address="25303831"/>
-<intersection id="2" latitude="45.75406" longitude="4.857418"/>
+<intersection id="25175791" latitude="45.75406" longitude="4.857418"/>
 <intersection id="2129259178" latitude="45.750404" longitude="4.8744674"/>
 <intersection id="26086130" latitude="45.75871" longitude="4.8704023"/>
 <intersection id="2129259176" latitude="45.75171" longitude="4.8718166"/>
@@ -309,7 +309,7 @@
 <intersection id="342873532" latitude="45.76051" longitude="4.8783274"/>
 <intersection id="208769499" latitude="45.760597" longitude="4.87622"/>
 <intersection id="975886496" latitude="45.756874" longitude="4.8574047"/>
-<segment destination="25175778" length="69.979805" name="Rue Danton" origin="25175791"/>
+<segment destination="25175778" length="-1" name="Rue Danton" origin="25175791"/>
 <segment destination="2117622723" length="136.00636" name="Rue de l'Abondance" origin="25175791"/>
 <segment destination="2129259180" length="25.26484" name="" origin="2129259178"/>
 <segment destination="25303831" length="118.890465" name="Avenue Lacassagne" origin="2129259178"/>

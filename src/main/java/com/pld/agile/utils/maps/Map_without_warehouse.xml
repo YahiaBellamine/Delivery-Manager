@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<map>
+<intersection id="1" latitude="45.6" longitude="4.8"/>
+<intersection id="2" latitude="45.6" longitude="4.9"/>
+<segment destination="1" length="20" name="Rue Matthieu Roux" origin="1"/>
+</map>

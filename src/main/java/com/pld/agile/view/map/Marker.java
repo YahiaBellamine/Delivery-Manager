@@ -16,29 +16,16 @@ import javax.swing.*;
  */
 public class Marker extends DefaultWaypoint
 {
-    public enum Type{WAREHOUSE, TOUR, REQUEST}
-    private final long id;
-    private Type type;
     private BufferedImage img;
 
     /**
-     * @param id the id
      * @param img the image
      * @param position the coordinate
      */
-    public Marker(long id, GeoPosition position, BufferedImage img, Type type)
+    public Marker( GeoPosition position, BufferedImage img)
     {
         super(position);
-        this.id = id;
         this.img = img;
-        this.type = type;
-    }
-
-    /**
-     * @return the id
-     */
-    public long getId() {
-        return id;
     }
 
     /**
@@ -48,10 +35,4 @@ public class Marker extends DefaultWaypoint
         return img;
     }
 
-    /**
-     * @param img the image
-     */
-    public void setImg(BufferedImage img) {
-        this.img = img;
-    }
 }
