@@ -41,6 +41,13 @@ public class ComputedTourState implements State{
         }
     };
 
+    /**
+     * Save tours from cityMap in a xml file
+     *
+     * @param cityMap
+     * @param c
+     * @param w
+     */
     @Override
     public void saveTours(CityMap cityMap, Controller c, Window w) {
         try{
@@ -50,6 +57,15 @@ public class ComputedTourState implements State{
             throw new RuntimeException(e);
         }
     };
+
+
+    /**
+     * Loads saved tours from a xml file
+     *
+     * @param cityMap
+     * @param c
+     * @param w
+     */
 
     @Override
     public void loadTours(CityMap cityMap, Controller c,Window w) {

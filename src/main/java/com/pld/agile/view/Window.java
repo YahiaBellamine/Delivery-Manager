@@ -38,8 +38,6 @@ public class Window extends JFrame {
   public Window(CityMap cityMap, Controller controller) {
     super("Delivery Manager");
 
-    this.mapViewer = new MapViewer(cityMap, controller);
-
     //Create the JFrame
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setResizable(false);
@@ -53,10 +51,11 @@ public class Window extends JFrame {
 
     JPanel contentPane = new JPanel(new GridBagLayout());
     this.setContentPane(contentPane);
-    mapViewer.setCenter(new GeoPosition(45.7640,4.8357));
-    mapViewer.recenter();
-    this.getContentPane().add(mapViewer.getMapViewer());
 
+    // Map view
+    this.mapViewer = new MapViewer(cityMap, controller, this);
+
+    // Button listener
     buttonListener = new ButtonListener(controller, mapViewer);
 
     //Creation of the menu bar
@@ -91,29 +90,32 @@ public class Window extends JFrame {
     menuBar.add(fileMenu);
     menuBar.add(actionsMenu);
 
+    // Delivery request view
+    this.deliveryRequestView = new DeliveryRequestView();
+
+    JPanel leftContainer = new JPanel();
+    leftContainer.setLayout(new BoxLayout(leftContainer, BoxLayout.PAGE_AXIS));
+    leftContainer.add(Box.createRigidArea(new Dimension(0,50)));
+
+    leftContainer.add(deliveryRequestView);
+    leftContainer.add(Box.createRigidArea(new Dimension(0,20)));
+
     JButton addDeliveryRequestBtn = new JButton("Add a Delivery Request");
     addDeliveryRequestBtn.setMaximumSize(new Dimension(250, 30));
     addDeliveryRequestBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
     addDeliveryRequestBtn.setActionCommand(ADD_DELIVERY_REQUEST);
     addDeliveryRequestBtn.addActionListener(buttonListener);
-
-    deliveryRequestView = new DeliveryRequestView();
-
-    deliveriesView = new DeliveriesView(cityMap, this);
-    deliveriesView.setSize(new Dimension(this.getContentPane().getWidth() / 4, this.getContentPane().getHeight()));
-
-    JPanel leftContainer = new JPanel();
-    leftContainer.setLayout(new BoxLayout(leftContainer, BoxLayout.PAGE_AXIS));
-
-    leftContainer.add(Box.createRigidArea(new Dimension(0,50)));
-    leftContainer.add(deliveryRequestView);
-    leftContainer.add(Box.createRigidArea(new Dimension(0,20)));
     leftContainer.add(addDeliveryRequestBtn);
     leftContainer.add(Box.createRigidArea(new Dimension(0,100)));
 
+    // Deliveries view
+    this.deliveriesView = new DeliveriesView(cityMap, this);
+    this.deliveriesView.setSize(new Dimension(this.getContentPane().getWidth() / 4, this.getContentPane().getHeight()));
+
+    // Constraints
     GridBagConstraints constraints = new GridBagConstraints();
 
-    //Menu bar
+    // Menu bar
     constraints.gridx = 0;
     constraints.gridy = 0;
     constraints.weightx = 1;
@@ -122,7 +124,7 @@ public class Window extends JFrame {
     constraints.fill = GridBagConstraints.BOTH;
     this.add(menuBar, constraints);
 
-    //User entry panel
+    // Delivery request view panel
     constraints.gridx = 0;
     constraints.gridy = 1;
     constraints.weightx = 0.1;
@@ -131,7 +133,7 @@ public class Window extends JFrame {
     constraints.fill = GridBagConstraints.BOTH;
     this.add(leftContainer, constraints);
 
-    //Graphical view (Map) panel
+    // Map view panel
     constraints.gridx = 1;
     constraints.gridy = 1;
     constraints.weightx = 1;
@@ -139,15 +141,6 @@ public class Window extends JFrame {
     constraints.gridwidth = 3;
     constraints.fill = GridBagConstraints.BOTH;
     this.add(mapViewer.getMapViewer(), constraints);
-
-    /*//Textual view panel
-    constraints.gridx = 3;
-    constraints.gridy = 1;
-    constraints.weightx = 0.1;
-    constraints.weighty = 0.99;
-    constraints.gridwidth = 1;
-    constraints.fill = GridBagConstraints.BOTH;
-    this.add(deliveriesView, constraints);*/
 
     this.setVisible(true);
   }

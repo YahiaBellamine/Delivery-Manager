@@ -5,6 +5,7 @@ import com.pld.agile.model.Courier;
 import com.pld.agile.model.Couriers;
 import com.pld.agile.model.enums.TimeWindow;
 import com.pld.agile.view.DeliveriesView;
+import com.pld.agile.view.DeliveryRequestView;
 import com.pld.agile.view.Window;
 import com.pld.agile.view.map.MapViewer;
 import java.awt.event.ActionEvent;
@@ -53,7 +54,7 @@ public class ButtonListener implements ActionListener {
         break;
 
       case Window.ADD_COURIER:
-        /* controller.addCourier()*/System.out.println("Add a courier");
+        controller.addCourier();
         break;
 
       case DeliveriesView.UPDATE_DELIVERY_REQUEST:

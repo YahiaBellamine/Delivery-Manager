@@ -7,16 +7,12 @@ public class Couriers {
 
     public static List<Courier> courierList;
 
-    public Couriers(int nbCouriers){
-        this.courierList = new ArrayList<>();
-        addCouriers(nbCouriers);
+    public Couriers(){
+        courierList = new ArrayList<>();
+        courierList.add(new Courier(0));
     }
 
-    public void addCouriers(int nbCouriers) {
-        int i = 0;
-        while (i<nbCouriers){
-            this.courierList.add(new Courier(i));
-            ++i;
-        }
+    public static void addCourier() {
+        courierList.add(new Courier(courierList.size()));
     }
 }
