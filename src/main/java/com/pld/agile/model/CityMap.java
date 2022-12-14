@@ -5,14 +5,9 @@ import com.pld.agile.observer.Observable;
 import org.jxmapviewer.viewer.GeoPosition;
 
 import java.awt.geom.Point2D;
-import java.util.HashMap;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CityMap extends Observable {
-
 
     private Intersection warehouse;
     private List<Tour> tourList;
@@ -21,9 +16,27 @@ public class CityMap extends Observable {
 
     public CityMap() {
         this.warehouse = null;
-        this.tourList = new LinkedList<>();
         initializeTourList();
         this.intersections = new HashMap<>();
+    }
+
+    public List<Tour> getTourList() { return this.tourList; }
+
+    public void setTourList(List<Tour> tourList) {
+        this.tourList = new LinkedList<>(tourList);
+        Couriers.updateCouriers(tourList.size());
+        notifyObservers();
+    }
+
+    private void initializeTourList(){
+        this.tourList = new LinkedList<>();
+        tourList.add(null);
+        Couriers.updateCouriers(tourList.size());
+    }
+
+    public void updateTour(Tour tour){
+        tourList.set(tour.getCourier().getCourierId(), tour);
+        notifyObservers(tour);
     }
 
     public Intersection getWarehouse() {
@@ -35,38 +48,21 @@ public class CityMap extends Observable {
         notifyObservers(warehouse);
     }
 
-    public List<Tour> getTourList() { return this.tourList; }
-
-    public void setTourList(List<Tour> newTourList) {
-        this.tourList = newTourList;
-        for(int i = 0; i < newTourList.size(); i++) {
-            notifyObservers(newTourList.get(i));
-        }
-    }
-
     public Map<Long, Intersection> getIntersections() {
         return this.intersections;
-    }
-
-    private void initializeTourList(){
-        for(int i = 0;  i < Couriers.courierList.size(); i++){
-            tourList.add(null);
-        }
     }
 
     private void updateSelectedPoint(Long destinationPointId) {
         this.destinationPointId = destinationPointId;
     }
 
-    public void updateTourList(Tour tour){
-        tourList.set(tour.getCourier().getCourierId(), tour);
-        notifyObservers(tour);
-    }
-
     public Tour getTour(Courier courier){
         return tourList.get(courier.getCourierId());
     }
 
+    public void addTour() {
+        this.tourList.add(null);
+    }
 
     public void addIntersection(Intersection intersection) {
         this.intersections.put(intersection.getId(), intersection);
@@ -80,7 +76,6 @@ public class CityMap extends Observable {
         for(Intersection i : this.intersections.values()){
             double dist = Point2D.distance(x,y,i.getLatitude(),i.getLongitude());
             if(dist<r){
-                System.out.println("dist "+dist+ " "+i.getLatitude()+" "+i.getLongitude());
                 intersection = i;
                 r = dist;
             }
@@ -90,10 +85,8 @@ public class CityMap extends Observable {
 
     public void reInitializeCityMap(){
         this.warehouse = null;
-        this.tourList = new LinkedList<>();
         initializeTourList();
         this.intersections = new HashMap<>();
-        System.out.println("CityMap reinitialized");
         notifyObservers();
     }
 }

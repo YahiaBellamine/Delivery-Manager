@@ -9,10 +9,18 @@ public class Couriers {
 
     public Couriers(){
         courierList = new ArrayList<>();
-        courierList.add(new Courier(0));
+        addCourier();
     }
 
     public static void addCourier() {
         courierList.add(new Courier(courierList.size()));
     }
+
+    public static void updateCouriers(int nbCouriers) {
+        courierList.clear();
+        for (int i = 0; i < nbCouriers; i++) {
+            addCourier();
+        }
+    }
+
 }

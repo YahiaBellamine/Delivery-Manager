@@ -78,6 +78,7 @@ public class DeliveriesView extends JPanel implements Observer {
     @Override
     public void repaint() {
         updateTree();
+        updateDetails(null);
     }
 
     /**
@@ -102,7 +103,7 @@ public class DeliveriesView extends JPanel implements Observer {
                         DefaultMutableTreeNode treeLeaf = new DefaultMutableTreeNode(deliveryString);
 
                         //Check if the courier has to wait
-                        String previousNode = (String) treeTour.getLastLeaf().getUserObject();
+                        /*String previousNode = (String) treeTour.getLastLeaf().getUserObject();
                         if(previousNode.startsWith("Delivery")) {
                             int previousDeliveryNumber = treeTour.getLastLeaf().getParent().getIndex(treeTour.getLastLeaf());
                             DeliveryRequest previousDelivery = cityMap.getTourList().get(indexCourier - 1).getDeliveryRequests().get(previousDeliveryNumber);
@@ -122,7 +123,7 @@ public class DeliveriesView extends JPanel implements Observer {
                                 DefaultMutableTreeNode waitLeaf = new DefaultMutableTreeNode("Wait for: " + hours + "h" + minutes + "min" + seconds + "s");
                                 treeTour.add(waitLeaf);
                             }
-                        }
+                        }*/
                         treeTour.add(treeLeaf);
                         ++indexDelivery;
                     }
@@ -201,7 +202,7 @@ public class DeliveriesView extends JPanel implements Observer {
                     deliveryTimeWindow.setBorder(padding);
                     deliveryTimeWindow.setName("detailsTimeWindow");
 
-                    JLabel deliveryCourier = new JLabel("Courier (id): " + cityMap.getTourList().get(tourNumber).getCourier().getCourierId());
+                    JLabel deliveryCourier = new JLabel("Courier : " + cityMap.getTourList().get(tourNumber).getCourier());
                     deliveryCourier.setBorder(padding);
                     deliveryCourier.setName("detailsCourier");
 
@@ -245,6 +246,9 @@ public class DeliveriesView extends JPanel implements Observer {
                     detailsPanel.add(new JLabel());
                     detailsPanel.add(new JLabel());
                 }
+            }
+            else {
+                detailsPanel.removeAll();
             }
             detailsPanel.revalidate();
         }

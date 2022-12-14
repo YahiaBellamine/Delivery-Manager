@@ -20,24 +20,31 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
+import java.sql.Time;
 import java.util.LinkedList;
 import java.util.List;
 
 public class ComputedTourState implements State{
 
+    /**
+     * This method delete a delivery request from the city map
+     * @param cityMap the city map
+     * @param courier the courier
+     * @param indexDeliveryRequest the index of the delivery request to delete
+     */
     @Override
-    public void deleteDeliveryRequest(CityMap cityMap, Controller controller, Courier courier, int indexDeliveryRequest) {
+    public void deleteDeliveryRequest(CityMap cityMap, Courier courier, int indexDeliveryRequest) {
         Tour tour = cityMap.getTour(courier);
         if(tour != null && tour.getDeliveryRequests().size() > indexDeliveryRequest) {
             tour.removeDeliveryRequest(indexDeliveryRequest);
-
+            Tour optimalTour = tour;
             try {
-                Tour optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
+                optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
                 optimalTour.setCourier(courier);
-                cityMap.updateTourList(optimalTour);
-            } catch (InaccessibleDestinationException e){
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            cityMap.updateTour(optimalTour);
         }
     };
 
@@ -45,16 +52,18 @@ public class ComputedTourState implements State{
      * Save tours from cityMap in a xml file
      *
      * @param cityMap
-     * @param c
      * @param w
      */
     @Override
-    public void saveTours(CityMap cityMap, Controller c, Window w) {
+    public void saveTours(CityMap cityMap, Window w) {
         try{
             XMLSerialiser.save(cityMap.getTourList());
-        } catch (TransformerException | ExceptionXML | ParserConfigurationException e) {
+        } catch (TransformerException  | ParserConfigurationException e) {
             w.displayMessage("System error in saving Tours");
             throw new RuntimeException(e);
+        }
+        catch (ExceptionXML e){
+            w.displayMessage(e.toString());
         }
     };
 
@@ -66,7 +75,6 @@ public class ComputedTourState implements State{
      * @param c
      * @param w
      */
-
     @Override
     public void loadTours(CityMap cityMap, Controller c,Window w) {
         JFileChooser j = new JFileChooser("src/main/java/com/pld/agile/utils/tours");
@@ -98,10 +106,7 @@ public class ComputedTourState implements State{
     }
 
     @Override
-    public void updateDeliveryRequest(CityMap cityMap, Controller controller, Window window, Courier previousCourier, int indexDeliveryRequest) {
-        TimeWindow newTimeWindow = (TimeWindow) window.getDeliveryRequestView().comboBoxTimeWindow.getSelectedItem();
-        Courier newCourier = (Courier) window.getDeliveryRequestView().comboBoxCourier.getSelectedItem();
-
+    public void updateDeliveryRequest(CityMap cityMap, TimeWindow newTimeWindow, Courier newCourier, Courier previousCourier, int indexDeliveryRequest) {
         Tour tour = cityMap.getTour(previousCourier);
 
         if(tour != null && tour.getDeliveryRequests().size() > indexDeliveryRequest) {
@@ -114,7 +119,7 @@ public class ComputedTourState implements State{
                 try {
                     Tour newOptimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), newTour.getDeliveryRequests());
                     newOptimalTour.setCourier(newCourier);
-                    cityMap.updateTourList(newOptimalTour);
+                    cityMap.updateTour(newOptimalTour);
                     tour.removeDeliveryRequest(indexDeliveryRequest);
                 } catch (InaccessibleDestinationException e) {
 
@@ -124,13 +129,21 @@ public class ComputedTourState implements State{
             try {
                 Tour optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
                 optimalTour.setCourier(previousCourier);
-                cityMap.updateTourList(optimalTour);
+                cityMap.updateTour(optimalTour);
             } catch (InaccessibleDestinationException e) {
 
             }
         }
     }
 
+    /**
+     * This method select a destination point on the map
+     * and set the current state of the controller to DestinationSeletedState
+     * @param cityMap the city map
+     * @param c the controller
+     * @param position the geo position of the selected intersection
+     * @param window the main window
+     */
     @Override
     public void selectDestinationPoint(Controller c, Window window, GeoPosition position, CityMap cityMap) {
         c.setCurrentState(c.destinationSelectedState);

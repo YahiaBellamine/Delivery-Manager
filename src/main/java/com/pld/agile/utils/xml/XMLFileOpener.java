@@ -20,18 +20,29 @@ public class XMLFileOpener extends FileFilter {
   }
 
   // open only .xml files
-  public File open(boolean read) throws ExceptionXML{
+  public File open(boolean read, String defaultPath) throws ExceptionXML{
     int returnVal;
-    JFileChooser jFileChooserXML = new JFileChooser();
+    JFileChooser jFileChooserXML;
+    if(defaultPath != ""){
+      jFileChooserXML = new JFileChooser(defaultPath);
+    }
+    else{
+      jFileChooserXML = new JFileChooser();
+    }
     jFileChooserXML.setFileFilter(this);
     jFileChooserXML.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
     if (read)
       returnVal = jFileChooserXML.showOpenDialog(null);
     else
       returnVal = jFileChooserXML.showSaveDialog(null);
     if (returnVal != JFileChooser.APPROVE_OPTION)
       throw new ExceptionXML("Problem when opening file");
-    return new File(jFileChooserXML.getSelectedFile().getAbsolutePath());
+    String path = jFileChooserXML.getSelectedFile().getAbsolutePath();
+    if(!path.endsWith(".xml")){
+      path+= ".xml";
+    }
+    return new File(path);
   }
 
   // we only accept .xml as the type of file here

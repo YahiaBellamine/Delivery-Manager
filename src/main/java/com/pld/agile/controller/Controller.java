@@ -1,6 +1,7 @@
 package com.pld.agile.controller;
 
 import com.pld.agile.model.*;
+import com.pld.agile.model.enums.TimeWindow;
 import com.pld.agile.view.Window;
 import org.jxmapviewer.viewer.GeoPosition;
 
@@ -43,33 +44,15 @@ public class Controller {
    * @param
    */
   public void deleteDeliveryRequest(Courier courier, int indexDeliveryRequest){
-    currentState.deleteDeliveryRequest(cityMap, this, courier, indexDeliveryRequest);
+    currentState.deleteDeliveryRequest(cityMap, courier, indexDeliveryRequest);
   }
-
-  // public void saveTour() throws ExceptionXML, ParserConfigurationException, TransformerException {
-//    for(DeliveryRequest d: deliveryRequests){
-//      System.out.println(d.getAddress());
-//    }
-     // if(deliveryRequests.size()==0) {
-     //   this.window.displayMessage("Add at least one delivery request before saving the tour");
-       // return;
-     // }
-    // TODO: when we have several delivery men, the index should be modified  and call function save in a loop
-    // Tour optimalTour = CityMap.getTour(0);
-    // if(optimalTour==null) {
-     // this.window.displayMessage("No tour to save");
-     // return;
-   // }
-   // XMLSerialiser.save(optimalTour);
-
-  // }
 
   /**
    * Update a delivery request
    * @param
    */
-  public void updateDeliveryRequest(Courier courier, int indexDeliveryRequest){
-    currentState.updateDeliveryRequest(cityMap, this, window, courier, indexDeliveryRequest);
+  public void updateDeliveryRequest(TimeWindow newTimeWindow, Courier newCourier, Courier previousCourier, int indexDeliveryRequest){
+    currentState.updateDeliveryRequest(cityMap, newTimeWindow, newCourier, previousCourier, indexDeliveryRequest);
   }
 
   /**
@@ -78,6 +61,7 @@ public class Controller {
    */
   public void loadTours(){
     currentState.loadTours(cityMap, this, window);
+    window.getDeliveryRequestView().updateCouriers();
   }
 
   /**
@@ -85,7 +69,7 @@ public class Controller {
    * @param
    */
   public void saveTours(){
-    currentState.saveTours(cityMap, this, window);
+    currentState.saveTours(cityMap, window);
   }
 
   /**
@@ -94,6 +78,7 @@ public class Controller {
    */
   public void loadMap() {
     currentState.loadMap(this, window, cityMap);
+    window.getDeliveryRequestView().updateCouriers();
   }
 
   /**
@@ -112,6 +97,7 @@ public class Controller {
   public void addCourier() {
     Couriers.addCourier();
     window.getDeliveryRequestView().updateCouriers();
+    cityMap.addTour();
   }
 
 }

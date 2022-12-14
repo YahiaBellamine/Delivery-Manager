@@ -112,7 +112,6 @@ public class MapViewer implements Observer {
         if (arg != null) {
             if (arg instanceof Intersection) {
                 Intersection wh = cityMap.getWarehouse();
-                System.out.println(wh);
                 if (wh != null) {
                     warehouse = new Marker(wh.getGeoPosition(), ImageUtil.getWarehouseImage(Color.BLACK));
                     mapViewer.setAddressLocation(wh.getGeoPosition());
@@ -123,7 +122,6 @@ public class MapViewer implements Observer {
         }else{
             clearMap();
             Intersection wh = cityMap.getWarehouse();
-            System.out.println(wh);
             if (wh != null) {
                 warehouse = new Marker(wh.getGeoPosition(), ImageUtil.getWarehouseImage(Color.BLACK));
                 mapViewer.setAddressLocation(wh.getGeoPosition());

@@ -22,6 +22,13 @@ public class DestinationSelectedState implements State {
 
   private Intersection selectedIntersection;
 
+  /**
+   * This method update the selected destination point on the map
+   * @param cityMap the city map
+   * @param controller the controller
+   * @param position the geo position of the selected intersection
+   * @param window the main window
+   */
   @Override
   public void selectDestinationPoint(Controller controller, Window window, GeoPosition position, CityMap cityMap) {
     Intersection selectedIntersection = cityMap.searchIntersection(position);
@@ -45,7 +52,7 @@ public class DestinationSelectedState implements State {
     try {
       Tour optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
       optimalTour.setCourier(courier);
-      cityMap.updateTourList(optimalTour);
+      cityMap.updateTour(optimalTour);
       controller.setCurrentState(controller.computedTourState);
     } catch (InaccessibleDestinationException e) {
       window.displayMessage(e.getMessage());

@@ -1,8 +1,11 @@
 package com.pld.agile.view;
 
+import com.pld.agile.model.CityMap;
 import com.pld.agile.model.Courier;
 import com.pld.agile.model.Couriers;
 import com.pld.agile.model.enums.TimeWindow;
+import com.pld.agile.observer.Observable;
+import com.pld.agile.observer.Observer;
 import com.pld.agile.view.listener.ButtonListener;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -97,6 +100,7 @@ public class DeliveryRequestView extends JPanel {
     constraints.gridwidth = 1;
     constraints.fill = GridBagConstraints.NONE;
     this.add(addDeliveryRequestBtn, constraints);
+
   }
 
   public void updateCouriers() {
