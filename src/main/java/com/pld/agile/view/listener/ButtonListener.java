@@ -129,7 +129,7 @@ public class ButtonListener implements ActionListener {
         }
       }
     }
-    return deliveryNumber;
+    return deliveryNumber-1;
   }
 
   /**

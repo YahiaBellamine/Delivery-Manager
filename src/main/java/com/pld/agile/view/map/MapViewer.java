@@ -22,6 +22,7 @@ import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -108,6 +109,7 @@ public class MapViewer implements Observer {
      * @param arg - the object with undergoing changes
      */
     public void update(Observable o, Object arg) {
+        clearRequestMarker();
         if (arg != null) {
             if (arg instanceof Intersection) {
                 Intersection wh = cityMap.getWarehouse();
@@ -132,6 +134,7 @@ public class MapViewer implements Observer {
             }
         }
         updateMap();
+
     }
 
     /**
@@ -148,12 +151,25 @@ public class MapViewer implements Observer {
      * @param tour - the Tour object to be updated
      */
     public void updateRoute(Tour tour) {
+        System.out.println(tour);
         while (routes.size() <= tour.getCourier().getCourierId()) {
             routes.add(new Route(ImageUtil.getColor()));
         }
         routes.get(tour.getCourier().getCourierId()).updateRouteSegments(tour);
     }
 
+    public void highlightTour(int tourInd, int segInd ){
+        for(Route r : routes){
+            r.reinitColors();
+        }
+        List<Integer> segs = new LinkedList<>();
+        segs.add(segInd);
+        Route r = routes.get(tourInd);
+        r.updateRouteColor(segs,Color.MAGENTA);
+        routes.remove(tourInd);
+        routes.add(r);
+        mapViewer.repaint();
+    }
 
     /**
      * reinitializes the map
