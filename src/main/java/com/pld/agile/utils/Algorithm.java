@@ -32,7 +32,7 @@ public class Algorithm {
     static LinkedList<DeliveryRequest> bestSol;
 
     /**
-     * Method that executes the TSP algorithm
+     * Method that executes the TSP algorithm.
      *
      * @param warehouse
      * @param deliveryRequests
@@ -48,12 +48,7 @@ public class Algorithm {
             shortestPath = new HashMap<>();
 
         // Sorting delivery requests based on ascending TimeWindow
-        deliveryRequests.sort(new Comparator<DeliveryRequest>() {
-            @Override
-            public int compare(DeliveryRequest o1, DeliveryRequest o2) {
-                return o1.getTimeWindow().isBefore(o2.getTimeWindow());
-            }
-        });
+        deliveryRequests.sort((o1, o2) -> o1.getTimeWindow().isBefore(o2.getTimeWindow()));
 
         DeliveryRequest deliveryRequestWarehouse = new DeliveryRequest(null, warehouse);
 
@@ -79,7 +74,7 @@ public class Algorithm {
 
         /* Calculating the optimal tour and updating arrival time for each delivery request */
         // We start from warehouse at 8h
-        Double arrivalTime = 8.0;
+        double arrivalTime = 8.0;
         for (int i = 0; i < bestSol.size(); i++) {
             DeliveryRequest deliveryRequest = bestSol.get(i);
             DeliveryRequest nextDeliveryRequest = bestSol.get((i + 1) % bestSol.size());
@@ -98,7 +93,7 @@ public class Algorithm {
             // If the courier arrives to a delivery location before the start of its time window, they should wait until the start of the time window
             TimeWindow timeWindow = nextDeliveryRequest.getTimeWindow();
             if (timeWindow != null && arrivalTime < timeWindow.getStart()) {
-                arrivalTime = (double) timeWindow.getStart();
+                arrivalTime = timeWindow.getStart();
             }
             nextDeliveryRequest.setArrivalTime(arrivalTime);
 
@@ -309,7 +304,7 @@ public class Algorithm {
      * @throws InaccessibleDestinationException
      */
     private static Double bound(DeliveryRequest lastVisitedVertex, List<DeliveryRequest> unvisited) throws InaccessibleDestinationException {
-        Double lowerBound = Double.MAX_VALUE;
+        double lowerBound = Double.MAX_VALUE;
 
         // Calculating the minimum distance between the lastVisitedVertex and the unvisited delivery requests
         Double distance;
@@ -354,9 +349,7 @@ public class Algorithm {
 
         } else if (currentCost + bound(visited.get(visitedSize - 1), unvisitedBeforePermutation) < bestSolCost) {
 
-            for (int i = 0; i < unvisitedBeforePermutation.size(); i++) {
-                DeliveryRequest vertex = unvisitedBeforePermutation.get(i);
-
+            for (DeliveryRequest vertex : unvisitedBeforePermutation) {
                 visited.add(vertex);
                 unvisited.remove(vertex);
 

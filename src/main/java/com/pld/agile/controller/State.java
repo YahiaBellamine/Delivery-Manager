@@ -17,7 +17,7 @@ import java.io.IOException;
 
 public interface State {
 
-    public default void loadMap(Controller controller, Window window, CityMap cityMap) {
+    default void loadMap(Controller controller, Window window, CityMap cityMap) {
         JFileChooser j = new JFileChooser("src/main/java/com/pld/agile/utils/maps");
         j.setAcceptAllFileFilterUsed(false);
         j.setDialogTitle("Select a map file (.xml)");
@@ -42,13 +42,7 @@ public interface State {
                 controller.setCurrentState(controller.initialState);
                 window.displayMessage("Error while loading the map"+e);
                 throw new RuntimeException(e);
-            } catch (ParserConfigurationException e) {
-                window.displayMessage("System error in parse XML");
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                window.displayMessage("System error in parse XML");
-                throw new RuntimeException(e);
-            } catch (SAXException e) {
+            } catch (ParserConfigurationException | IOException | SAXException e) {
                 window.displayMessage("System error in parse XML");
                 throw new RuntimeException(e);
             } catch (NumberFormatException e){
@@ -58,17 +52,17 @@ public interface State {
         Algorithm.reInitializeMapAttributes();
     }
 
-    public default void selectDestinationPoint(Controller controller, Window window, GeoPosition pos, CityMap cityMap) {};
+    default void selectDestinationPoint(Controller controller, Window window, GeoPosition pos, CityMap cityMap) {}
 
-    public default void addNewRequest(CityMap cityMap, Controller controller, Window window) {};
+    default void addNewRequest(CityMap cityMap, Controller controller, Window window) {}
 
-    public default void loadTours(CityMap cityMap, Controller controller, Window window) {};
+    default void loadTours(CityMap cityMap, Controller controller, Window window) {}
 
-    public default void saveTours(CityMap cityMap, Window w) {};
+    default void saveTours(CityMap cityMap, Window w) {}
 
-    public default void deleteDeliveryRequest(CityMap cityMap, Courier courier, int indexDeliveryRequest) {};
+    default void deleteDeliveryRequest(CityMap cityMap, Courier courier, int indexDeliveryRequest) {}
 
-    public default void updateDeliveryRequest(CityMap cityMap, TimeWindow newTimeWindow, Courier newCourier, Courier previousCourier, int indexDeliveryRequest) {};
+    default void updateDeliveryRequest(CityMap cityMap, TimeWindow newTimeWindow, Courier newCourier, Courier previousCourier, int indexDeliveryRequest) {}
 }
 
 

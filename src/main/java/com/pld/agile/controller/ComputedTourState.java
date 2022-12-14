@@ -20,7 +20,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
-import java.sql.Time;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -51,7 +50,7 @@ public class ComputedTourState implements State{
             }
             cityMap.updateTour(optimalTour);
         }
-    };
+    }
 
     /**
      * Save tours from cityMap in a xml file
@@ -70,7 +69,7 @@ public class ComputedTourState implements State{
         catch (ExceptionXML e){
             w.displayMessage(e.toString());
         }
-    };
+    }
 
 
     /**
@@ -158,6 +157,6 @@ public class ComputedTourState implements State{
         Intersection selectedIntersection = cityMap.searchIntersection(position);
         c.destinationSelectedState.setSelectedIntersection(selectedIntersection);
         window.updateSelectedPoint(selectedIntersection);
-    };
+    }
 
 }
