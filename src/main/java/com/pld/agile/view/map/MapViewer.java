@@ -120,6 +120,7 @@ public class MapViewer implements Observer {
                 updateRoute(tour);
             }
         }else{
+            clearMap();
             Intersection wh = cityMap.getWarehouse();
             System.out.println(wh);
             if (wh != null) {
@@ -128,7 +129,6 @@ public class MapViewer implements Observer {
             }else{
                 warehouse = null;
             }
-            if(cityMap.getTourList().size() == 0 ) routes.clear();
             for(Tour t : cityMap.getTourList()){
                 updateRoute(t);
             }
