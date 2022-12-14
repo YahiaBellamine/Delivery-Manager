@@ -12,7 +12,6 @@ public class CityMap extends Observable {
     private Intersection warehouse;
     private List<Tour> tourList;
     private Map<Long, Intersection> intersections;
-    private Long destinationPointId;
 
     public CityMap() {
         this.warehouse = null;
@@ -50,10 +49,6 @@ public class CityMap extends Observable {
 
     public Map<Long, Intersection> getIntersections() {
         return this.intersections;
-    }
-
-    private void updateSelectedPoint(Long destinationPointId) {
-        this.destinationPointId = destinationPointId;
     }
 
     public Tour getTour(Courier courier){
@@ -96,7 +91,6 @@ public class CityMap extends Observable {
                 "warehouse=" + warehouse +
                 ", tourList=" + tourList +
                 ", intersections=" + intersections +
-                ", destinationPointId=" + destinationPointId +
                 '}';
     }
 }
