@@ -13,8 +13,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -88,9 +86,7 @@ public class XMLDeserialiser {
     if (originID < 0) {
       throw new ExceptionXML("Incorrect origin ID");
     }
-//    if(originID==destinationID){
-//      throw new ExceptionXML("Same origin ID and destination ID");
-//    }
+
     Intersection origin = intersections.get(originID);
     if (origin == null) {
       throw new ExceptionXML("Unknown Intersection");
@@ -135,8 +131,6 @@ public class XMLDeserialiser {
 
     for (int i = 0; i < toursList.getLength(); i++) {
       Tour cityTour = new Tour();
-      //List deliveryRequests=new LinkedList<>();
-      //List intersections=new LinkedList<>();
       Node tour=toursList.item(i);
       if(tour.getNodeType()==Node.ELEMENT_NODE){
         String idCourierString = tour.getAttributes().getNamedItem("id_courier").getNodeValue();
@@ -145,8 +139,12 @@ public class XMLDeserialiser {
         Double duration=Double.parseDouble(tour.getAttributes().getNamedItem("duration").getNodeValue());
         cityTour.setTourDuration(duration);
         for(Node node=tour.getFirstChild();node!=null;node=node.getNextSibling()){
-          Element element = null;
-          if(node instanceof Element)  element=(Element)node;
+          Element element;
+          if(node instanceof Element){
+            element=(Element)node;
+          } else {
+            throw new ExceptionXML("Error in xml file");
+          }
           if(node.getNodeType()==Node.ELEMENT_NODE){
             if(node.getNodeName().equals("delivery_request")){
               DeliveryRequest deliveryRequest = createDeliveryRequest(element,cityMap);
@@ -172,10 +170,10 @@ public class XMLDeserialiser {
 
     String tw = element.getAttribute("time_window");
     // default value
-    TimeWindow timeWindow = TimeWindow.TW_8_9;
+    TimeWindow timeWindow = null;
     switch (tw.charAt(0)){
       case '8':
-        // timeWindow=TimeWindow.TW_8_9;
+        timeWindow=TimeWindow.TW_8_9;
         break;
       case '9':
         timeWindow=TimeWindow.TW_9_10;
@@ -184,9 +182,10 @@ public class XMLDeserialiser {
         if(tw.charAt(1)=='0') timeWindow=TimeWindow.TW_10_11;
         else if(tw.charAt(1)=='1') timeWindow=TimeWindow.TW_11_12;
         break;
-      default:
-        timeWindow=TimeWindow.TW_8_9;
-        break;
+    }
+
+    if(timeWindow == null) {
+      throw new ExceptionXML("Invalid time window");
     }
 
     long id = Long.parseLong(element.getAttribute("id_intersection"));
