@@ -84,7 +84,7 @@ public class CityMap extends Observable {
 
     /**
      *
-     * @return the HashMap of all the intersection in this format : <i><id,Intersection></i>
+     * @return the HashMap of all the intersection in this format : {id - Intersection}
      */
     public Map<Long, Intersection> getIntersections() {
         return this.intersections;
