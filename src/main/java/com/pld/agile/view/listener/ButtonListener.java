@@ -87,10 +87,6 @@ public class ButtonListener implements ActionListener {
           Courier selectedCourier = (Courier) comboBoxCourier.getSelectedItem();
           TimeWindow selectedTimeWindow = (TimeWindow) comboBoxTimeWindow.getSelectedItem();
           //Change method signature so that it takes the previous courier, the new courier, the new time window and the delivery id(position in the tour list)
-          System.out.println("Selected courier " +selectedCourier);
-          System.out.println("Previous courier " +previousCourier);
-          System.out.println("Delivery Id " +deliveryId);
-          System.out.println("Time window " +selectedTimeWindow);
           controller.updateDeliveryRequest(selectedTimeWindow, selectedCourier, previousCourier, deliveryId);
         }
         break;

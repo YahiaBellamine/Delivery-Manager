@@ -118,6 +118,7 @@ public class ComputedTourState implements State{
 
             if(previousCourier != newCourier) {
                 Tour newTour = cityMap.getTour(newCourier);
+                if (newTour == null) newTour = new Tour();
                 newTour.addDeliveryRequest(tour.getDeliveryRequests().get(indexDeliveryRequest));
 
                 try {
@@ -126,19 +127,21 @@ public class ComputedTourState implements State{
                     cityMap.updateTour(newOptimalTour);
                     tour.removeDeliveryRequest(indexDeliveryRequest);
                 } catch (InaccessibleDestinationException e) {
+                }
+            }
+            if (tour.getDeliveryRequests().isEmpty()) {
+                tour.clearIntersections();
+            } else {
+                try {
+                    Tour optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
+                    optimalTour.setCourier(previousCourier);
+                    cityMap.updateTour(optimalTour);
+                } catch (InaccessibleDestinationException e) {
 
                 }
             }
-
-            try {
-                Tour optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
-                optimalTour.setCourier(previousCourier);
-                cityMap.updateTour(optimalTour);
-            } catch (InaccessibleDestinationException e) {
-
-            }
+            System.out.println("------>" + tour);
         }
-        System.out.println(cityMap.getTourList().get(0).getDeliveryRequests().get(0));
     }
 
     /**
