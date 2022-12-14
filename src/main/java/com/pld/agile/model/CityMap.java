@@ -89,4 +89,14 @@ public class CityMap extends Observable {
         this.intersections = new HashMap<>();
         notifyObservers();
     }
+
+    @Override
+    public String toString() {
+        return "CityMap{" +
+                "warehouse=" + warehouse +
+                ", tourList=" + tourList +
+                ", intersections=" + intersections +
+                ", destinationPointId=" + destinationPointId +
+                '}';
+    }
 }

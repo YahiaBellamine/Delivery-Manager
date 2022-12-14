@@ -92,7 +92,7 @@ public class DeliveriesView extends JPanel implements Observer {
             DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode("Tours information");
             int indexCourier = 1;
             for (Tour tour : cityMap.getTourList()) {
-                if(tour != null) {
+                if(tour != null && !tour.getDeliveryRequests().isEmpty()) {
                     DefaultMutableTreeNode treeTour = new DefaultMutableTreeNode("Courier n°" + indexCourier);
                     int indexDelivery = 1;
                     for (DeliveryRequest deliveryRequest : tour.getDeliveryRequests()) {
@@ -186,6 +186,8 @@ public class DeliveriesView extends JPanel implements Observer {
                         return;
                     }
                     int tourNumber = ((DefaultMutableTreeNode) detail).getParent().getParent().getIndex(((DefaultMutableTreeNode) detail).getParent());
+                    System.out.println("Tour number: " + tourNumber);
+                    System.out.println("Delivery number: " + deliveryNumber);
                     DeliveryRequest delivery = cityMap.getTourList().get(tourNumber).getDeliveryRequests().get(deliveryNumber - 1);
                     Window parent = (Window)(this.getParent().getParent().getParent().getParent().getParent().getParent());
 
