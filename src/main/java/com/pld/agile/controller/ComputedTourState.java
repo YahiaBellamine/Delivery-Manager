@@ -39,6 +39,8 @@ public class ComputedTourState implements State{
                 } catch (InaccessibleDestinationException e){
 
                 }
+            }else{
+                cityMap.notifyObservers(tour);
             }
         }
     };
