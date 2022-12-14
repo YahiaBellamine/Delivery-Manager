@@ -9,33 +9,31 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 
 /**
- * a mouse listener for selecting the delivery requests position on the map
+ * The mouse listener for selecting the delivery requests position on the map.
  */
 public class MarkerMouseListener implements MouseInputListener {
 
     /** The Controller instance controlling the map */
-    private Controller controller;
+    private final Controller controller;
 
     /**
-     * the default constructor
-     * @param controller - The Controller instance controlling the map
+     * The default constructor.
+     * @param controller The Controller instance controlling the map.
      */
     public MarkerMouseListener(Controller controller){
         this.controller = controller;
     }
 
     /**
-     * updates the position of the delivery request marker
-     * @param e the event to be processed
+     * Updates the position of the delivery request marker.
+     * @param e The event to be processed.
      */
     @Override public void mouseClicked(MouseEvent e) {
-        switch (e.getButton()) {
-            case MouseEvent.BUTTON1:
-                int x =e.getX();
-                int y =e.getY();
-                GeoPosition pos = controller.getWindow().getMapViewer().getMapViewer().convertPointToGeoPosition(new Point(x,y));
-                controller.selectDestinationPoint(pos);
-                break;
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            int x = e.getX();
+            int y = e.getY();
+            GeoPosition pos = controller.getWindow().getMapViewer().getMapViewer().convertPointToGeoPosition(new Point(x, y));
+            controller.selectDestinationPoint(pos);
         }
     }
     @Override public void mousePressed(MouseEvent e) {}

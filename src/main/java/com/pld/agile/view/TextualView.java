@@ -15,28 +15,32 @@ import java.util.regex.Pattern;
 import javax.swing.*;
 import java.awt.*;
 
-
-public class DeliveriesView extends JPanel implements Observer {
+/**
+ * The textual view panel.
+ */
+public class TextualView extends JPanel implements Observer {
 
     /** Scrollable panel to display the delivery requests of a tour */
-    private JScrollPane requestsScrollPane;
+    private final JScrollPane requestsScrollPane;
 
     /** Tree to display the information about all the tours and their delivery requests */
     private JTree toursTree;
 
     /** Panel to display details about delivery requests or tours */
-    private JPanel detailsPanel;
+    private final JPanel detailsPanel;
 
     /** the map */
-    private CityMap cityMap;
+    private final CityMap cityMap;
 
     public static final String UPDATE_DELIVERY_REQUEST = "Update a delivery request";
     public static final String DELETE_DELIVERY_REQUEST = "Delete a delivery request";
 
     /**
      * Constructor of the textual view.
+     * @param cityMap The CityMap instance containing all the map.
+     * @param window The GUI window containing the graphical and textual views.
      */
-    public DeliveriesView(CityMap cityMap, Window window) {
+    public TextualView(CityMap cityMap, Window window) {
         Border textViewBorder = BorderFactory.createLoweredBevelBorder();
         this.setLayout(new GridLayout(1,2));
         this.setName("textViewPanel");
@@ -65,8 +69,8 @@ public class DeliveriesView extends JPanel implements Observer {
 
     /**
      * Method triggered by an update in the model class CityMap.
-     * @param o
-     * @param arg
+     * @param o The observed object.
+     * @param arg The object with undergoing changes.
      */
     public void update(Observable o, Object arg){
         repaint();
@@ -82,7 +86,7 @@ public class DeliveriesView extends JPanel implements Observer {
     }
 
     /**
-     * Update the tree view depending on the CityMap
+     * Update the tree view depending on the CityMap.
      */
     private void updateTree() {
         if(cityMap != null) {
@@ -101,29 +105,6 @@ public class DeliveriesView extends JPanel implements Observer {
                             deliveryString += "(Out of Time Window!)";
                         }
                         DefaultMutableTreeNode treeLeaf = new DefaultMutableTreeNode(deliveryString);
-
-                        //Check if the courier has to wait
-                        /*String previousNode = (String) treeTour.getLastLeaf().getUserObject();
-                        if(previousNode.startsWith("Delivery")) {
-                            int previousDeliveryNumber = treeTour.getLastLeaf().getParent().getIndex(treeTour.getLastLeaf());
-                            DeliveryRequest previousDelivery = cityMap.getTourList().get(indexCourier - 1).getDeliveryRequests().get(previousDeliveryNumber);
-                            //5 minutes = 0.08
-                            double departureTime = previousDelivery.getArrivalTime() + 0.08;
-                            double arrivalTime = deliveryRequest.getArrivalTime();
-                            double waitingTime = arrivalTime - departureTime;
-                            //If the courier has to wait more than 30 minutes we notify it in the tree
-                            if(waitingTime > 0.5) {
-                                //Format the waiting time for display
-                                double temp = waitingTime;
-                                int hours = (int) temp;
-                                temp -= hours;
-                                int minutes = (int) (temp * 60);
-                                temp = temp * 60 - minutes;
-                                int seconds = (int) (temp * 60);
-                                DefaultMutableTreeNode waitLeaf = new DefaultMutableTreeNode("Wait for: " + hours + "h" + minutes + "min" + seconds + "s");
-                                treeTour.add(waitLeaf);
-                            }
-                        }*/
                         treeTour.add(treeLeaf);
                         ++indexDelivery;
                     }
@@ -181,7 +162,6 @@ public class DeliveriesView extends JPanel implements Observer {
                             deliveryNumber = Integer.parseInt(numberMatcher.group(0));
                         }
                     }
-                    /*TODO - implement proper error handling*/
                     else {
                         return;
                     }

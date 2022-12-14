@@ -8,6 +8,9 @@ import com.pld.agile.view.map.MapViewer;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * the GUI frame containing the textual and graphical views
+ */
 public class Window extends JFrame {
 
   /** The map for the GUI */
@@ -17,7 +20,7 @@ public class Window extends JFrame {
   private final DeliveryRequestView deliveryRequestView;
 
   /** The textual view of the GUI */
-  private final DeliveriesView deliveriesView;
+  private final TextualView textualView;
 
   /** The menu bar of the GUI */
   private final JMenuBar menuBar;
@@ -32,6 +35,11 @@ public class Window extends JFrame {
   public final static String RECENTER_MAP = "Recenter the Map";
   public final static String ADD_COURIER = "Add a courier";
 
+  /**
+   * The default constructor.
+   * @param cityMap    The CityMap instance containing all the data.
+   * @param controller The Controller instance controlling the map.
+   */
   public Window(CityMap cityMap, Controller controller) {
     super("Delivery Manager");
 
@@ -88,7 +96,7 @@ public class Window extends JFrame {
     menuBar.add(actionsMenu);
 
     deliveryRequestView = new DeliveryRequestView(buttonListener);
-    deliveriesView = new DeliveriesView(cityMap, this);
+    textualView = new TextualView(cityMap, this);
 
     JPanel gui = new JPanel();
     gui.setLayout(new GridLayout(1, 2));
@@ -97,7 +105,7 @@ public class Window extends JFrame {
     textualView.setLayout(new GridLayout(2, 1));
 
     textualView.add(deliveryRequestView);
-    textualView.add(deliveriesView);
+    textualView.add(this.textualView);
     gui.add(mapViewer.getMapViewer());
     gui.add(textualView);
 
@@ -126,23 +134,43 @@ public class Window extends JFrame {
     this.setVisible(true);
   }
 
+  /**
+   * Returns the MapViewer instance.
+   * @return The MapViewer instance.
+   */
   public MapViewer getMapViewer() {
     return mapViewer;
   }
 
+  /**
+   * Returns the panel of the delivery request parameters.
+   * @return the DeliveryRequestReview instance.
+   */
   public DeliveryRequestView getDeliveryRequestView() {
     return deliveryRequestView;
   }
 
+  /**
+   * Displays a message dialog.
+   * @param message The message.
+   */
   public void displayMessage(String message){
     JOptionPane.showMessageDialog(this, message);
   }
 
+  /**
+   * Updates the position of the request marker.
+   * @param intersection The intersection on which the request marker will be added.
+   */
   public void updateSelectedPoint(Intersection intersection) {
     this.mapViewer.setRequestMarker(intersection.getGeoPosition());
     this.mapViewer.updateMap();
   }
 
+  /**
+   * Returns the button listener instance.
+   * @return The button listener instance.
+   */
   public ButtonListener getButtonListener() {
     return buttonListener;
   }

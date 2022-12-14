@@ -15,24 +15,24 @@ import java.awt.*;
 public class Route {
 
     /** A list of geo-positions lists to define the route */
-    private List<List<GeoPosition>> routeSegments;
+    private final List<List<GeoPosition>> routeSegments;
 
     /** The list defining the color of each geo-positions list segments */
-    private List<Color> routeColors;
+    private final List<Color> routeColors;
 
     /** A list of Markers to define the delivery requests */
-    private List<Marker> routeMarkers;
+    private final List<Marker> routeMarkers;
 
     /** The list defining the color of each Marker */
-    private List<Color> routeMarkersColors;
+    private final List<Color> routeMarkersColors;
 
     /** the default color for the segments */
-    private Color defaultColor;
+    private final Color defaultColor;
 
     /**
      * Default Route constructor.
      * The route starts empty.
-     * @param c - the color of the route
+     * @param c The color of the route.
      */
     public Route(Color c) {
         routeSegments = new LinkedList<>();
@@ -44,7 +44,7 @@ public class Route {
 
     /**
      * Updates the route with the route of the desired tour.
-     * @param tour - The tour to update the route with.
+     * @param tour The tour to update the route with.
      */
     public void updateRouteSegments(Tour tour) {
         routeSegments.clear();
@@ -74,8 +74,8 @@ public class Route {
 
     /**
      * Changes the color of route segments to the desired color.
-     * @param segments - The segments to update.
-     * @param color - The color to paint the segments with.
+     * @param segments The segments to update.
+     * @param color The color to paint the segments with.
      */
     public void updateRouteColor(List<Integer> segments, Color color) {
         if(!segments.isEmpty()) {
