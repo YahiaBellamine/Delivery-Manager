@@ -26,23 +26,25 @@ import java.util.List;
 
 public class ComputedTourState implements State{
 
+    /**
+     * This method delete a delivery request from the city map
+     * @param cityMap the city map
+     * @param courier the courier
+     * @param indexDeliveryRequest the index of the delivery request to delete
+     */
     @Override
     public void deleteDeliveryRequest(CityMap cityMap, Courier courier, int indexDeliveryRequest) {
         Tour tour = cityMap.getTour(courier);
         if(tour != null && tour.getDeliveryRequests().size() > indexDeliveryRequest) {
             tour.removeDeliveryRequest(indexDeliveryRequest);
-
-            if(tour.getDeliveryRequests().size() > 0) {
-                try {
-                    Tour optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
-                    optimalTour.setCourier(courier);
-                    cityMap.updateTourList(optimalTour);
-                } catch (InaccessibleDestinationException e){
-
-                }
-            }else{
-                cityMap.notifyObservers(tour);
+            Tour optimalTour = tour;
+            try {
+                optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
+                optimalTour.setCourier(courier);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            cityMap.updateTourList(optimalTour);
         }
     };
 

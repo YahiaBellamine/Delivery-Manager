@@ -73,6 +73,8 @@ public class ComputedTourStateTest {
     assertEquals(2, tour.getDeliveryRequests().size());
     computedTourState.deleteDeliveryRequest(cityMap, courier, 0);
     assertEquals(1, tour.getDeliveryRequests().size());
+    computedTourState.deleteDeliveryRequest(cityMap, courier, 0);
+    assertEquals(0, tour.getDeliveryRequests().size());
   }
 
   @Test
