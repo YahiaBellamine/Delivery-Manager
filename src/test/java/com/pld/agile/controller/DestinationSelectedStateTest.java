@@ -44,7 +44,7 @@ public class DestinationSelectedStateTest {
       Object[] args = invocation.getArguments();
       tour = (Tour) args[0];
       return null;
-    }).when(cityMap).updateTourList(any(Tour.class));
+    }).when(cityMap).updateTour(any(Tour.class));
 
     // Mock the Controller
     controller = mock(Controller.class);
