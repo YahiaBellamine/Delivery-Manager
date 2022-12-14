@@ -32,6 +32,7 @@ public interface State {
             // set the label to the path of the selected file
             path = j.getSelectedFile().toURI().getPath();
             try {
+                window.getMapViewer().clearMap();
                 XMLDeserialiser.loadMap(path, cityMap);
                 controller.setCurrentState(controller.loadedMapState);
 
