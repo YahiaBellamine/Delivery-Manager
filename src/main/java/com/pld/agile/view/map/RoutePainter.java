@@ -61,8 +61,9 @@ public class RoutePainter implements Painter<JXMapViewer>
             int lastX = 0;
             int lastY = 0;
             boolean first = true;
+            int ind = 0;
             for(List<GeoPosition> segment : r.getRouteSegments()){
-                g.setColor(r.getDefaultColor());
+                g.setColor(r.getRouteColors().get(ind));
                 for(GeoPosition gp : segment){
                     Point2D pt = map.getTileFactory().geoToPixel(gp, map.getZoom());
                     if (first)
@@ -76,6 +77,7 @@ public class RoutePainter implements Painter<JXMapViewer>
                     lastX = (int) pt.getX();
                     lastY = (int) pt.getY();
                 }
+                ind++;
             }
         }
     }

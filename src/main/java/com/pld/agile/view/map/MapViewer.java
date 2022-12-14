@@ -22,6 +22,7 @@ import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -133,6 +134,7 @@ public class MapViewer implements Observer {
             }
         }
         updateMap();
+
     }
 
     /**
@@ -155,6 +157,18 @@ public class MapViewer implements Observer {
         routes.get(tour.getCourier().getCourierId()).updateRouteSegments(tour);
     }
 
+    public void highlightTour(int tourInd, int segInd ){
+        for(Route r : routes){
+            r.reinitColors();
+        }
+        List<Integer> segs = new LinkedList<>();
+        segs.add(segInd);
+        Route r = routes.get(tourInd);
+        r.updateRouteColor(segs,Color.MAGENTA);
+        routes.remove(tourInd);
+        routes.add(r);
+        mapViewer.repaint();
+    }
 
     /**
      * reinitializes the map
