@@ -35,7 +35,7 @@ public class ComputedTourState implements State{
             try {
                 Tour optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
                 optimalTour.setCourier(courier);
-                cityMap.updateTourList(optimalTour);
+                cityMap.updateTour(optimalTour);
             } catch (InaccessibleDestinationException e){
 
             }
@@ -67,7 +67,6 @@ public class ComputedTourState implements State{
      * @param c
      * @param w
      */
-
     @Override
     public void loadTours(CityMap cityMap, Controller c,Window w) {
         JFileChooser j = new JFileChooser("src/main/java/com/pld/agile/utils/tours");
@@ -112,7 +111,7 @@ public class ComputedTourState implements State{
                 try {
                     Tour newOptimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), newTour.getDeliveryRequests());
                     newOptimalTour.setCourier(newCourier);
-                    cityMap.updateTourList(newOptimalTour);
+                    cityMap.updateTour(newOptimalTour);
                     tour.removeDeliveryRequest(indexDeliveryRequest);
                 } catch (InaccessibleDestinationException e) {
 
@@ -122,7 +121,7 @@ public class ComputedTourState implements State{
             try {
                 Tour optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
                 optimalTour.setCourier(previousCourier);
-                cityMap.updateTourList(optimalTour);
+                cityMap.updateTour(optimalTour);
             } catch (InaccessibleDestinationException e) {
 
             }

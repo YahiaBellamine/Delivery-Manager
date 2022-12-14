@@ -151,6 +151,6 @@ public class ButtonListener implements ActionListener {
         }
       }
     }
-    return courierId;
+    return courierId-1;
   }
 }

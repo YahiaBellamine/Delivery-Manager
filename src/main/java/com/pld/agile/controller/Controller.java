@@ -79,6 +79,7 @@ public class Controller {
    */
   public void loadTours(){
     currentState.loadTours(cityMap, this, window);
+    window.getDeliveryRequestView().updateCouriers();
   }
 
   /**
@@ -95,6 +96,7 @@ public class Controller {
    */
   public void loadMap() {
     currentState.loadMap(this, window, cityMap);
+    window.getDeliveryRequestView().updateCouriers();
   }
 
   /**
