@@ -32,4 +32,8 @@ public class Marker extends DefaultWaypoint
         return img;
     }
 
+    public void setImg(BufferedImage img){
+        this.img = img;
+    }
+
 }

@@ -25,7 +25,7 @@ public class ImageUtil {
     private static BufferedImage markerImg;
 
     /** predefined colors table for the routes */
-    private static Color[] colors= {Color.blue, Color.CYAN, Color.green, Color.magenta,
+    private static Color[] colors= {Color.blue, Color.CYAN, Color.green,
     Color.pink,Color.red,Color.yellow};
 
     /** index of last chosen color from the colors table */

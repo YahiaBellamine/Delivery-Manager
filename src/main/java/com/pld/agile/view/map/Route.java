@@ -23,8 +23,6 @@ public class Route {
     /** A list of Markers to define the delivery requests */
     private List<Marker> routeMarkers;
 
-    /** The list defining the color of each Marker */
-    private List<Color> routeMarkersColors;
 
     /** the default color for the segments */
     private Color defaultColor;
@@ -38,8 +36,8 @@ public class Route {
         routeSegments = new LinkedList<>();
         routeColors = new ArrayList<>();
         routeMarkers = new ArrayList<>();
-        routeMarkersColors = new ArrayList<>();
         defaultColor = c;
+        reinitColors();
     }
 
     /**
@@ -70,6 +68,10 @@ public class Route {
             GeoPosition gp = new GeoPosition(i.getLatitude(),i.getLongitude());
             routeMarkers.add(new Marker(gp,ImageUtil.getMarkerImage(defaultColor)));
         }
+        routeColors.clear();
+        for(int i = 0; i<routeSegments.size(); i++){
+            routeColors.add(defaultColor);
+        }
     }
 
     /**
@@ -78,10 +80,32 @@ public class Route {
      * @param color - The color to paint the segments with.
      */
     public void updateRouteColor(List<Integer> segments, Color color) {
+        reinitColors();
         if(!segments.isEmpty()) {
             for(Integer segment : segments) {
                 routeColors.set(segment, color);
+                if(segment < routeMarkers.size()){
+                    routeMarkers.get(segment).setImg(ImageUtil.getMarkerImage(color));
+                    routeColors.set(segment, color);
+                }
+                if(segment-1 < routeMarkers.size() && segment>-1){
+                    routeMarkers.get(segment-1).setImg(ImageUtil.getMarkerImage(color));
+                }
+//                routeMarkersColors.set(segment,color);
             }
+        }
+    }
+
+    /**
+     * reinitializes the route color to default
+     */
+    public void reinitColors(){
+        for(Marker m : routeMarkers){
+            m.setImg(ImageUtil.getMarkerImage(defaultColor));
+        }
+        routeColors.clear();
+        for(int i =0; i<routeSegments.size(); i++){
+            routeColors.add(defaultColor);
         }
     }
 
@@ -107,14 +131,6 @@ public class Route {
      */
     public List<Marker> getRouteMarkers() {
         return routeMarkers;
-    }
-
-    /**
-     *
-     * @return The list of colors for each Marker.
-     */
-    public List<Color> getRouteMarkersColors() {
-        return routeMarkersColors;
     }
 
     public Color getDefaultColor() {
