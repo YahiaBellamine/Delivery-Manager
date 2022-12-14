@@ -135,7 +135,6 @@ public class ComputedTourState implements State{
 
                 }
             }
-            System.out.println("------>" + tour);
         }
     }
 
