@@ -99,4 +99,8 @@ public class ImageUtil {
         colorInd++;
         return c;
     }
+
+    public static void restartColorGenerator(){
+        colorInd=0;
+    }
 }
