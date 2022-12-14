@@ -44,7 +44,7 @@ public class ComputedTourState implements State{
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            cityMap.updateTourList(optimalTour);
+            cityMap.updateTour(optimalTour);
         }
     };
 

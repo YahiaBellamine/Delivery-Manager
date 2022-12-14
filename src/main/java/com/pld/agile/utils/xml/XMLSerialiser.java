@@ -40,6 +40,9 @@ public class XMLSerialiser {
         int counter = 1;
         Element tours = document.createElement("tours");
         for(Tour optimalTour : optimalTours) {
+            if(optimalTour == null){
+                continue;
+            }
             Element tour = document.createElement("tour");
             createAttribute(tour, "id_tour", Integer.toString(counter));
             createAttribute(tour,"id_courier",Integer.toString(optimalTour.getCourier().getCourierId()));
