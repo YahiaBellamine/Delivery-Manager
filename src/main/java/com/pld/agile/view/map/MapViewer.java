@@ -130,7 +130,7 @@ public class MapViewer implements Observer {
                 warehouse = null;
             }
             for(Tour t : cityMap.getTourList()){
-                updateRoute(t);
+                if(t != null ) updateRoute(t);
             }
         }
         updateMap();
