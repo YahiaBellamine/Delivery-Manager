@@ -123,4 +123,14 @@ public class Tour {
     public void addIntersection(Intersection newIntersection) {
         this.intersections.add(newIntersection);
     }
+
+    @Override
+    public String toString() {
+        return "Tour{" +
+                "courier=" + courier +
+                ", deliveryRequests=" + deliveryRequests +
+                ", intersections=" + intersections +
+                ", tourDuration=" + tourDuration +
+                '}';
+    }
 }

@@ -100,4 +100,14 @@ public class CityMap extends Observable {
     public void addTour() {
         this.tourList.add(null);
     }
+
+    @Override
+    public String toString() {
+        return "CityMap{" +
+                "warehouse=" + warehouse +
+                ", tourList=" + tourList +
+                ", intersections=" + intersections +
+                ", destinationPointId=" + destinationPointId +
+                '}';
+    }
 }

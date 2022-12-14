@@ -106,7 +106,6 @@ public class ComputedTourState implements State{
     @Override
     public void updateDeliveryRequest(CityMap cityMap, TimeWindow newTimeWindow, Courier newCourier, Courier previousCourier, int indexDeliveryRequest) {
         Tour tour = cityMap.getTour(previousCourier);
-
         if(tour != null && tour.getDeliveryRequests().size() > indexDeliveryRequest) {
             tour.updateDeliveryRequest(newTimeWindow, indexDeliveryRequest);
 
@@ -132,6 +131,7 @@ public class ComputedTourState implements State{
 
             }
         }
+        System.out.println(cityMap.getTourList().get(0).getDeliveryRequests().get(0));
     }
 
     /**
