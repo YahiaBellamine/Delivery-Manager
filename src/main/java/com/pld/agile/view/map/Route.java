@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.awt.*;
 
+/**
+ * the Route contains the Tour's itinerary and markers for each delivery request in the Tour
+ */
 public class Route {
 
     /** A list of geo-positions lists to define the route */
@@ -29,6 +32,7 @@ public class Route {
     /**
      * Default Route constructor.
      * The route starts empty.
+     * @param c - the color of the route
      */
     public Route(Color c) {
         routeSegments = new LinkedList<>();

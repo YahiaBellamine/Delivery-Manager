@@ -98,4 +98,12 @@ public class DeliveryRequestView extends JPanel {
     constraints.fill = GridBagConstraints.NONE;
     this.add(addDeliveryRequestBtn, constraints);
   }
+
+  public void updateCouriers() {
+    comboBoxCourier.removeAllItems();
+    for (Courier courier : Couriers.courierList) {
+      comboBoxCourier.addItem(courier);
+    }
+    repaint();
+  }
 }

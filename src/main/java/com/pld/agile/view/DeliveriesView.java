@@ -37,8 +37,6 @@ public class DeliveriesView extends JPanel implements Observer {
      * Constructor of the textual view.
      */
     public DeliveriesView(CityMap cityMap, Window window) {
-        super();
-
         Border textViewBorder = BorderFactory.createLoweredBevelBorder();
         this.setLayout(new GridLayout(1,2));
         this.setName("textViewPanel");

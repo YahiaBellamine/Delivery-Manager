@@ -54,7 +54,7 @@ public class ButtonListener implements ActionListener {
         break;
 
       case Window.ADD_COURIER:
-        /* controller.addCourier()*/System.out.println("Add a courier");
+        controller.addCourier();
         break;
 
       case DeliveriesView.UPDATE_DELIVERY_REQUEST:

@@ -36,8 +36,6 @@ public class Window extends JFrame {
   public Window(CityMap cityMap, Controller controller) {
     super("Delivery Manager");
 
-    this.mapViewer = new MapViewer(cityMap, controller);
-
     //Create the JFrame
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setResizable(false);
@@ -51,10 +49,11 @@ public class Window extends JFrame {
 
     JPanel contentPane = new JPanel(new GridBagLayout());
     this.setContentPane(contentPane);
-    mapViewer.setCenter(new GeoPosition(45.7640,4.8357));
-    mapViewer.recenter();
-    this.getContentPane().add(mapViewer.mainPanel);
 
+    // Map view
+    this.mapViewer = new MapViewer(cityMap, controller, this);
+
+    // Button listener
     buttonListener = new ButtonListener(controller, mapViewer);
 
     //Creation of the menu bar
@@ -103,9 +102,14 @@ public class Window extends JFrame {
     gui.add(mapViewer.mainPanel);
     gui.add(textualView);
 
+    // Deliveries view
+    this.deliveriesView = new DeliveriesView(cityMap, this);
+    this.deliveriesView.setSize(new Dimension(this.getContentPane().getWidth() / 4, this.getContentPane().getHeight()));
+
+    // Constraints
     GridBagConstraints constraints = new GridBagConstraints();
 
-    //Menu bar
+    // Menu bar
     constraints.gridx = 0;
     constraints.gridy = 0;
     constraints.weightx = 1;

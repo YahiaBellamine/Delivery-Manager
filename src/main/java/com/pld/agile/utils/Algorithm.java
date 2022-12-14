@@ -10,18 +10,43 @@ import java.util.*;
 
 public class Algorithm {
 
+    /**
+     * optimalTour is the computed tour after executing TSP algorithm
+     */
     static Tour optimalTour;
+    /**
+     * tspCost stores the cost between delivery requests
+     */
     static HashMap<Long, HashMap<Long, Double>> tspCost;
-    static HashMap<Intersection, HashMap<Intersection, LinkedList<Intersection>>> shortestPathBetweenTwoDeliveryLocations;
-    static LinkedList<DeliveryRequest> bestSol;
+    /**
+     * shortestPath stores the shortest path between delivery requests
+     */
+    static HashMap<Intersection, HashMap<Intersection, LinkedList<Intersection>>> shortestPath;
+    /**
+     * bestSolCost corresponds to the minimal cost of the Hamiltonian circuit
+     */
     static Double bestSolCost;
+    /**
+     * bestSol is the ordered list of delivery requests that minimises the cost of the Hamiltonian circuit
+     */
+    static LinkedList<DeliveryRequest> bestSol;
 
-    public static Tour ExecuteAlgorithm(Intersection warehouse, List<DeliveryRequest> deliveryRequests) throws InaccessibleDestinationException  {
+    /**
+     * Method that executes the TSP algorithm
+     *
+     * @param warehouse
+     * @param deliveryRequests
+     * @return the computed tour with TSP algorithm
+     * @throws InaccessibleDestinationException
+     */
+    public static Tour ExecuteAlgorithm(Intersection warehouse, List<DeliveryRequest> deliveryRequests) throws InaccessibleDestinationException {
 
         // Instantiation of attributes
         optimalTour = new Tour();
-        tspCost = new HashMap<>();
-        shortestPathBetweenTwoDeliveryLocations = new HashMap<>();
+        if(tspCost == null)
+            tspCost = new HashMap<>();
+        if(shortestPath == null)
+            shortestPath = new HashMap<>();
 
         // Sorting delivery requests based on ascending TimeWindow
         deliveryRequests.sort(new Comparator<DeliveryRequest>() {
@@ -34,16 +59,12 @@ public class Algorithm {
         DeliveryRequest deliveryRequestWarehouse = new DeliveryRequest(null, warehouse);
 
         /* Dijkstra Algorithm to calculate tspCost */
-        ArrayList<DeliveryRequest> destinations = new ArrayList<>(deliveryRequests);
+        List<DeliveryRequest> destinations = new LinkedList<>(deliveryRequests);
         dijkstra(deliveryRequestWarehouse, destinations);
-        System.out.println(tspCost);
         destinations.add(deliveryRequestWarehouse);
         for (DeliveryRequest deliveryRequest : deliveryRequests) {
             destinations.remove(deliveryRequest);
             dijkstra(deliveryRequest, destinations);
-            System.out.println("Je suis ici");
-            System.out.println(tspCost);
-            System.out.println("Et ici");
             destinations.add(deliveryRequest);
         }
 
@@ -70,7 +91,7 @@ public class Algorithm {
             }
 
             // Add the shortest path between deliveryRequest and nextDeliveryRequest to optimalTour
-            optimalTour.getIntersections().addAll(shortestPathBetweenTwoDeliveryLocations.get(deliveryRequest.getAddress()).get(nextDeliveryRequest.getAddress()));
+            optimalTour.getIntersections().addAll(shortestPath.get(deliveryRequest.getAddress()).get(nextDeliveryRequest.getAddress()));
 
             // Calculating arrivalTime by adding the duration between deliveryRequest and nextDeliveryRequest
             arrivalTime += tspCost.get(deliveryRequest.getAddress().getId()).get(nextDeliveryRequest.getAddress().getId()) / (1000.0 * 15.0);
@@ -92,6 +113,12 @@ public class Algorithm {
         return optimalTour;
     }
 
+    /**
+     * Method used by Dijkstra algorithm
+     *
+     * @param unsettledVertices
+     * @return the Intersection that has the lowest distance.
+     */
     private static Intersection getLowestDistanceIntersection(HashMap<Intersection, Double> unsettledVertices) {
         Intersection res = null;
         Double lowestDistance = Double.MAX_VALUE;
@@ -104,6 +131,17 @@ public class Algorithm {
         return res;
     }
 
+    /**
+     * Method used by Dijkstra algorithm to update the distance of vertex j if the distance to his previous vertex i
+     * added to the cost between vertex i and vertex j is lower than the actual distance to vertex j.
+     * The previousIntersection structure is also updated.
+     *
+     * @param vi
+     * @param vj
+     * @param distIJ
+     * @param unsettledVertices
+     * @param previousIntersection
+     */
     private static void release(Intersection vi, Intersection vj, Double distIJ, HashMap<Intersection, Double> unsettledVertices, HashMap<Intersection, Intersection> previousIntersection) {
         Double di = unsettledVertices.get(vi);
         Double dj = unsettledVertices.get(vj);
@@ -116,15 +154,25 @@ public class Algorithm {
         }
     }
 
+    /**
+     * Dijkstra algorithm for calculating the distance between the source and all destinations in order to update
+     * tspCost structure for having the distance between every delivery request including the warehouse and the rest
+     * of delivery requests.
+     *
+     * @param source
+     * @param destinations
+     */
     private static void dijkstra(DeliveryRequest source, List<DeliveryRequest> destinations) {
         HashMap<Intersection, Intersection> previousIntersection = new HashMap<>();
 
         HashMap<Intersection, Double> settledVertices = new HashMap<>();
         HashMap<Intersection, Double> unsettledVertices = new HashMap<>();
 
-        HashMap<Long, Double> hMap = new HashMap<>();
-        hMap.put(source.getAddress().getId(), 0.0);
-        tspCost.put(source.getAddress().getId(), hMap);
+        if(!tspCost.containsKey(source.getAddress().getId())){
+            HashMap<Long, Double> hashMap = new HashMap<>();
+            hashMap.put(source.getAddress().getId(), 0.0);
+            tspCost.put(source.getAddress().getId(), hashMap);
+        }
 
         unsettledVertices.put(source.getAddress(), 0.0);
 
@@ -150,36 +198,40 @@ public class Algorithm {
             unsettledVertices.remove(intersection);
         }
 
-        HashMap<Intersection, LinkedList<Intersection>> shortestPathsFromSource = new HashMap<>();
+        HashMap<Intersection, LinkedList<Intersection>> shortestPathFromSource = shortestPath.get(source.getAddress());
+        if(shortestPathFromSource == null){
+            shortestPathFromSource = new HashMap<>();
+        }
         for (DeliveryRequest destination : destinations) {
             Intersection destinationIntersection = destination.getAddress();
+            // If we have already calculated the shortest path to a destination, we don't recalculate it
+            if(!shortestPathFromSource.containsKey(destinationIntersection)){
+                /* If the arc between source and destination is valid, then we add the update the distance in tspCost.
+                 * Otherwise, the distance is null.
+                 */
+                if (isArc(source, destination, destinations)) {
+                    tspCost.get(source.getAddress().getId()).put(destinationIntersection.getId(), settledVertices.get(destinationIntersection));
+                } else {
+                    tspCost.get(source.getAddress().getId()).put(destinationIntersection.getId(), null);
+                }
 
-            /* If the arc between source and destination is valid, then we add the update the distance in tspCost.
-            * Otherwise, the distance is null.
-            */
-            if (isArc(source, destination, destinations)) {
-                tspCost.get(source.getAddress().getId()).put(destinationIntersection.getId(), settledVertices.get(destinationIntersection));
-            } else {
-                tspCost.get(source.getAddress().getId()).put(destinationIntersection.getId(), null);
+                LinkedList<Intersection> path = new LinkedList<>();
+                path.add(destinationIntersection);
+                Intersection currentIntersection = destinationIntersection;
+                Intersection prevIntersection;
+                while ((prevIntersection = previousIntersection.get(currentIntersection)) != null) {
+                    path.addFirst(prevIntersection);
+                    currentIntersection = prevIntersection;
+                }
+                shortestPathFromSource.put(destinationIntersection, path);
             }
-
-            LinkedList<Intersection> shortestPath = new LinkedList<>();
-            shortestPath.add(destinationIntersection);
-            Intersection currentIntersection = destinationIntersection;
-            Intersection prevIntersection;
-            while ((prevIntersection = previousIntersection.get(currentIntersection)) != null) {
-                shortestPath.addFirst(prevIntersection);
-                currentIntersection = prevIntersection;
-            }
-            shortestPathsFromSource.put(destinationIntersection, shortestPath);
         }
 
-        shortestPathBetweenTwoDeliveryLocations.put(source.getAddress(), shortestPathsFromSource);
+        shortestPath.put(source.getAddress(), shortestPathFromSource);
     }
 
     /**
      * If the source is the warehouse, we search for the first time window in the list of delivery requests (destinations).
-     *
      * Else, we search for the next time window from source such as the start of next time window
      * is greater or equal than the end of the source time window, and is the smallest.
      *
@@ -199,9 +251,7 @@ public class Algorithm {
         } else {
             nextTimeWindow = TimeWindow.TW_11_12;
             for (DeliveryRequest deliveryRequest : destinations) {
-                if (deliveryRequest.getTimeWindow() != null
-                        && deliveryRequest.getTimeWindow().getStart() < nextTimeWindow.getStart()
-                        && deliveryRequest.getTimeWindow().getStart() >= sourceTimeWindow.getEnd()) {
+                if (deliveryRequest.getTimeWindow() != null && deliveryRequest.getTimeWindow().getStart() < nextTimeWindow.getStart() && deliveryRequest.getTimeWindow().getStart() >= sourceTimeWindow.getEnd()) {
                     nextTimeWindow = deliveryRequest.getTimeWindow();
                 }
             }
@@ -246,8 +296,8 @@ public class Algorithm {
         } else if (destination.getTimeWindow() == null) {
             TimeWindow lastTimeWindow = getLastTimeWindow(sourceTimeWindow, destinations);
             return sourceTimeWindow.getStart() == lastTimeWindow.getStart();
-        } else return sourceTimeWindow.getStart() == destination.getTimeWindow().getStart()
-                || destination.getTimeWindow().getStart() == nextTimeWindow.getStart();
+        } else
+            return sourceTimeWindow.getStart() == destination.getTimeWindow().getStart() || destination.getTimeWindow().getStart() == nextTimeWindow.getStart();
     }
 
     /**
@@ -255,25 +305,19 @@ public class Algorithm {
      *
      * @param lastVisitedVertex the last visited vertex
      * @param unvisited         the list of unvisited vertices
-     * @param warehouse         the warehouse vertex
      * @return a lower bound of the cost of paths in the graph of delivery locations starting from <code>lastVisitedVertex</code>, visiting
      * every vertex in <code>unvisited</code> exactly once, and returning to <code>warehouse</code>.
+     * @throws InaccessibleDestinationException
      */
-    private static Double bound(DeliveryRequest lastVisitedVertex, List<DeliveryRequest> unvisited, DeliveryRequest warehouse) throws InaccessibleDestinationException {
+    private static Double bound(DeliveryRequest lastVisitedVertex, List<DeliveryRequest> unvisited) throws InaccessibleDestinationException {
         Double lowerBound = Double.MAX_VALUE;
-
-        //int unvisitedSize = unvisited.size();
-
-        // Finding the first and the second time windows
-        /*TimeWindow firstTW = lastVisitedVertex.getTimeWindow();
-        TimeWindow secondTW = getNextTimeWindow(firstTW, unvisited);*/
 
         // Calculating the minimum distance between the lastVisitedVertex and the unvisited delivery requests
         Double distance;
         for (DeliveryRequest vertex : unvisited) {
             if (isArc(lastVisitedVertex, vertex, unvisited)) {
                 distance = tspCost.get(lastVisitedVertex.getAddress().getId()).get(vertex.getAddress().getId());
-                if(distance == null) {
+                if (distance == null) {
                     throw new InaccessibleDestinationException();
                 }
                 if (distance < lowerBound) {
@@ -281,31 +325,16 @@ public class Algorithm {
                 }
             }
         }
-        /*// Adding the distance between each unvisited vertex and the rest of unvisited vertices within the first and second time windows of unvisited delivery requests
-        for (i = 0; i < unvisitedSize; i++) {
-            if (unvisited.get(i).getTimeWindow() == firstTW || unvisited.get(i).getTimeWindow() == secondTW) {
-                Double li = Double.MAX_VALUE;
-                for (int j = 0; j < unvisitedSize; j++) {
-                    if (i != j && (unvisited.get(j).getTimeWindow() == firstTW || unvisited.get(j).getTimeWindow() == secondTW)) {
-                        Double distance = tspCost.get(unvisited.get(i).getAddress().getId()).get(unvisited.get(j).getAddress().getId());
-                        if (distance < li) {
-                            li = distance;
-                        }
-                    }
-                }
-                // If there is only one vertex in the list of unvisited vertices, then li is the distance between this vertex and the warehouse
-                lowerBound += (li != Double.MAX_VALUE ? li : tspCost.get(unvisited.get(i).getAddress().getId()).get(warehouse.getAddress().getId()));
-            }
-        }*/
         return lowerBound;
     }
 
     /**
-     * Template method of a branch and bound algorithm for solving the TSP in <code>g</code>.
+     * Branch and bound algorithm for solving the TSP in the graph of delivery requests for a Tour.
      *
      * @param visited     the sequence of vertices that have been already visited
      * @param unvisited   the set of vertex that have not yet been visited
      * @param currentCost the tspCost of the path corresponding to <code>visited</code>
+     * @throws InaccessibleDestinationException
      */
     private static void branchAndBound(LinkedList<DeliveryRequest> visited, LinkedList<DeliveryRequest> unvisited, Double currentCost) throws InaccessibleDestinationException {
         int visitedSize = visited.size();
@@ -322,7 +351,7 @@ public class Algorithm {
                 bestSol = new LinkedList<>(visited);
             }
 
-        } else if (currentCost + bound(visited.get(visitedSize - 1), unvisitedBeforePermutation, visited.get(0)) < bestSolCost) {
+        } else if (currentCost + bound(visited.get(visitedSize - 1), unvisitedBeforePermutation) < bestSolCost) {
 
             for (int i = 0; i < unvisitedBeforePermutation.size(); i++) {
                 DeliveryRequest vertex = unvisitedBeforePermutation.get(i);

@@ -5,191 +5,194 @@ import com.pld.agile.model.CityMap;
 import com.pld.agile.model.Intersection;
 import com.pld.agile.model.Tour;
 import com.pld.agile.observer.Observable;
+import com.pld.agile.observer.Observer;
+import com.pld.agile.view.Window;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.input.CenterMapListener;
-import org.jxmapviewer.input.PanKeyListener;
 import org.jxmapviewer.input.PanMouseInputListener;
 import org.jxmapviewer.input.ZoomMouseWheelListenerCursor;
 import org.jxmapviewer.painter.CompoundPainter;
 import org.jxmapviewer.painter.Painter;
+import org.jxmapviewer.viewer.DefaultTileFactory;
+import org.jxmapviewer.viewer.GeoPosition;
+import org.jxmapviewer.viewer.TileFactoryInfo;
+
 import javax.swing.event.MouseInputListener;
-import java.util.List;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import org.jxmapviewer.viewer.*;
-import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
-
-import com.pld.agile.observer.Observer;
-
+/**
+ * the MapViewer contains the map to display
+ * and all the functions for configuring
+ * and interacting with the map
+ */
 public class MapViewer implements Observer {
-    public JPanel mainPanel;
-    public JPanel mapPanel;
-    public JPanel centerPanel;
-    public JXMapViewer mapViewer;
+    /**
+     * The main panel that contains the map
+     */
+    private JXMapViewer mapViewer;
 
+    /**
+     * The warehouse Marker
+     */
     private Marker warehouse;
 
+    /**
+     * The delivery request marker
+     */
     private Marker requestMarker;
 
+    /**
+     * the list of Routes to display for each tour
+     */
     private List<Route> routes;
+
+    /**
+     * the CityMap that contains all the model in it
+     */
     private CityMap cityMap;
 
-    public MapViewer(CityMap cityMap, Controller controller) {
-        super();
-        this.cityMap = cityMap;
-        this.cityMap.addObserver(this);
-        routes = new ArrayList<>();
-
-        // Add interactions
-        MouseInputListener mia = new PanMouseInputListener(mapViewer);
-        mapViewer.addMouseListener(mia);
-        mapViewer.addMouseMotionListener(mia);
-
-        mapViewer.addMouseListener(new CenterMapListener(mapViewer));
-
-        mapViewer.addMouseWheelListener(new ZoomMouseWheelListenerCursor(mapViewer));
-        mapViewer.addMouseListener(new MarkerMouseListener(controller));
-
-    }
-
-    private void createUIComponents() {
+    /**
+     * Initialises the map
+     *
+     * @param cityMap    - The CityMap instance containing all the data
+     * @param controller - The Controller instance controlling the map
+     */
+    public MapViewer(CityMap cityMap, Controller controller, Window window) {
         mapViewer = new JXMapViewer();
 
         // Create a TileFactoryInfo for OpenStreetMap
         TileFactoryInfo info = new OSMTileFactoryInfo();
         DefaultTileFactory tileFactory = new DefaultTileFactory(info);
         mapViewer.setTileFactory(tileFactory);
-
         // Use 8 threads in parallel to load the tiles
         tileFactory.setThreadPoolSize(8);
+
+        //add Listeners to move/zoom on the map
+        MouseInputListener mia = new PanMouseInputListener(mapViewer);
+        mapViewer.addMouseListener(mia);
+        mapViewer.addMouseMotionListener(mia);
+        mapViewer.addMouseListener(new CenterMapListener(mapViewer));
+        mapViewer.addMouseWheelListener(new ZoomMouseWheelListenerCursor(mapViewer));
+
+        //Listener for selecting the delivery request location
+        mapViewer.addMouseListener(new MarkerMouseListener(controller));
+
         mapViewer.setLayout(null);
-        mapPanel = mapViewer;
+        this.setCenter(new GeoPosition(45.7640, 4.8357));
+        this.recenter();
+        window.getContentPane().add(mapViewer);
+
+        this.cityMap = cityMap;
+        this.cityMap.addObserver(this);
+        routes = new ArrayList<>();
+        updateMap();
     }
 
-    public void setRequestMarker(GeoPosition pos){
-        requestMarker = new Marker(pos,ImageUtil.getMarkerImage(Color.ORANGE));
+    /**
+     * sets the position of the request marker on the map
+     *
+     * @param pos - the GeoPosition of the request marker on the map
+     */
+    public void setRequestMarker(GeoPosition pos) {
+        requestMarker = new Marker(pos, ImageUtil.getMarkerImage(Color.ORANGE));
     }
 
-    public void update(Observable o, Object arg){
-        /* TODO : Display tour list in the graphical view  */
+    /**
+     * updates the map with the changes made
+     *
+     * @param o   - the object being observed
+     * @param arg - the object with undergoing changes
+     */
+    public void update(Observable o, Object arg) {
         if (arg != null) {
-            if(arg instanceof Intersection){
+            if (arg instanceof Intersection) {
                 Intersection wh = cityMap.getWarehouse();
                 System.out.println(wh);
-                if(wh!=null){
-                    warehouse = new Marker(wh.getGeoPosition(),ImageUtil.getWarehouseImage(Color.BLACK));
+                if (wh != null) {
+                    warehouse = new Marker(wh.getGeoPosition(), ImageUtil.getWarehouseImage(Color.BLACK));
                     mapViewer.setAddressLocation(wh.getGeoPosition());
                 }
-            }
-            else if(arg instanceof Tour){
-                Tour tour = (Tour) arg;
-                if(tour!=null){
-                    updateRoute(tour);
-                }
+            } else if (arg instanceof Tour tour) {
+                updateRoute(tour);
             }
         }
-        update();
+        updateMap();
     }
 
-//    public void updateTour(List<GeoPosition> tourList){
-//        this.tour.clear();
-//        this.tour.addAll(tourList);
-//        update();
-//    }
-//
-//    public List<GeoPosition> getTour(){
-//        return this.tour;
-//    }
-//
-//    public void clearMarkers(){
-//        tourMarkers.clear();
-//        tour.clear();
-//        requestMarker = null;
-//        update();
-//    }
-
-    public void clearRequestMarker(){
+    /**
+     * removes the request marker from the map
+     */
+    public void clearRequestMarker() {
         requestMarker = null;
-        update();
+        updateMap();
     }
 
-    public void clearAll(){
-        warehouse = null;
-        requestMarker = null;
-        routes.clear();
-        mapViewer.removeAll();
-        update();
-    }
-
-    public void updateRoute(Tour tour){
-        while(routes.size()<=tour.getCourier().getCourierId()){
+    /**
+     * updates the routes to displayed on the map
+     *
+     * @param tour - the Tour object to be updated
+     */
+    public void updateRoute(Tour tour) {
+        while (routes.size() <= tour.getCourier().getCourierId()) {
             routes.add(new Route(ImageUtil.getColor()));
         }
         routes.get(tour.getCourier().getCourierId()).updateRouteSegments(tour);
     }
-    public void update(){
-        List<Painter<JXMapViewer>> painters = new ArrayList<Painter<JXMapViewer>>();
 
+    /**
+     * repaints the map with all the objects on it
+     */
+    public void updateMap() {
+        List<Painter<JXMapViewer>> painters = new ArrayList<>();
         HashSet<Marker> markers = new HashSet<>();
 
         //the warehouse
-        if(warehouse!=null){
+        if (warehouse != null) {
             markers.add(warehouse);
         }
-
         //the request marker
-        if(requestMarker!=null){
+        if (requestMarker != null) {
             markers.add(requestMarker);
         }
-
         //the tour
-        if(routes.size()>0){
-            TourPainter tourPainter = new TourPainter(routes);
-            painters.add(tourPainter);
+        if (routes.size() > 0) {
+            RoutePainter routePainter = new RoutePainter(routes);
+            painters.add(routePainter);
         }
 
+        //combine all painters to one painter
         MarkersPainter markersPainter = new MarkersPainter();
         markersPainter.setWaypoints(markers);
         painters.add(markersPainter);
-        CompoundPainter<JXMapViewer> painter = new CompoundPainter<JXMapViewer>(painters);
+        CompoundPainter<JXMapViewer> painter = new CompoundPainter<>(painters);
         mapViewer.setOverlayPainter(painter);
     }
 
-    public void recenter(){
-//        mapViewer.setAddressLocation(new GeoPosition(45.764043, 4.835659));
-//        mapViewer.setZoom(15);
-//        if(map.size() == 1){
-//            mapViewer.setAddressLocation(getPositions(map).iterator().next());
-//        }else if(map.size()>1){
-//            mapViewer.zoomToBestFit(getPositions(map),0.7);
-//            update();
-//            mapViewer.repaint();
-//        }else{
-//            GeoPosition lyon = new GeoPosition(45.7640, 4.8357);
-//            mapViewer.setAddressLocation(lyon);
-//            mapViewer.setZoom(6);
-//        }
-
+    /**
+     * recenters the map and readjusts the zoom
+     */
+    public void recenter() {
         mapViewer.setZoom(6);
         mapViewer.recenterToAddressLocation();
-        update();
     }
 
-    public void setCenter(GeoPosition pos){
+    /**
+     * sets the map's center
+     *
+     * @param pos - the GeoPosition defining the center
+     */
+    public void setCenter(GeoPosition pos) {
         mapViewer.setAddressLocation(pos);
-        recenter();
     }
 
-    public List<Route> getRoutes() {
-        return routes;
-    }
-
-    public void setRoutes(List<Route> routes) {
-        this.routes = routes;
+    /**
+     * @return the map object
+     */
+    public JXMapViewer getMapViewer() {
+        return mapViewer;
     }
 }
