@@ -166,8 +166,8 @@ public class MapViewer implements Observer {
         segs.add(segInd);
         Route r = routes.get(tourInd);
         r.updateRouteColor(segs,Color.MAGENTA);
-        routes.remove(tourInd);
-        routes.add(r);
+//        routes.remove(tourInd);
+//        routes.add(r);
         mapViewer.repaint();
     }
 
