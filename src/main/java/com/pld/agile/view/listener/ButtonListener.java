@@ -37,7 +37,7 @@ public class ButtonListener implements ActionListener {
         controller.loadMap();
         break;
 
-      case Window.ADD_DELIVERY_REQUEST:
+      case DeliveryRequestView.ADD_DELIVERY_REQUEST:
         controller.addNewRequest();
         break;
 
@@ -147,8 +147,9 @@ public class ButtonListener implements ActionListener {
         Matcher nameMatcher = stringToNumber.matcher(((JLabel) component).getText());
 
         if(nameMatcher.find()) {
-          Pattern numberToInt = Pattern.compile("\\d+");
+          Pattern numberToInt = Pattern.compile("\\s\\d+");
           Matcher deliveryMatcher = numberToInt.matcher(nameMatcher.group(0));
+          System.out.println(nameMatcher.group(0));
 
           if (deliveryMatcher.find()) {
             courierId = Integer.parseInt(deliveryMatcher.group(0));
@@ -156,6 +157,7 @@ public class ButtonListener implements ActionListener {
         }
       }
     }
+    System.out.println(courierId);
     return courierId;
   }
 }

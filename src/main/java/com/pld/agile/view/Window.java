@@ -6,7 +6,6 @@ import com.pld.agile.model.Intersection;
 import com.pld.agile.view.listener.ButtonListener;
 import com.pld.agile.view.map.MapViewer;
 import org.jxmapviewer.viewer.GeoPosition;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -29,7 +28,6 @@ public class Window extends JFrame {
 
 
   public final static String LOAD_MAP = "Load a Map";
-  public final static String ADD_DELIVERY_REQUEST = "Add a Delivery Request";
   public final static String SAVE_TOURS= "Save the tours";
   public final static String LOAD_TOURS= "Load the tours";
   public final static String RECENTER_MAP = "Recenter the Map";
@@ -90,23 +88,19 @@ public class Window extends JFrame {
     menuBar.add(fileMenu);
     menuBar.add(actionsMenu);
 
-    // Delivery request view
-    this.deliveryRequestView = new DeliveryRequestView();
+    deliveryRequestView = new DeliveryRequestView(buttonListener);
+    deliveriesView = new DeliveriesView(cityMap, this);
 
-    JPanel leftContainer = new JPanel();
-    leftContainer.setLayout(new BoxLayout(leftContainer, BoxLayout.PAGE_AXIS));
-    leftContainer.add(Box.createRigidArea(new Dimension(0,50)));
+    JPanel gui = new JPanel();
+    gui.setLayout(new GridLayout(1, 2));
 
-    leftContainer.add(deliveryRequestView);
-    leftContainer.add(Box.createRigidArea(new Dimension(0,20)));
+    JPanel textualView = new JPanel();
+    textualView.setLayout(new GridLayout(2, 1));
 
-    JButton addDeliveryRequestBtn = new JButton("Add a Delivery Request");
-    addDeliveryRequestBtn.setMaximumSize(new Dimension(250, 30));
-    addDeliveryRequestBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-    addDeliveryRequestBtn.setActionCommand(ADD_DELIVERY_REQUEST);
-    addDeliveryRequestBtn.addActionListener(buttonListener);
-    leftContainer.add(addDeliveryRequestBtn);
-    leftContainer.add(Box.createRigidArea(new Dimension(0,100)));
+    textualView.add(deliveryRequestView);
+    textualView.add(deliveriesView);
+    gui.add(mapViewer.mainPanel);
+    gui.add(textualView);
 
     // Deliveries view
     this.deliveriesView = new DeliveriesView(cityMap, this);
@@ -120,28 +114,20 @@ public class Window extends JFrame {
     constraints.gridy = 0;
     constraints.weightx = 1;
     constraints.weighty = 0.01;
-    constraints.gridwidth = 5;
+    constraints.gridwidth = 1;
     constraints.fill = GridBagConstraints.BOTH;
     this.add(menuBar, constraints);
 
-    // Delivery request view panel
+    //View
     constraints.gridx = 0;
-    constraints.gridy = 1;
-    constraints.weightx = 0.1;
-    constraints.weighty = 0.99;
-    constraints.gridwidth = 1;
-    constraints.fill = GridBagConstraints.BOTH;
-    this.add(leftContainer, constraints);
-
-    // Map view panel
-    constraints.gridx = 1;
     constraints.gridy = 1;
     constraints.weightx = 1;
     constraints.weighty = 0.99;
-    constraints.gridwidth = 3;
+    constraints.gridwidth = 1;
     constraints.fill = GridBagConstraints.BOTH;
-    this.add(mapViewer.getMapViewer(), constraints);
+    this.add(gui, constraints);
 
+    this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     this.setVisible(true);
   }
 
@@ -153,18 +139,13 @@ public class Window extends JFrame {
     return deliveryRequestView;
   }
 
-//  public DeliveriesView getDeliveriesView() {
-//    return deliveriesView;
-//  }
-
   public void displayMessage(String message){
     JOptionPane.showMessageDialog(this, message);
   }
 
   public void updateSelectedPoint(Intersection intersection) {
     this.mapViewer.setRequestMarker(intersection.getGeoPosition());
-    this.mapViewer.updateMap();
-    this.deliveryRequestView.setSelectDestinationPoint("Intersection " + intersection.getId());
+    this.mapViewer.update();
   }
 
   public ButtonListener getButtonListener() {
