@@ -33,7 +33,7 @@ public class MarkersPainter extends WaypointPainter<Marker> {
             g.fillRect(0, 0, rect.width, rect.height);
 
             g.setColor(new Color(200,200,200,200));
-            Font font = new Font(Font.SERIF,Font.BOLD,20);
+            Font font = new Font(Font.SANS_SERIF,Font.BOLD,20);
             g.setFont(font);
             FontMetrics metrics = g.getFontMetrics(font);
             String text = "Please load a map to start adding delivery requests";
