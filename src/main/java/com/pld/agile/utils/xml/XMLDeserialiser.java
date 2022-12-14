@@ -1,6 +1,5 @@
 package com.pld.agile.utils.xml;
 
-import com.pld.agile.controller.Controller;
 import com.pld.agile.model.*;
 import com.pld.agile.model.enums.TimeWindow;
 import org.w3c.dom.Document;
@@ -113,7 +112,7 @@ public class XMLDeserialiser {
     if(longitude<-180||longitude>180){
       throw new ExceptionXML("Invalid longitude");
     }
-    
+
     return new Intersection(id, latitude,longitude);
   }
 

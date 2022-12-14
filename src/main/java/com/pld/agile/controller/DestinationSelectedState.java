@@ -52,7 +52,7 @@ public class DestinationSelectedState implements State {
     try {
       Tour optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
       optimalTour.setCourier(courier);
-      cityMap.updateTourList(optimalTour);
+      cityMap.updateTour(optimalTour);
       controller.setCurrentState(controller.computedTourState);
     } catch (InaccessibleDestinationException e) {
       window.displayMessage(e.getMessage());

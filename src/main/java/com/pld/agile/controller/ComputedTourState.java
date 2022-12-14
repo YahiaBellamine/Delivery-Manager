@@ -49,7 +49,7 @@ public class ComputedTourState implements State{
                     e.printStackTrace();
                 }
             }
-            cityMap.updateTourList(optimalTour);
+            cityMap.updateTour(optimalTour);
         }
     };
 
@@ -63,9 +63,12 @@ public class ComputedTourState implements State{
     public void saveTours(CityMap cityMap, Window w) {
         try{
             XMLSerialiser.save(cityMap.getTourList());
-        } catch (TransformerException | ExceptionXML | ParserConfigurationException e) {
+        } catch (TransformerException  | ParserConfigurationException e) {
             w.displayMessage("System error in saving Tours");
             throw new RuntimeException(e);
+        }
+        catch (ExceptionXML e){
+            w.displayMessage(e.toString());
         }
     };
 
@@ -77,7 +80,6 @@ public class ComputedTourState implements State{
      * @param c
      * @param w
      */
-
     @Override
     public void loadTours(CityMap cityMap, Controller c,Window w) {
         JFileChooser j = new JFileChooser("src/main/java/com/pld/agile/utils/tours");
@@ -121,7 +123,7 @@ public class ComputedTourState implements State{
                 try {
                     Tour newOptimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), newTour.getDeliveryRequests());
                     newOptimalTour.setCourier(newCourier);
-                    cityMap.updateTourList(newOptimalTour);
+                    cityMap.updateTour(newOptimalTour);
                     tour.removeDeliveryRequest(indexDeliveryRequest);
                 } catch (InaccessibleDestinationException e) {
 
@@ -131,7 +133,7 @@ public class ComputedTourState implements State{
             try {
                 Tour optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
                 optimalTour.setCourier(previousCourier);
-                cityMap.updateTourList(optimalTour);
+                cityMap.updateTour(optimalTour);
             } catch (InaccessibleDestinationException e) {
 
             }

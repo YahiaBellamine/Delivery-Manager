@@ -40,8 +40,6 @@ public class Algorithm {
      * @throws InaccessibleDestinationException
      */
     public static Tour ExecuteAlgorithm(Intersection warehouse, List<DeliveryRequest> deliveryRequests) throws InaccessibleDestinationException {
-        System.out.println(tspCost);
-        System.out.println(shortestPath);
         // Instantiation of attributes
         optimalTour = new Tour();
         if(tspCost == null)
