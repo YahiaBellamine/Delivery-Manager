@@ -35,6 +35,13 @@ public class DestinationSelectedState implements State {
     window.updateSelectedPoint(selectedIntersection);
   }
 
+
+  /**
+   * This method add a new request with the selected destination point
+   * @param cityMap the city map
+   * @param controller the controller
+   * @param window the main window
+   */
   @Override
   public void addNewRequest(CityMap cityMap, Controller controller, Window window) {
     TimeWindow timeWindow = (TimeWindow) window.getDeliveryRequestView().comboBoxTimeWindow.getSelectedItem();
@@ -56,8 +63,15 @@ public class DestinationSelectedState implements State {
     }
   }
 
+  /**
+   * Load tours from a xml file
+   *
+   * @param cityMap
+   * @param w
+   */
   @Override
   public void loadTours(CityMap cityMap, Controller c,Window w) {
+    String path;
     JFileChooser j = new JFileChooser("src/main/java/com/pld/agile/utils/tours");
     j.setAcceptAllFileFilterUsed(false);
     j.setDialogTitle("Select a tour file (.xml)");
@@ -67,12 +81,8 @@ public class DestinationSelectedState implements State {
 
     // invoke the showsOpenDialog function to show the save dialog
     int r = j.showOpenDialog(null);
-
-    // if the user selects a file
-    String path;
     if (r == JFileChooser.APPROVE_OPTION) {
-      // set the label to the path of the selected file
-      path = j.getSelectedFile().toURI().getPath();
+      path = j.getSelectedFile().getAbsolutePath();
       try {
         List<Tour> tours = new LinkedList<>();
         XMLDeserialiser.loadTours(path, tours, cityMap);

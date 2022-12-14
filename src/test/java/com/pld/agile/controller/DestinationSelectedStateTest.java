@@ -74,5 +74,4 @@ public class DestinationSelectedStateTest {
     assertEquals(4, tour.getIntersections().size());
     assertEquals((Integer)0, tour.getCourier().getCourierId());
   }
-
 }

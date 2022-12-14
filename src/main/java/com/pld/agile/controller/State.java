@@ -16,8 +16,13 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 
 public interface State {
-
-    default void loadMap(Controller controller, Window window, CityMap cityMap) {
+    /**
+     * This method load a map from a XML file
+     * @param cityMap the city map
+     * @param controller the controller
+     * @param window the window
+     */
+    public default void loadMap(Controller controller, Window window, CityMap cityMap) {
         JFileChooser j = new JFileChooser("src/main/java/com/pld/agile/utils/maps");
         j.setAcceptAllFileFilterUsed(false);
         j.setDialogTitle("Select a map file (.xml)");
@@ -52,17 +57,54 @@ public interface State {
         Algorithm.reInitializeMapAttributes();
     }
 
-    default void selectDestinationPoint(Controller controller, Window window, GeoPosition pos, CityMap cityMap) {}
+    /**
+     * This method select a destination point on the map
+     * @param controller -The controller
+     * @param window - The window
+     * @param pos - The geo position of the selected intersection
+     * @param cityMap - The city map
+     */
+    public default void selectDestinationPoint(Controller controller, Window window, GeoPosition pos, CityMap cityMap) {};
 
-    default void addNewRequest(CityMap cityMap, Controller controller, Window window) {}
+    /** This method add a new delivery request
+     * @param controller -The controller
+     * @param window - The window
+     * @param cityMap - The city map
+     */
+    public default void addNewRequest(CityMap cityMap, Controller controller, Window window) {};
 
-    default void loadTours(CityMap cityMap, Controller controller, Window window) {}
+    /**
+     * This method load tours from an XML file
+     * @param cityMap - The city map
+     * @param controller - The controller
+     * @param window - The window
+     */
+    public default void loadTours(CityMap cityMap, Controller controller, Window window) {};
 
-    default void saveTours(CityMap cityMap, Window w) {}
+    /**
+     * This method save tours to an XML file
+     * @param cityMap - The city map
+     * @param w - The window
+     */
+    public default void saveTours(CityMap cityMap, Window w) {};
 
-    default void deleteDeliveryRequest(CityMap cityMap, Courier courier, int indexDeliveryRequest) {}
+    /**
+     * This method delete a delivery request
+     * @param cityMap - The city map
+     * @param courier - The courier - The courier of the delivery request to be deleted
+     */
+    public default void deleteDeliveryRequest(CityMap cityMap, Courier courier, int indexDeliveryRequest) {};
 
-    default void updateDeliveryRequest(CityMap cityMap, TimeWindow newTimeWindow, Courier newCourier, Courier previousCourier, int indexDeliveryRequest) {}
+    /**
+     * This method update a delivery request
+     * @param cityMap - The city map
+     * @param newTimeWindow - The new time window of the delivery request
+     * @param newCourier - The new courier of the delivery request (if changed)
+     * @param previousCourier - the previous courier of the delivery request
+     * @param indexDeliveryRequest - The index of the delivery request in the list of delivery requests of the previous courier
+     */
+    public default void updateDeliveryRequest(CityMap cityMap, TimeWindow newTimeWindow, Courier newCourier, Courier previousCourier, int indexDeliveryRequest) {};
+
 }
 
 
