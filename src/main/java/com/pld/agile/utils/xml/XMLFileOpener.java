@@ -38,7 +38,11 @@ public class XMLFileOpener extends FileFilter {
       returnVal = jFileChooserXML.showSaveDialog(null);
     if (returnVal != JFileChooser.APPROVE_OPTION)
       throw new ExceptionXML("Problem when opening file");
-    return new File(jFileChooserXML.getSelectedFile().getAbsolutePath());
+    String path = jFileChooserXML.getSelectedFile().getAbsolutePath();
+    if(!path.endsWith(".xml")){
+      path+= ".xml";
+    }
+    return new File(path);
   }
 
   // we only accept .xml as the type of file here
