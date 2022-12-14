@@ -10,16 +10,15 @@ import org.jxmapviewer.viewer.GeoPosition;
 import org.jxmapviewer.painter.Painter;
 
 /**
- * Paints a route
+ * Paints a route.
  */
 public class RoutePainter implements Painter<JXMapViewer>
 {
-    private boolean antiAlias = true;
 
-    private List<Route> tracks;
+    private final List<Route> tracks;
 
     /**
-     * @param tracks the tracks
+     * @param tracks The tracks.
      */
     public RoutePainter(List<Route> tracks)
     {
@@ -33,8 +32,7 @@ public class RoutePainter implements Painter<JXMapViewer>
         // convert from viewport to world bitmap
         Rectangle rect = map.getViewportBounds();
         g.translate(-rect.x, -rect.y);
-        if (antiAlias)
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         // do the drawing
         //g.setColor();
         g.setStroke(new BasicStroke(15/(map.getZoom()+1)));
@@ -52,8 +50,9 @@ public class RoutePainter implements Painter<JXMapViewer>
     }
 
     /**
-     * @param g the graphics object
-     * @param map the map
+     * Draws all the itineraries of all the routes.
+     * @param g The graphics object.
+     * @param map The map.
      */
     private void drawRoute(Graphics2D g, JXMapViewer map)
     {
@@ -80,7 +79,13 @@ public class RoutePainter implements Painter<JXMapViewer>
         }
     }
 
-    private void drawArrows(Graphics2D g, JXMapViewer map, int d)
+    /**
+     * Draws arrows to indicate directions.
+     * @param g The graphics object.
+     * @param map The map.
+     * @param arrowSize The size of the arrow.
+     */
+    private void drawArrows(Graphics2D g, JXMapViewer map, int arrowSize)
     {
         int lastX = 0;
         int lastY = 0;
@@ -104,11 +109,11 @@ public class RoutePainter implements Painter<JXMapViewer>
                                 && Point2D.distance(lastX,lastY, pt.getX(), pt.getY())>10){
                             dist=0;
                             double a = currentAngle + Math.PI/4;
-                            int dx = (int) (d*Math.sin(a));
-                            int dy =(int) (-d*Math.cos(a));
+                            int dx = (int) (arrowSize*Math.sin(a));
+                            int dy =(int) (-arrowSize*Math.cos(a));
                             a -= 2*Math.PI /4;
-                            int dx2 = (int)(d*Math.sin(a));
-                            int dy2 = (int) (-d*Math.cos(a));
+                            int dx2 = (int)(arrowSize*Math.sin(a));
+                            int dy2 = (int) (-arrowSize*Math.cos(a));
 
                             int x = (5*lastX+(int)(3*pt.getX()))/8;
                             int y = (5*lastY+(int) (3*pt.getY()))/8;
@@ -126,6 +131,11 @@ public class RoutePainter implements Painter<JXMapViewer>
         }
     }
 
+    /**
+     * Draws markers for delivery requests.
+     * @param g The graphics object.
+     * @param map The map.
+     */
     private void drawMarkers(Graphics2D g, JXMapViewer map)
     {
 

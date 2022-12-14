@@ -13,11 +13,6 @@ import java.io.File;
  */
 public class ImageUtil {
 
-    /** path to the warehouse image */
-    private static String warehouse = "src/main/java/com/pld/agile/view/map/warehouse.png";
-    /** path to the marker image */
-    private static String marker = "src/main/java/com/pld/agile/view/map/waypoint_white.png";
-
     /** warehouse image */
     private static BufferedImage warehouseImg;
 
@@ -25,18 +20,18 @@ public class ImageUtil {
     private static BufferedImage markerImg;
 
     /** predefined colors table for the routes */
-    private static Color[] colors= {Color.blue, Color.CYAN, Color.green, Color.magenta,
+    private static final Color[] colors= {Color.blue, Color.CYAN, Color.green, Color.magenta,
     Color.pink,Color.red,Color.yellow};
 
     /** index of last chosen color from the colors table */
     private static int colorInd=0;
 
     /**
-     * converts a white image to another color
-     * @param loadImg - the white image
-     * @param newColor - the new image color
-     * @return a new image with the new color
-     * @author Martin Steiger
+     * Converts a white image to another color.
+     * @param loadImg The white image.
+     * @param newColor The new image color.
+     * @return A new image with the new color.
+     * @author Martin Steiger.
      */
     private static BufferedImage convert(BufferedImage loadImg, Color newColor) {
         int w = loadImg.getWidth();
@@ -60,14 +55,15 @@ public class ImageUtil {
 
     /**
      *
-     * @param color - the color of the image
-     * @return the warehouse image with the defined color
+     * @param color The color of the image.
+     * @return The warehouse image with the defined color.
      */
     public static BufferedImage getWarehouseImage(Color color){
         BufferedImage bfImg=null;
         try{
-             if(warehouseImg == null) warehouseImg = ImageIO.read(new File(warehouse));
-             bfImg = convert(warehouseImg, color);
+            String warehouseImgPath = "src/main/java/com/pld/agile/view/map/warehouse.png";
+            if(warehouseImg == null) warehouseImg = ImageIO.read(new File(warehouseImgPath));
+            bfImg = convert(warehouseImg, color);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -76,13 +72,14 @@ public class ImageUtil {
 
     /**
      *
-     * @param color - the color of the image
-     * @return the marker image with the defined color
+     * @param color The color of the image.
+     * @return The marker image with the defined color.
      */
     public static BufferedImage getMarkerImage(Color color){
         BufferedImage bfImg=null;
         try{
-            if(markerImg == null) markerImg = ImageIO.read(new File(marker));
+            String markerImgPath = "src/main/java/com/pld/agile/view/map/waypoint_white.png";
+            if(markerImg == null) markerImg = ImageIO.read(new File(markerImgPath));
             bfImg = convert(markerImg, color);
         }catch (Exception e){
             e.printStackTrace();
@@ -91,8 +88,8 @@ public class ImageUtil {
     }
 
     /**
-     * chooses a new different color each time (from 7 different colors)
-     * @return the chosen color
+     * Chooses a new different color each time (from 7 different colors).
+     * @return The chosen color.
      */
     public static Color getColor(){
         Color c = colors[colorInd%colors.length];
@@ -100,6 +97,9 @@ public class ImageUtil {
         return c;
     }
 
+    /**
+     *
+     */
     public static void restartColorGenerator(){
         colorInd=0;
     }

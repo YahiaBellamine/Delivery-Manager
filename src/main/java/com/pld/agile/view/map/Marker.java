@@ -7,17 +7,17 @@ import org.jxmapviewer.viewer.GeoPosition;
 
 
 /**
- * A Marker that can be placed on a JXMapViewer
- * it has a GeoPosition and an image
+ * A Marker that can be placed on a JXMapViewer,
+ * it has a GeoPosition and an image.
  */
 public class Marker extends DefaultWaypoint
 {
     /** the marker image */
-    private BufferedImage img;
+    private final BufferedImage img;
 
     /**
-     * @param position - the GeoPosition coordinates on the map
-     * @param img - the marker image
+     * @param position The GeoPosition coordinates on the map.
+     * @param img The marker image.
      */
     public Marker( GeoPosition position, BufferedImage img)
     {
@@ -26,7 +26,7 @@ public class Marker extends DefaultWaypoint
     }
 
     /**
-     * @return the marker image
+     * @return The marker image.
      */
     public BufferedImage getImg() {
         return img;

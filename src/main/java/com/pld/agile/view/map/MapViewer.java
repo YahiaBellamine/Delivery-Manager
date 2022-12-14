@@ -33,7 +33,7 @@ public class MapViewer implements Observer {
     /**
      * The main panel that contains the map
      */
-    private JXMapViewer mapViewer;
+    private final JXMapViewer mapViewer;
 
     /**
      * The warehouse Marker
@@ -48,18 +48,17 @@ public class MapViewer implements Observer {
     /**
      * the list of Routes to display for each tour
      */
-    private List<Route> routes;
+    private final List<Route> routes;
 
     /**
      * the CityMap that contains all the model in it
      */
-    private CityMap cityMap;
+    private final CityMap cityMap;
 
     /**
      * Initialises the map
-     *
-     * @param cityMap    - The CityMap instance containing all the data
-     * @param controller - The Controller instance controlling the map
+     * @param cityMap    The CityMap instance containing all the data.
+     * @param controller The Controller instance controlling the map.
      */
     public MapViewer(CityMap cityMap, Controller controller, Window window) {
         mapViewer = new JXMapViewer();
@@ -93,19 +92,17 @@ public class MapViewer implements Observer {
     }
 
     /**
-     * sets the position of the request marker on the map
-     *
-     * @param pos - the GeoPosition of the request marker on the map
+     * Sets the position of the request marker on the map.
+     * @param pos The GeoPosition of the request marker on the map.
      */
     public void setRequestMarker(GeoPosition pos) {
         requestMarker = new Marker(pos, ImageUtil.getMarkerImage(Color.ORANGE));
     }
 
     /**
-     * updates the map with the changes made
-     *
-     * @param o   - the object being observed
-     * @param arg - the object with undergoing changes
+     * Updates the map with the changes made.
+     * @param o   the object being observed.
+     * @param arg the object with undergoing changes.
      */
     public void update(Observable o, Object arg) {
         if (arg != null) {
@@ -135,17 +132,8 @@ public class MapViewer implements Observer {
     }
 
     /**
-     * removes the request marker from the map
-     */
-    public void clearRequestMarker() {
-        requestMarker = null;
-        updateMap();
-    }
-
-    /**
-     * updates the routes to displayed on the map
-     *
-     * @param tour - the Tour object to be updated
+     * Updates the routes to displayed on the map.
+     * @param tour The Tour object to be updated.
      */
     public void updateRoute(Tour tour) {
         System.out.println(tour);
@@ -157,7 +145,7 @@ public class MapViewer implements Observer {
 
 
     /**
-     * reinitializes the map
+     * Reinitialize the map.
      */
     public void clearMap(){
         routes.clear();
@@ -169,7 +157,7 @@ public class MapViewer implements Observer {
     }
 
     /**
-     * repaints the map with all the objects on it
+     * Repaint the map with all the objects on it.
      */
     public void updateMap() {
         List<Painter<JXMapViewer>> painters = new ArrayList<>();
@@ -198,7 +186,7 @@ public class MapViewer implements Observer {
     }
 
     /**
-     * recenters the map and readjusts the zoom
+     * Recenter the map and readjusts the zoom.
      */
     public void recenter() {
         mapViewer.setZoom(6);
@@ -206,16 +194,15 @@ public class MapViewer implements Observer {
     }
 
     /**
-     * sets the map's center
-     *
-     * @param pos - the GeoPosition defining the center
+     * Sets the map's center.
+     * @param pos The GeoPosition defining the center.
      */
     public void setCenter(GeoPosition pos) {
         mapViewer.setAddressLocation(pos);
     }
 
     /**
-     * @return the map object
+     * @return The map object.
      */
     public JXMapViewer getMapViewer() {
         return mapViewer;

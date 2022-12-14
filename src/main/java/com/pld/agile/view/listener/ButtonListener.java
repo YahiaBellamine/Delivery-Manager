@@ -4,7 +4,7 @@ import com.pld.agile.controller.Controller;
 import com.pld.agile.model.Courier;
 import com.pld.agile.model.Couriers;
 import com.pld.agile.model.enums.TimeWindow;
-import com.pld.agile.view.DeliveriesView;
+import com.pld.agile.view.TextualView;
 import com.pld.agile.view.DeliveryRequestView;
 import com.pld.agile.view.Window;
 import com.pld.agile.view.map.MapViewer;
@@ -16,11 +16,18 @@ import java.util.regex.Pattern;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * the button listener for all the buttons on the GUI
+ */
 public class ButtonListener implements ActionListener {
 
+  /** the Controller instance */
   private final Controller controller;
+
+  /** the graphical view */
   private final MapViewer mapViewer;
 
+  /** the default constructor */
   public ButtonListener(Controller controller, MapViewer mapViewer) {
     this.controller = controller;
     this.mapViewer = mapViewer;
@@ -57,7 +64,7 @@ public class ButtonListener implements ActionListener {
         controller.addCourier();
         break;
 
-      case DeliveriesView.UPDATE_DELIVERY_REQUEST:
+      case TextualView.UPDATE_DELIVERY_REQUEST:
         JComboBox<TimeWindow> comboBoxTimeWindow = new JComboBox<>();
         ((JLabel) comboBoxTimeWindow.getRenderer()).setHorizontalAlignment(JLabel.LEFT);
         for(TimeWindow timeWindow : TimeWindow.values()) {
@@ -91,7 +98,7 @@ public class ButtonListener implements ActionListener {
         }
         break;
 
-      case DeliveriesView.DELETE_DELIVERY_REQUEST:
+      case TextualView.DELETE_DELIVERY_REQUEST:
         int userChoice = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this delivery request ?", "Confirm delete", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         //Validate delete
         if(userChoice == JOptionPane.YES_OPTION) {
