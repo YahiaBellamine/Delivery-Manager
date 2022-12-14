@@ -14,6 +14,11 @@ public class CityMap extends Observable {
     private Map<Long, Intersection> intersections;
     private Long destinationPointId;
 
+    /**
+     * Default CityMap constructor.
+     * The intersections list is empty.
+     * The warehouse is null.
+     */
     public CityMap() {
         this.warehouse = null;
         initializeTourList();
@@ -34,6 +39,10 @@ public class CityMap extends Observable {
         Couriers.updateCouriers(tourList.size());
     }
 
+    /**
+     * Update a tour in the list of tours of the CityMap
+     * @param tour- The tour that needs to be updated
+     */
     public void updateTour(Tour tour){
         tourList.set(tour.getCourier().getCourierId(), tour);
         notifyObservers(tour);
@@ -60,14 +69,26 @@ public class CityMap extends Observable {
         return tourList.get(courier.getCourierId());
     }
 
+    /**
+     * Add null tour to the list of tours of the CityMap
+     */
     public void addTour() {
         this.tourList.add(null);
     }
 
+    /**
+     * Add internsection to the list of intersections of the CityMap
+     * @param intersection - The intersection that needs to be added
+     */
     public void addIntersection(Intersection intersection) {
         this.intersections.put(intersection.getId(), intersection);
     }
 
+    /**
+     * Search intersection corresponding to a Geoposition
+     * @param position - Geoposition from which we find the corresponding intersection
+     * @return - The intersection corresponding to the GeoPosition
+     */
     public Intersection searchIntersection(GeoPosition position) {
         double x = position.getLatitude();
         double y = position.getLongitude();
@@ -83,6 +104,9 @@ public class CityMap extends Observable {
         return intersection;
     }
 
+    /**
+     * Reinitilize the attributes of the CityMap. Wareshouse is null, list of tour is empty and intersections is empty.
+     */
     public void reInitializeCityMap(){
         this.warehouse = null;
         initializeTourList();
