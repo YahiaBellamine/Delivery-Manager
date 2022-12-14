@@ -26,7 +26,7 @@ import java.util.List;
 public class ComputedTourState implements State{
 
     @Override
-    public void deleteDeliveryRequest(CityMap cityMap, Controller controller, Courier courier, int indexDeliveryRequest) {
+    public void deleteDeliveryRequest(CityMap cityMap, Courier courier, int indexDeliveryRequest) {
         Tour tour = cityMap.getTour(courier);
         if(tour != null && tour.getDeliveryRequests().size() > indexDeliveryRequest) {
             tour.removeDeliveryRequest(indexDeliveryRequest);
@@ -45,11 +45,10 @@ public class ComputedTourState implements State{
      * Save tours from cityMap in a xml file
      *
      * @param cityMap
-     * @param c
      * @param w
      */
     @Override
-    public void saveTours(CityMap cityMap, Controller c, Window w) {
+    public void saveTours(CityMap cityMap, Window w) {
         try{
             XMLSerialiser.save(cityMap.getTourList());
         } catch (TransformerException | ExceptionXML | ParserConfigurationException e) {

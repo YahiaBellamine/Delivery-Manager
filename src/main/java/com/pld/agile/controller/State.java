@@ -52,17 +52,6 @@ public interface State {
                 window.displayMessage("Number format error");
             }
         }
-        // previous version for updating the view
-        // will be implemented using Observer pattern
-        /*window.getMapViewer().clearAll();
-        deliveryRequests.clear();
-        this.window.getDeliveriesView().displayRequests(deliveryRequests);
-        // Define the warehouse marker on the map
-        GeoPosition warehousePosition = new GeoPosition(cityMap.getWarehouse().getLatitude(),
-                cityMap.getWarehouse().getLongitude());
-        this.window.getMapViewer().addPoint(warehousePosition, cityMap.getWarehouse().getId(), Marker.Type.WAREHOUSE);
-        this.window.getMapViewer().recenter();*/
-
     }
 
     public default void selectDestinationPoint(Controller controller, Window window, GeoPosition pos, CityMap cityMap) {};
@@ -71,9 +60,9 @@ public interface State {
 
     public default void loadTours(CityMap cityMap, Controller controller, Window window) {};
 
-    public default void saveTours(CityMap cityMap, Controller c, Window window) {};
+    public default void saveTours(CityMap cityMap, Window w) {};
 
-    public default void deleteDeliveryRequest(CityMap cityMap, Controller c, Courier courier, int indexDeliveryRequest) {};
+    public default void deleteDeliveryRequest(CityMap cityMap, Courier courier, int indexDeliveryRequest) {};
 
     public default void updateDeliveryRequest(CityMap cityMap, Controller controller, Window w, Courier courier, int indexDeliveryRequest) {};
 }

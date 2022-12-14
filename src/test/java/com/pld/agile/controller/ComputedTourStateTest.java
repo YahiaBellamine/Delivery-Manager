@@ -8,19 +8,20 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.swing.*;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+public class ComputedTourStateTest {
 
-public class DestinationSelectedStateTest {
-
-  Controller controller;
+  Controller controller = mock(Controller.class);
   CityMap cityMap;
-  DestinationSelectedState destinationSelectedState;
-  Window window;
+  ComputedTourState computedTourState;
   Tour tour;
+  Courier courier;
+  Window window;
 
   @Before
   public void setUp() throws Exception {
@@ -32,22 +33,26 @@ public class DestinationSelectedStateTest {
     warehouse.addOutgoingSegment(roadSegment);
     destinationPoint.addOutgoingSegment(roadSegment2);
 
-    Courier courier = new Courier(0);
+    courier = new Courier(0);
     tour = new Tour();
     tour.setCourier(courier);
+    tour.addIntersection(warehouse);
+    tour.addIntersection(destinationPoint);
+    DeliveryRequest deliveryRequest = new DeliveryRequest(TimeWindow.TW_8_9, destinationPoint);
+    DeliveryRequest deliveryRequest2 = new DeliveryRequest(TimeWindow.TW_8_9, destinationPoint);
+    tour.addDeliveryRequest(deliveryRequest);
+    tour.addDeliveryRequest(deliveryRequest2);
 
     // Mock the cityMap
     cityMap = mock(CityMap.class);
     when(cityMap.getWarehouse()).thenReturn(warehouse);
     when(cityMap.getTour(courier)).thenReturn(tour);
+    when(cityMap.getTourList()).thenReturn(List.of(new Tour[]{tour}));
     doAnswer(invocation -> {
       Object[] args = invocation.getArguments();
       tour = (Tour) args[0];
       return null;
     }).when(cityMap).updateTourList(any(Tour.class));
-
-    // Mock the Controller
-    controller = mock(Controller.class);
 
     // Mock the window
     window = mock(Window.class);
@@ -58,21 +63,31 @@ public class DestinationSelectedStateTest {
     deliveryRequestView.comboBoxCourier = comboBoxCourier;
     deliveryRequestView.comboBoxTimeWindow = comboBoxTimeWindow;
     when(comboBoxCourier.getSelectedItem()).thenReturn(courier);
-    when(comboBoxTimeWindow.getSelectedItem()).thenReturn(TimeWindow.TW_8_9);
+    when(comboBoxTimeWindow.getSelectedItem()).thenReturn(TimeWindow.TW_9_10);
 
-    destinationSelectedState = new DestinationSelectedState();
-    destinationSelectedState.setSelectedIntersection(destinationPoint);
+    computedTourState = new ComputedTourState();
   }
 
   @Test
-  public void addNewRequestTest() {
-    assertEquals(0, tour.getDeliveryRequests().size());
-    assertEquals(0, tour.getIntersections().size());
-    assertEquals((Integer)0, tour.getCourier().getCourierId());
-    destinationSelectedState.addNewRequest(cityMap, controller, window);
+  public void deleteDeliveryRequestTest() {
+    assertEquals(2, tour.getDeliveryRequests().size());
+    computedTourState.deleteDeliveryRequest(cityMap, courier, 0);
     assertEquals(1, tour.getDeliveryRequests().size());
-    assertEquals(4, tour.getIntersections().size());
-    assertEquals((Integer)0, tour.getCourier().getCourierId());
   }
 
+  @Test
+  public void saveToursTest() {
+    // computedTourState.saveTours(cityMap, window);
+  }
+
+  @Test
+  public void loadToursTest() {
+//    computedTourState.loadTours(cityMap, controller, window);
+  }
+
+  @Test
+  public void updateDeliveryRequestTest() {
+    // computedTourState.updateDeliveryRequest(cityMap, controller, window, courier, 0);
+    // assertEquals(TimeWindow.TW_9_10, tour.getDeliveryRequests().get(0).getTimeWindow());
+  }
 }
