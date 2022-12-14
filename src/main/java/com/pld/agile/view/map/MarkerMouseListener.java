@@ -2,31 +2,39 @@ package com.pld.agile.view.map;
 
 import com.pld.agile.controller.Controller;
 
+import org.jxmapviewer.viewer.GeoPosition;
+
 import javax.swing.event.MouseInputListener;
-import java.awt.*;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 
+/**
+ * a mouse listener for selecting the delivery requests position on the map
+ */
 public class MarkerMouseListener implements MouseInputListener {
 
-    private Marker wp;
+    /** The Controller instance controlling the map */
     private Controller controller;
 
-    public MarkerMouseListener(Marker wp, Controller controller){
-        this.wp = wp;
+    /**
+     * the default constructor
+     * @param controller - The Controller instance controlling the map
+     */
+    public MarkerMouseListener(Controller controller){
         this.controller = controller;
     }
 
-    public Marker getWp() {
-        return wp;
-    }
-
-    public void setWp(Marker wp) {
-        this.wp = wp;
-    }
+    /**
+     * updates the position of the delivery request marker
+     * @param e the event to be processed
+     */
     @Override public void mouseClicked(MouseEvent e) {
         switch (e.getButton()) {
             case MouseEvent.BUTTON1:
-                controller.selectIntersection(wp.getId());
+                int x =e.getX();
+                int y =e.getY();
+                GeoPosition pos = controller.getWindow().getMapViewer().getMapViewer().convertPointToGeoPosition(new Point(x,y));
+                controller.selectDestinationPoint(pos);
                 break;
         }
     }

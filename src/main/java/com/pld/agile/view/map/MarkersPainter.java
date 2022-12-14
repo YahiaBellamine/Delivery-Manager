@@ -11,98 +11,50 @@ package com.pld.agile.view.map;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+
 
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.WaypointPainter;
-import org.jxmapviewer.viewer.WaypointRenderer;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
 
 /**
- * A fancy waypoint painter
- * @author Martin Steiger
+ * A Marker painter - defines how the markers are painted on the map
  */
-public class MarkersPainter extends WaypointPainter<Marker>
-{
-
-    private final Map<Color, BufferedImage> map = new HashMap<Color, BufferedImage>();
-
-//    private final Font font = new Font("Lucida Sans", Font.BOLD, 10);
-
-    private BufferedImage origImage;
-
-    /**
-     * Uses a default waypoint image
-     */
-    public MarkersPainter()
-    {
-        try
-        {
-            File resource = new File( "src/main/java/com/pld/agile/view/map/waypoint_white.png");
-            origImage = ImageIO.read(resource);
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-    }
-
-    private BufferedImage convert(BufferedImage loadImg, Color newColor)
-    {
-        int w = loadImg.getWidth();
-        int h = loadImg.getHeight();
-        BufferedImage imgOut = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        BufferedImage imgColor = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-
-        Graphics2D g = imgColor.createGraphics();
-        g.setColor(newColor);
-        g.fillRect(0, 0, w+1, h+1);
-        g.dispose();
-
-        Graphics2D graphics = imgOut.createGraphics();
-        graphics.drawImage(loadImg, 0, 0, null);
-        graphics.setComposite(MultiplyComposite.Default);
-        graphics.drawImage(imgColor, 0, 0, null);
-        graphics.dispose();
-
-        return imgOut;
-    }
-
+public class MarkersPainter extends WaypointPainter<Marker> {
 
     @Override
     protected void doPaint(Graphics2D g, JXMapViewer viewer, int width, int height) {
-        // g = (Graphics2D)g.create();
+        //if there is no marker to show on the map (meaning no map file is loaded)
+        //then darken the map and display a "please load a map" message
+        if(getWaypoints().isEmpty()){
+            Rectangle rect = viewer.getViewportBounds();
+            Color c = g.getColor();
+            g.setColor(new Color(0,0,0,180));
+            g.fillRect(0, 0, rect.width, rect.height);
 
-        for (Marker w : getWaypoints()) {
-            if (origImage == null)
-                return;
+            g.setColor(new Color(200,200,200,200));
+            Font font = new Font(Font.SERIF,Font.BOLD,20);
+            g.setFont(font);
+            FontMetrics metrics = g.getFontMetrics(font);
+            String text = "Please load a map to start adding delivery requests";
+            int x = (rect.width - metrics.stringWidth(text)) / 2;
+            int y =  ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
+            g.drawString(text, x, y);
 
-            BufferedImage myImg = map.get(w.getColor());
-
-            if (myImg == null)
-            {
-                myImg = convert(origImage, w.getColor());
-                map.put(w.getColor(), myImg);
+            g.setColor(c);
+        }else{
+            for (Marker w : getWaypoints()) {
+                if(w == null ) continue;
+                Point2D point = viewer.getTileFactory().geoToPixel(w.getPosition(), viewer.getZoom());
+                int zoom = viewer.getZoom();
+                int imgW = 100/(zoom+1);
+                int imgH = (w.getImg().getHeight()*imgW)/w.getImg().getWidth();
+                Rectangle rectangle = viewer.getViewportBounds();
+                int x = (int)(point.getX() - rectangle.getX());
+                int y = (int)(point.getY() - rectangle.getY());
+                Image img = w.getImg().getScaledInstance(imgW,imgH,Image.SCALE_SMOOTH);
+                g.drawImage(img, x -img.getWidth(null) / 2, y -img.getHeight(null), null);
             }
-            Point2D point = viewer.getTileFactory().geoToPixel(w.getPosition(), viewer.getZoom());
-            int zoom = viewer.getZoom();
-//            int imgW = 35/(zoom+1);
-//            int imgH = 35/(zoom+1);
-            Rectangle rectangle = viewer.getViewportBounds();
-            int x = (int)(point.getX() - rectangle.getX());
-            int y = (int)(point.getY() - rectangle.getY());
-            g.drawImage(myImg, x -myImg.getWidth() / 2, y -myImg.getHeight(), null);
-//            JLabel lbl = w.getLbl();
-//            lbl.setBounds( x-imgW/2, y-imgH/2, imgW,imgH);
-//            lbl.setBackground(w.getColor());
-//            lbl.setOpaque(true);
-//            viewer.add(lbl);
         }
     }
 

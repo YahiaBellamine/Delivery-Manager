@@ -1,5 +1,7 @@
 package com.pld.agile.model;
 
+import org.jxmapviewer.viewer.GeoPosition;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,11 +14,10 @@ public class Intersection {
     private List<RoadSegment> outgoingSegments= new ArrayList<>();
 
     // constructor
-    public Intersection(Long id,double latitude, double longitude, List<RoadSegment> outgoingSegments) {
+    public Intersection(Long id,double latitude, double longitude) {
         this.id = id;
         this.latitude=latitude;
         this.longitude=longitude;
-        this.outgoingSegments=outgoingSegments;
     }
 
     public long getId() {
@@ -67,6 +68,10 @@ public class Intersection {
         if (!(o instanceof Intersection)) return false;
         Intersection that = (Intersection) o;
         return getId() == that.getId() && getLatitude()==that.getLatitude() && getLongitude()==that.getLongitude();
+    }
+
+    public GeoPosition getGeoPosition(){
+        return new GeoPosition(this.latitude, this.longitude);
     }
 
     @Override

@@ -1,66 +1,35 @@
-
 package com.pld.agile.view.map;
 
-import java.awt.*;
+import java.awt.image.BufferedImage;
 
-import com.pld.agile.controller.Controller;
 import org.jxmapviewer.viewer.DefaultWaypoint;
 import org.jxmapviewer.viewer.GeoPosition;
 
-import javax.swing.*;
 
 /**
- * A waypoint that also has a color and a label
- * @author Martin Steiger
+ * A Marker that can be placed on a JXMapViewer
+ * it has a GeoPosition and an image
  */
 public class Marker extends DefaultWaypoint
 {
-    public enum Type{WAREHOUSE, MAP, TOUR, REQUEST}
-    private final long id;
-    private Color color;
-    private JLabel lbl;
-
-    private Type type;
+    /** the marker image */
+    private BufferedImage img;
 
     /**
-     * @param id the id
-     * @param color the color
-     * @param position the coordinate
+     * @param position - the GeoPosition coordinates on the map
+     * @param img - the marker image
      */
-    public Marker(long id, Color color, GeoPosition position, Type type, Controller controller)
+    public Marker( GeoPosition position, BufferedImage img)
     {
         super(position);
-        this.id = id;
-        this.color = color;
-        this.lbl = new JLabel();
-        this.type = type;
-        if(this.type == Type.MAP){
-            lbl.addMouseListener(new MarkerMouseListener(this, controller));
-        }
+        this.img = img;
     }
-    public JLabel getLbl() {
-        return lbl;
-    }
-
-    public void setLbl(JLabel lbl) {
-        this.lbl = lbl;
-    }
-
-
 
     /**
-     * @return the color
+     * @return the marker image
      */
-    public Color getColor()
-    {
-        return color;
+    public BufferedImage getImg() {
+        return img;
     }
 
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
-    public long getId() {
-        return id;
-    }
 }

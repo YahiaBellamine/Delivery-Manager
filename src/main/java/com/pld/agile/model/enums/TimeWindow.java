@@ -10,7 +10,7 @@ public enum TimeWindow {
   private int end;
 
   /**
-   * TImeWindow constructor.
+   * TimeWindow constructor.
    * @param start - The starting time of the TimeWindow.
    * @param end - The ending time of the TimeWindow.
    */
@@ -33,6 +33,15 @@ public enum TimeWindow {
    */
   public int getEnd() {
       return end;
+  }
+
+  public int isBefore(TimeWindow timeWindow){
+    if(this.start < timeWindow.start){
+      return -1;
+    } else if (this.start > timeWindow.start) {
+      return 1;
+    }
+    return 0;
   }
 
   @Override

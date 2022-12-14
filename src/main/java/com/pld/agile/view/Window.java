@@ -5,109 +5,124 @@ import com.pld.agile.model.CityMap;
 import com.pld.agile.model.Intersection;
 import com.pld.agile.view.listener.ButtonListener;
 import com.pld.agile.view.map.MapViewer;
-import com.pld.agile.view.map.Marker;
-import org.jxmapviewer.viewer.GeoPosition;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Window extends JFrame {
 
+  /** The map for the GUI */
   private MapViewer mapViewer;
-  private final Controller controller;
+
+  /** The graphical view of the GUI */
   private final DeliveryRequestView deliveryRequestView;
+
+  /** The textual view of the GUI */
   private final DeliveriesView deliveriesView;
+
+  /** The menu bar of the GUI */
+  private final JMenuBar menuBar;
+
+  /** The button listener of the GUI */
+  private ButtonListener buttonListener;
 
 
   public final static String LOAD_MAP = "Load a Map";
-  public final static String ADD_DELIVERY_REQUEST = "Add a Delivery Request";
+  public final static String SAVE_TOURS= "Save the tours";
+  public final static String LOAD_TOURS= "Load the tours";
+  public final static String RECENTER_MAP = "Recenter the Map";
+  public final static String ADD_COURIER = "Add a courier";
 
-  public Window(Controller controller) {
+  public Window(CityMap cityMap, Controller controller) {
     super("Delivery Manager");
-    this.controller = controller;
-    this.mapViewer = new MapViewer(controller);
-
-    mapViewer = new MapViewer(controller);
-
 
     //Create the JFrame
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setResizable(false);
     Dimension screenDimensions = Toolkit.getDefaultToolkit().getScreenSize();
-    this.setSize((int)(screenDimensions.width * 0.9), (int)(screenDimensions.height * 0.9));
+    this.setSize((int)(screenDimensions.width * 0.95), (int)(screenDimensions.height * 0.95));
     this.setLayout(null);
 
     int x = (int) ((screenDimensions.getWidth() - this.getWidth()) / 2);
-    int y = (int) ((screenDimensions.getHeight() - this.getHeight()) / 2);
+    int y = (int) ((screenDimensions.getHeight() - this.getHeight() - 45) / 2);
     this.setLocation(x, y);
 
     JPanel contentPane = new JPanel(new GridBagLayout());
     this.setContentPane(contentPane);
 
-    mapViewer.recenter();
-    this.getContentPane().add(mapViewer.mainPanel);
+    // Map view
+    this.mapViewer = new MapViewer(cityMap, controller, this);
 
-    ButtonListener buttonListener = new ButtonListener(controller);
+    // Button listener
+    buttonListener = new ButtonListener(controller, mapViewer);
 
-    JButton loadMapButton = new JButton("Load a Map");
-    loadMapButton.setMaximumSize(new Dimension(250, 30));
-    loadMapButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-    loadMapButton.setActionCommand(LOAD_MAP);
-    loadMapButton.addActionListener(buttonListener);
+    //Creation of the menu bar
+    menuBar = new JMenuBar();
 
-    JButton addDeliveryRequestBtn = new JButton("Add a Delivery Request");
-    addDeliveryRequestBtn.setMaximumSize(new Dimension(250, 30));
-    addDeliveryRequestBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-    addDeliveryRequestBtn.setActionCommand(ADD_DELIVERY_REQUEST);
-    addDeliveryRequestBtn.addActionListener(buttonListener);
+    JMenu fileMenu = new JMenu("File");
+    JMenuItem loadMap = new JMenuItem("Load Map");
+    loadMap.setActionCommand(LOAD_MAP);
+    loadMap.addActionListener(buttonListener);
+    JMenuItem loadTours = new JMenuItem("Load Tours");
+    loadTours.setActionCommand(LOAD_TOURS);
+    loadTours.addActionListener(buttonListener);
+    JMenuItem saveTours = new JMenuItem("Save Tours");
+    saveTours.setActionCommand(SAVE_TOURS);
+    saveTours.addActionListener(buttonListener);
 
-    deliveryRequestView = new DeliveryRequestView();
+    JMenu actionsMenu = new JMenu("Actions");
+    JMenuItem recenterMap = new JMenuItem("Recenter Map");
+    recenterMap.setActionCommand(RECENTER_MAP);
+    recenterMap.addActionListener(buttonListener);
+    JMenuItem addCourier = new JMenuItem("Add Courier");
+    addCourier.setActionCommand(ADD_COURIER);
+    addCourier.addActionListener(buttonListener);
 
-    deliveriesView = new DeliveriesView();
-    deliveriesView.setSize(contentPane.getWidth() / 4, contentPane.getHeight());
+    fileMenu.add(loadMap);
+    fileMenu.add(loadTours);
+    fileMenu.add(saveTours);
 
-    JPanel leftContainer = new JPanel();
-    leftContainer.setLayout(new BoxLayout(leftContainer, BoxLayout.PAGE_AXIS));
+    actionsMenu.add(recenterMap);
+    actionsMenu.add(addCourier);
 
-    leftContainer.add(Box.createRigidArea(new Dimension(0,50)));
-    leftContainer.add(loadMapButton);
-    leftContainer.add(Box.createRigidArea(new Dimension(0,20)));
-    leftContainer.add(deliveryRequestView);
-    leftContainer.add(Box.createRigidArea(new Dimension(0,20)));
-    leftContainer.add(addDeliveryRequestBtn);
-    leftContainer.add(Box.createRigidArea(new Dimension(0,100)));
+    menuBar.add(fileMenu);
+    menuBar.add(actionsMenu);
 
+    deliveryRequestView = new DeliveryRequestView(buttonListener);
+    deliveriesView = new DeliveriesView(cityMap, this);
+
+    JPanel gui = new JPanel();
+    gui.setLayout(new GridLayout(1, 2));
+
+    JPanel textualView = new JPanel();
+    textualView.setLayout(new GridLayout(2, 1));
+
+    textualView.add(deliveryRequestView);
+    textualView.add(deliveriesView);
+    gui.add(mapViewer.getMapViewer());
+    gui.add(textualView);
+
+    // Constraints
     GridBagConstraints constraints = new GridBagConstraints();
 
-    //User entry panel
+    // Menu bar
     constraints.gridx = 0;
     constraints.gridy = 0;
-    constraints.weightx = 0.1;
-    constraints.weighty = 1;
+    constraints.weightx = 1;
+    constraints.weighty = 0.01;
     constraints.gridwidth = 1;
     constraints.fill = GridBagConstraints.BOTH;
-    this.add(leftContainer, constraints);
+    this.add(menuBar, constraints);
 
-    //Graphical view (Map) panel
-    constraints.gridx = 1;
-    constraints.gridy = 0;
-    constraints.weightx = 0.8;
-    constraints.weighty = 1;
-    constraints.gridwidth = 2;
-    constraints.fill = GridBagConstraints.BOTH;
-    this.add(mapViewer.mainPanel, constraints);
-
-    //Textual view panel
-    constraints.gridx = 3;
-    constraints.gridy = 0;
-    constraints.weightx = 0.1;
-    constraints.weighty = 1;
+    //View
+    constraints.gridx = 0;
+    constraints.gridy = 1;
+    constraints.weightx = 1;
+    constraints.weighty = 0.99;
     constraints.gridwidth = 1;
     constraints.fill = GridBagConstraints.BOTH;
-    this.add(deliveriesView, constraints);
+    this.add(gui, constraints);
 
+    this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     this.setVisible(true);
   }
 
@@ -119,12 +134,17 @@ public class Window extends JFrame {
     return deliveryRequestView;
   }
 
-  public DeliveriesView getDeliveriesView() {
-    return deliveriesView;
-  }
-
   public void displayMessage(String message){
     JOptionPane.showMessageDialog(this, message);
+  }
+
+  public void updateSelectedPoint(Intersection intersection) {
+    this.mapViewer.setRequestMarker(intersection.getGeoPosition());
+    this.mapViewer.updateMap();
+  }
+
+  public ButtonListener getButtonListener() {
+    return buttonListener;
   }
 }
 

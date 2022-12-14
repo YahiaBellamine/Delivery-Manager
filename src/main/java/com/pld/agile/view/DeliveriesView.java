@@ -1,146 +1,258 @@
 package com.pld.agile.view;
 
+import com.pld.agile.model.CityMap;
 import com.pld.agile.model.DeliveryRequest;
+import com.pld.agile.model.Tour;
+import com.pld.agile.observer.Observable;
+import com.pld.agile.observer.Observer;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeSelectionModel;
 import javax.swing.border.Border;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.*;
 import java.awt.*;
 
-public class DeliveriesView extends JPanel {
-    /** Panel used to display the head infos of the textual view */
-    private JPanel textViewHeadPanel;
 
-    /** Panel used to display the delivery requests of a tour */
-    private JPanel deliveryRequestsPanel;
+public class DeliveriesView extends JPanel implements Observer {
 
-    /** Main label of the textual view */
-    private JLabel viewTitle;
+    /** Scrollable panel to display the delivery requests of a tour */
+    private JScrollPane requestsScrollPane;
 
-    /** Undo button */
-    private JButton undo;
+    /** Tree to display the information about all the tours and their delivery requests */
+    private JTree toursTree;
 
-    /** Redo button */
-    private JButton redo;
+    /** Panel to display details about delivery requests or tours */
+    private JPanel detailsPanel;
 
-    /** List of delivery requests to display in the GUI */
-    private List<DeliveryRequest> deliveryRequests;
+    /** the map */
+    private CityMap cityMap;
+
+    public static final String UPDATE_DELIVERY_REQUEST = "Update a delivery request";
+    public static final String DELETE_DELIVERY_REQUEST = "Delete a delivery request";
 
     /**
      * Constructor of the textual view.
      */
-    public DeliveriesView() {
-        super();
-        deliveryRequests = new LinkedList<>();
-
+    public DeliveriesView(CityMap cityMap, Window window) {
         Border textViewBorder = BorderFactory.createLoweredBevelBorder();
-        this.setLayout(new GridBagLayout());
+        this.setLayout(new GridLayout(1,2));
         this.setName("textViewPanel");
         this.setBorder(textViewBorder);
+        this.setMaximumSize(new Dimension(window.getMaximumSize().width / 5, window.getMaximumSize().height));
+        this.setPreferredSize(new Dimension(window.getMaximumSize().width / 5, window.getMaximumSize().height));
 
-        textViewHeadPanel = new JPanel();
-        textViewHeadPanel.setName("textViewHeadPanel");
-        textViewHeadPanel.setLayout(new FlowLayout());
+        //Scroll panel for tree view
+        requestsScrollPane = new JScrollPane();
+        requestsScrollPane.setName("toursScrollPane");
+        requestsScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        requestsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 
-        deliveryRequestsPanel = new JPanel();
-        deliveryRequestsPanel.setName("deliveryRequestsPanel");
+        //Details panel
+        detailsPanel = new JPanel();
+        detailsPanel.setName("detailsPane");
+        detailsPanel.setLayout(new GridLayout(5,1));
 
-        viewTitle = new JLabel("Deliveries");
-        viewTitle.setHorizontalTextPosition(SwingConstants.CENTER);
+        this.add(requestsScrollPane);
+        this.add(detailsPanel);
 
-        undo = new JButton("<");
-        undo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        cityMap.addObserver(this);
 
-        redo = new JButton(">");
-        redo.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        textViewHeadPanel.add(viewTitle);
-        textViewHeadPanel.add(undo);
-        textViewHeadPanel.add(redo);
-
-        GridBagConstraints constraints = new GridBagConstraints();
-
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.weighty = 0.1;
-        constraints.gridwidth = 3;
-        constraints.fill = GridBagConstraints.BOTH;
-        this.add(textViewHeadPanel, constraints);
-
-        constraints.gridx = 0;
-        constraints.gridy = 1;
-        constraints.weighty = 0.9;
-        constraints.gridwidth = 3;
-        constraints.fill = GridBagConstraints.BOTH;
-        this.add(deliveryRequestsPanel, constraints);
+        this.cityMap = cityMap;
     }
 
     /**
-     * Changes the list of delivery requests to display for a new one.
-     * @param requests - The new list of delivery requests to display.
+     * Method triggered by an update in the model class CityMap.
+     * @param o
+     * @param arg
      */
-    public void displayRequests(List<DeliveryRequest> requests) {
-        deliveryRequests.clear();
-        deliveryRequests.addAll(requests);
-        clearDeliveryGUI();
-        updateDeliveryPanelLayout();
-        paintRequests();
+    public void update(Observable o, Object arg){
+        repaint();
     }
 
     /**
-     * Clears the GUI part where the list of delivery requests is displayed.
+     * Repaint the component.
      */
-    private  void clearDeliveryGUI() {
-        Component[] guiDeliveries = deliveryRequestsPanel.getComponents();
-        for(Component component : guiDeliveries) {
-            deliveryRequestsPanel.remove(component);
-        }
-        deliveryRequestsPanel.revalidate();
-        deliveryRequestsPanel.repaint();
+    @Override
+    public void repaint() {
+        updateTree();
+        updateDetails(null);
     }
 
     /**
-     * Updates the layout of the panel in charge to display the delivery requests list.
-     * The new layout is updated depending on the number of deliveries to display.
+     * Update the tree view depending on the CityMap
      */
-    private void updateDeliveryPanelLayout() {
-        System.out.println("New layout - number of rows: " + deliveryRequests.size());
-        deliveryRequestsPanel.setLayout(new GridLayout(deliveryRequests.size(), 1));
-    }
-
-    /**
-     * Updates the display of the delivery requests in the GUI.
-     */
-    private void paintRequests() {
-        if(!deliveryRequests.isEmpty()) {
-            Border deliveryPanelBorder = BorderFactory.createRaisedBevelBorder();
-            int requestsCounter = 1;
-            for(DeliveryRequest request : deliveryRequests) {
-                JPanel requestPanel = new JPanel();
-                JLabel requestTag = new JLabel();
-                JLabel requestTime = new JLabel();
-
-                requestPanel.setLayout(new BoxLayout(requestPanel, BoxLayout.PAGE_AXIS));
-                requestPanel.setBorder(deliveryPanelBorder);
-                requestPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-                requestTag.setText("Delivery request n°" + requestsCounter);
-                requestTime.setText("Time Window: [" + request.getTimeWindow().getStart() + " - " +request.getTimeWindow().getEnd() + "]");
-
-                //DEBUG
-                /*System.out.println("Added delivery request: name:" + requestTag.getText() + " ; timeW:" + requestTime.getText());*/
-
-                requestPanel.add(requestTag);
-                requestPanel.add(requestTime);
-                deliveryRequestsPanel.add(requestPanel);
-
-                requestPanel.setPreferredSize(new Dimension(requestPanel.getParent().getWidth(), requestPanel.getParent().getHeight() / 10));
-                requestPanel.revalidate();
-
-                ++requestsCounter;
+    private void updateTree() {
+        if(cityMap != null) {
+            if(toursTree != null) {
+                toursTree.removeAll();
             }
-            deliveryRequestsPanel.revalidate();
-            deliveryRequestsPanel.repaint();
+            DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode("Tours information");
+            int indexCourier = 1;
+            for (Tour tour : cityMap.getTourList()) {
+                if(tour != null && !tour.getDeliveryRequests().isEmpty()) {
+                    DefaultMutableTreeNode treeTour = new DefaultMutableTreeNode("Courier n°" + indexCourier);
+                    int indexDelivery = 1;
+                    for (DeliveryRequest deliveryRequest : tour.getDeliveryRequests()) {
+                        String deliveryString = "Delivery n°" + indexDelivery;
+                        if((deliveryRequest.getArrivalTime() > deliveryRequest.getTimeWindow().getEnd()) || (deliveryRequest.getArrivalTime() < deliveryRequest.getTimeWindow().getStart())) {
+                            deliveryString += "(Out of Time Window!)";
+                        }
+                        DefaultMutableTreeNode treeLeaf = new DefaultMutableTreeNode(deliveryString);
+
+                        //Check if the courier has to wait
+                        /*String previousNode = (String) treeTour.getLastLeaf().getUserObject();
+                        if(previousNode.startsWith("Delivery")) {
+                            int previousDeliveryNumber = treeTour.getLastLeaf().getParent().getIndex(treeTour.getLastLeaf());
+                            DeliveryRequest previousDelivery = cityMap.getTourList().get(indexCourier - 1).getDeliveryRequests().get(previousDeliveryNumber);
+                            //5 minutes = 0.08
+                            double departureTime = previousDelivery.getArrivalTime() + 0.08;
+                            double arrivalTime = deliveryRequest.getArrivalTime();
+                            double waitingTime = arrivalTime - departureTime;
+                            //If the courier has to wait more than 30 minutes we notify it in the tree
+                            if(waitingTime > 0.5) {
+                                //Format the waiting time for display
+                                double temp = waitingTime;
+                                int hours = (int) temp;
+                                temp -= hours;
+                                int minutes = (int) (temp * 60);
+                                temp = temp * 60 - minutes;
+                                int seconds = (int) (temp * 60);
+                                DefaultMutableTreeNode waitLeaf = new DefaultMutableTreeNode("Wait for: " + hours + "h" + minutes + "min" + seconds + "s");
+                                treeTour.add(waitLeaf);
+                            }
+                        }*/
+                        treeTour.add(treeLeaf);
+                        ++indexDelivery;
+                    }
+                    treeRoot.add(treeTour);
+                    ++indexCourier;
+                }
+            }
+            if(toursTree != null) {
+                for (Component component : toursTree.getComponents()) {
+                    toursTree.remove(component);
+                }
+            }
+            toursTree = new JTree(treeRoot);
+            toursTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+            toursTree.addTreeSelectionListener(new TreeSelectionListener() {
+                public void valueChanged(TreeSelectionEvent e) {
+                    DefaultMutableTreeNode node = (DefaultMutableTreeNode)toursTree.getLastSelectedPathComponent();
+                    //If nothing is selected
+                    if (node == null) {
+                        return;
+                    }
+                    updateDetails(node);
+                }
+            });
+            toursTree.setCellRenderer(new DeliveriesTreeCellRenderer());
+            //Expand the tree
+            for (int i = 0; i < toursTree.getRowCount(); i++) {
+                toursTree.expandRow(i);
+            }
+            requestsScrollPane.setViewportView(toursTree);
+        }
+    }
+
+    /**
+     * Update the details panel depending on the selected node in the tree.
+     * @param detail The object we need the details to be displayed.
+     */
+    public void updateDetails(Object detail) {
+        if(detailsPanel != null) {
+            Font title = new Font("Courier", Font.BOLD, 15);
+            if (detail != null) {
+                detailsPanel.removeAll();
+                String node = (String) ((DefaultMutableTreeNode) detail).getUserObject();
+
+                if (node.startsWith("Delivery n°")) {
+                    Pattern nodeNameToNumber = Pattern.compile("n°\\d+");
+
+                    Matcher nameMatcher = nodeNameToNumber.matcher(node);
+                    int deliveryNumber = -1;
+                    if(nameMatcher.find()) {
+                        Pattern numberToInt = Pattern.compile("\\d+");
+                        Matcher numberMatcher = numberToInt.matcher(nameMatcher.group(0));
+
+                        if(numberMatcher.find()) {
+                            deliveryNumber = Integer.parseInt(numberMatcher.group(0));
+                        }
+                    }
+                    /*TODO - implement proper error handling*/
+                    else {
+                        return;
+                    }
+                    int tourNumber = ((DefaultMutableTreeNode) detail).getParent().getParent().getIndex(((DefaultMutableTreeNode) detail).getParent());
+                    System.out.println("Tour number: " + tourNumber);
+                    System.out.println("Delivery number: " + deliveryNumber);
+                    DeliveryRequest delivery = cityMap.getTourList().get(tourNumber).getDeliveryRequests().get(deliveryNumber - 1);
+
+                    JLabel detailsTitle = new JLabel("Tour n°" + (tourNumber + 1) + " - Delivery n°" + deliveryNumber);
+                    detailsTitle.setHorizontalAlignment(SwingConstants.CENTER);
+                    detailsTitle.setFont(title);
+                    detailsTitle.setName("detailsTitle");
+
+                    Border padding = BorderFactory.createEmptyBorder(4, 4, 4, 4);
+
+                    JLabel deliveryArrivalTime = new JLabel("Arrival Time: " + delivery.getFormattedArrivalTime());
+                    deliveryArrivalTime.setBorder(padding);
+
+                    JLabel deliveryTimeWindow = new JLabel("Time Window: " + delivery.getTimeWindow().getStart() + "h - " + delivery.getTimeWindow().getEnd() + "h");
+                    deliveryTimeWindow.setBorder(padding);
+                    deliveryTimeWindow.setName("detailsTimeWindow");
+
+                    JLabel deliveryCourier = new JLabel("Courier : " + cityMap.getTourList().get(tourNumber).getCourier());
+                    deliveryCourier.setBorder(padding);
+                    deliveryCourier.setName("detailsCourier");
+
+                    JPanel buttonsPanel = new JPanel();
+                    buttonsPanel.setLayout(new FlowLayout());
+
+                    JButton update = new JButton("Update");
+                    update.setName("UpdateButton");
+                    update.setActionCommand(UPDATE_DELIVERY_REQUEST);
+                    Window parent = (Window)(this.getParent().getParent().getParent().getParent().getParent().getParent());
+                    update.addActionListener(parent.getButtonListener());
+
+                    JButton delete = new JButton("Delete");
+                    delete.setName("DeleteButton");
+                    delete.setActionCommand(DELETE_DELIVERY_REQUEST);
+                    delete.addActionListener(parent.getButtonListener());
+
+                    buttonsPanel.add(update);
+                    buttonsPanel.add(delete);
+
+                    detailsPanel.add(detailsTitle);
+                    detailsPanel.add(deliveryArrivalTime);
+                    detailsPanel.add(deliveryTimeWindow);
+                    detailsPanel.add(deliveryCourier);
+                    detailsPanel.add(buttonsPanel);
+                }
+
+                if (node.startsWith("Courier")) {
+                    int tourNumber = ((DefaultMutableTreeNode) detail).getParent().getIndex((DefaultMutableTreeNode) detail);
+
+                    Border padding = BorderFactory.createEmptyBorder(4, 4, 4, 4);
+
+                    JLabel tourDuration = new JLabel("Tour Duration: " + cityMap.getTourList().get(tourNumber).getFormattedTourDuration());
+                    tourDuration.setHorizontalAlignment(SwingConstants.CENTER);
+                    tourDuration.setFont(title);
+                    tourDuration.setBorder(padding);
+
+                    detailsPanel.add(new JLabel());
+                    detailsPanel.add(new JLabel());
+                    detailsPanel.add(tourDuration);
+                    detailsPanel.add(new JLabel());
+                    detailsPanel.add(new JLabel());
+                }
+            }
+            else {
+                detailsPanel.removeAll();
+            }
+            detailsPanel.revalidate();
         }
     }
 }
