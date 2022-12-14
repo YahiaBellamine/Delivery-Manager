@@ -1,29 +1,8 @@
 package com.pld.agile.controller;
 
-
 import com.pld.agile.model.*;
 import com.pld.agile.view.Window;
-import com.pld.agile.view.map.Marker;
-import com.pld.agile.view.map.Route;
 import org.jxmapviewer.viewer.GeoPosition;
-import org.xml.sax.SAXException;
-
-
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
-import java.awt.geom.Point2D;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.*;
-
-import java.awt.geom.Point2D;
 
 public class Controller {
   private State currentState;
@@ -35,7 +14,7 @@ public class Controller {
   protected final ComputedTourState computedTourState = new ComputedTourState();
 
   public Controller() {
-    new Couriers(1);
+    new Couriers();
     this.cityMap = new CityMap();
     this.window = new Window(cityMap, this);
     currentState = initialState;
@@ -130,5 +109,9 @@ public class Controller {
     return window;
   }
 
+  public void addCourier() {
+    Couriers.addCourier();
+    window.getDeliveryRequestView().updateCouriers();
+  }
 
 }
