@@ -16,7 +16,15 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The class to deserialize and parse an XML file
+ */
 public class XMLDeserialiser {
+  /**
+   * Loads a map from a xml file.
+   * @param path The path to the xml file.
+   * @param cityMap The cityMap instance to be filled with the new map.
+   */
   public static void loadMap(String path, CityMap cityMap) throws ExceptionXML, ParserConfigurationException, IOException, SAXException {
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
@@ -64,6 +72,11 @@ public class XMLDeserialiser {
 
   }
 
+  /**
+   * Creates a road segment and add it to the list of road segments in the origin's intersection
+   * @param e The xml element containing the road segment information.
+   * @param intersections The HashMap containing all the intersections.
+   */
   private static void createRoadSegment(Element e, Map<Long, Intersection> intersections) throws ExceptionXML {
     long destinationID = Long.parseLong(e.getAttribute("destination"));
     if (destinationID < 0) {
@@ -95,6 +108,11 @@ public class XMLDeserialiser {
     origin.addOutgoingSegment(r);
   }
 
+  /**
+   * Create an Intersection from a xml element.
+   * @param e The xml element containing the intersection information.
+   * @return The created Intersection instance.
+   */
   private static Intersection createIntersection(Element e) throws ExceptionXML {
     double latitude = Double.parseDouble(e.getAttribute("latitude"));
     double longitude = Double.parseDouble(e.getAttribute("longitude"));
@@ -112,6 +130,12 @@ public class XMLDeserialiser {
     return new Intersection(id, latitude,longitude);
   }
 
+  /**
+   * Loads tours from a xml file.
+   * @param path The path to the xml file containing the tours.
+   * @param tours The list of tours where the tours will be added.
+   * @param cityMap The CityMap instance containing all the data.
+   */
   public static void loadTours(String path, List<Tour> tours,CityMap cityMap) throws ExceptionXML, ParserConfigurationException, IOException, SAXException {
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     // create db, instance of DocumentBuilder
@@ -166,6 +190,12 @@ public class XMLDeserialiser {
     cityMap.setTourList(tours);
   }
 
+  /**
+   * Creates a delivery request from a xml element.
+   * @param element The xml element containing the delivery request information.
+   * @param cityMap The CityMap instance containing all the data.
+   * @return The DeliveryRequest created.
+   */
   private static DeliveryRequest createDeliveryRequest(Element element,CityMap cityMap) throws ExceptionXML {
 
     String tw = element.getAttribute("time_window");

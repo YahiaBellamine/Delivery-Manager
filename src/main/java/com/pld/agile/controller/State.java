@@ -17,10 +17,10 @@ import java.io.IOException;
 
 public interface State {
     /**
-     * This method load a map from a XML file
-     * @param cityMap the city map
-     * @param controller the controller
-     * @param window the window
+     * This method load a map from a XML file.
+     * @param cityMap The city map.
+     * @param controller The controller.
+     * @param window The window.
      */
     public default void loadMap(Controller controller, Window window, CityMap cityMap) {
         JFileChooser j = new JFileChooser("src/main/java/com/pld/agile/utils/maps");
@@ -58,50 +58,50 @@ public interface State {
     }
 
     /**
-     * This method select a destination point on the map
-     * @param controller -The controller
-     * @param window - The window
-     * @param pos - The geo position of the selected intersection
-     * @param cityMap - The city map
+     * This method select a destination point on the map.
+     * @param controller The controller.
+     * @param window The window.
+     * @param pos The geo position of the selected intersection.
+     * @param cityMap The city map.
      */
     public default void selectDestinationPoint(Controller controller, Window window, GeoPosition pos, CityMap cityMap) {};
 
-    /** This method add a new delivery request
-     * @param controller -The controller
-     * @param window - The window
-     * @param cityMap - The city map
+    /** This method add a new delivery request.
+     * @param controller The controller.
+     * @param window The window.
+     * @param cityMap The city map.
      */
     public default void addNewRequest(CityMap cityMap, Controller controller, Window window) {};
 
     /**
-     * This method load tours from an XML file
-     * @param cityMap - The city map
-     * @param controller - The controller
-     * @param window - The window
+     * This method load tours from an XML file.
+     * @param cityMap The city map.
+     * @param controller The controller.
+     * @param window The window.
      */
     public default void loadTours(CityMap cityMap, Controller controller, Window window) {};
 
     /**
-     * This method save tours to an XML file
-     * @param cityMap - The city map
-     * @param w - The window
+     * This method save tours to an XML file.
+     * @param cityMap The city map.
+     * @param w The window.
      */
     public default void saveTours(CityMap cityMap, Window w) {};
 
     /**
-     * This method delete a delivery request
-     * @param cityMap - The city map
-     * @param courier - The courier - The courier of the delivery request to be deleted
+     * This method deletes a delivery request.
+     * @param cityMap The city map.
+     * @param courier The courier of the delivery request to be deleted.
      */
     public default void deleteDeliveryRequest(CityMap cityMap, Courier courier, int indexDeliveryRequest) {};
 
     /**
-     * This method update a delivery request
-     * @param cityMap - The city map
-     * @param newTimeWindow - The new time window of the delivery request
-     * @param newCourier - The new courier of the delivery request (if changed)
-     * @param previousCourier - the previous courier of the delivery request
-     * @param indexDeliveryRequest - The index of the delivery request in the list of delivery requests of the previous courier
+     * This method update a delivery request.
+     * @param cityMap The city map.
+     * @param newTimeWindow The new time window of the delivery request.
+     * @param newCourier The new courier of the delivery request (if changed).
+     * @param previousCourier the previous courier of the delivery request.
+     * @param indexDeliveryRequest The index of the delivery request in the list of delivery requests of the previous courier.
      */
     public default void updateDeliveryRequest(CityMap cityMap, TimeWindow newTimeWindow, Courier newCourier, Courier previousCourier, int indexDeliveryRequest) {};
 

@@ -23,13 +23,16 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * The state when a tour is already created and some delivery requests are added.
+ */
 public class ComputedTourState implements State{
 
     /**
      * This method delete a delivery request from the city map
-     * @param cityMap the city map
-     * @param courier the courier
-     * @param indexDeliveryRequest the index of the delivery request to delete
+     * @param cityMap The city map.
+     * @param courier The courier.
+     * @param indexDeliveryRequest The index of the delivery request to delete.
      */
     @Override
     public void deleteDeliveryRequest(CityMap cityMap, Courier courier, int indexDeliveryRequest) {
@@ -53,10 +56,9 @@ public class ComputedTourState implements State{
     }
 
     /**
-     * Save tours from cityMap in a xml file
-     *
-     * @param cityMap
-     * @param w
+     * Save tours from cityMap in a xml file.
+     * @param cityMap CityMap instance containing all the map info.
+     * @param w       The JFrame containing the textual and graphical view.
      */
     @Override
     public void saveTours(CityMap cityMap, Window w) {
@@ -72,10 +74,9 @@ public class ComputedTourState implements State{
     }
 
     /**
-     * Load tours from a xml file
-     *
-     * @param cityMap
-     * @param w
+     * Load tours from a xml file.
+     * @param cityMap CityMap instance containing all the map info.
+     * @param w       The JFrame containing the textual and graphical view.
      */
     @Override
     public void loadTours(CityMap cityMap, Controller c,Window w) {
@@ -104,6 +105,14 @@ public class ComputedTourState implements State{
         }
     }
 
+    /**
+     * Updates the courier and/or the time window of the delivery request.
+     * @param cityMap - The city map
+     * @param newTimeWindow - The new time window of the delivery request
+     * @param newCourier - The new courier of the delivery request (if changed)
+     * @param previousCourier - the previous courier of the delivery request
+     * @param indexDeliveryRequest - The index of the delivery request in the list of delivery requests of the previous courier
+     */
     @Override
     public void updateDeliveryRequest(CityMap cityMap, TimeWindow newTimeWindow, Courier newCourier, Courier previousCourier, int indexDeliveryRequest) {
         Tour tour = cityMap.getTour(previousCourier);
@@ -139,7 +148,7 @@ public class ComputedTourState implements State{
 
     /**
      * This method select a destination point on the map
-     * and set the current state of the controller to DestinationSeletedState
+     * and set the current state of the controller to DestinationSelectedState.
      * @param cityMap the city map
      * @param c the controller
      * @param position the geo position of the selected intersection

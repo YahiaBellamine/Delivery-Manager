@@ -16,6 +16,9 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * The state when a new map is loaded.
+ */
 public class LoadedMapState implements State{
 
     /**

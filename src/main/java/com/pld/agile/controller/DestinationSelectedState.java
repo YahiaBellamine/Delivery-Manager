@@ -17,16 +17,20 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * The state when a destination on the map is selected.
+ */
 public class DestinationSelectedState implements State {
 
+  /** the selected intersection */
   private Intersection selectedIntersection;
 
   /**
-   * This method update the selected destination point on the map
-   * @param cityMap the city map
-   * @param controller the controller
-   * @param position the geo position of the selected intersection
-   * @param window the main window
+   * This method update the selected destination point on the map.
+   * @param cityMap The city map.
+   * @param controller The controller.
+   * @param position The geo position of the selected intersection.
+   * @param window The main window.
    */
   @Override
   public void selectDestinationPoint(Controller controller, Window window, GeoPosition position, CityMap cityMap) {
@@ -37,10 +41,10 @@ public class DestinationSelectedState implements State {
 
 
   /**
-   * This method add a new request with the selected destination point
-   * @param cityMap the city map
-   * @param controller the controller
-   * @param window the main window
+   * This method add a new request with the selected destination point.
+   * @param cityMap The city map.
+   * @param controller The controller.
+   * @param window The main window.
    */
   @Override
   public void addNewRequest(CityMap cityMap, Controller controller, Window window) {
@@ -64,10 +68,9 @@ public class DestinationSelectedState implements State {
   }
 
   /**
-   * Load tours from a xml file
-   *
-   * @param cityMap
-   * @param w
+   * Load tours from a xml file.
+   * @param cityMap CityMap instance containing all the map info.
+   * @param w       The JFrame containing the textual and graphical view.
    */
   @Override
   public void loadTours(CityMap cityMap, Controller c,Window w) {
@@ -96,6 +99,10 @@ public class DestinationSelectedState implements State {
     }
   }
 
+  /**
+   * Changes the selected intersection for a new delivery request.
+   * @param selectedIntersection the chosen intersection.
+   */
   protected void setSelectedIntersection(Intersection selectedIntersection) {
     this.selectedIntersection = selectedIntersection;
   }

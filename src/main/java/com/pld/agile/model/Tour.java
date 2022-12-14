@@ -5,14 +5,17 @@ import com.pld.agile.model.enums.TimeWindow;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * The tour containing all the delivery requests and the itinerary.
+ */
 public class Tour {
 
     /** The courier of the tour */
     private Courier courier;
     /** The list of all delivery requests integrated in the tour */
-    private List<DeliveryRequest> deliveryRequests;
+    private final List<DeliveryRequest> deliveryRequests;
     /** The list of all intersections that compose the tour */
-    private List<Intersection> intersections;
+    private final List<Intersection> intersections;
     /** The duration of the tour */
     private Double tourDuration;
 
@@ -29,7 +32,7 @@ public class Tour {
 
     /**
      * Courier getter
-     * @return - The Courier of the tour
+     * @return The Courier of the tour
      */
     public Courier getCourier() {
         return this.courier;
@@ -37,8 +40,7 @@ public class Tour {
 
     /**
      * Courier setter
-     * @param courier - The Courier of the tour
-     * @return
+     * @param courier The Courier of the tour
      */
     public void setCourier(Courier courier) {
         this.courier = courier;
@@ -46,24 +48,15 @@ public class Tour {
 
     /**
      * DeliveryRequests getter
-     * @return - The list of all delivery requests in the Tour.
+     * @return The list of all delivery requests in the Tour.
      */
     public List<DeliveryRequest> getDeliveryRequests() {
         return deliveryRequests;
     }
 
-
-    /**
-     * DeliveryRequests setter
-     * @return - The list of all delivery requests in the Tour.
-     */
-    public void setDeliveryRequests(LinkedList<DeliveryRequest> deliveryRequests) {
-        this.deliveryRequests.addAll(deliveryRequests);
-    }
-
     /**
      * Intersections getter
-     * @return - The list of all intersections that compose the Tour.
+     * @return The list of all intersections that compose the Tour.
      */
     public List<Intersection> getIntersections() {
         return intersections;
@@ -71,7 +64,7 @@ public class Tour {
 
     /**
      * Tour duration getter
-     * @return - The duration of this tour.
+     * @return The duration of this tour.
      */
     public Double getTourDuration() {
         return tourDuration;
@@ -85,7 +78,7 @@ public class Tour {
 
     /**
      * Format the tour duration
-     * @return - The formatted version of the tour duration
+     * @return The formatted version of the tour duration
      */
     public String getFormattedTourDuration() {
         double temp = this.tourDuration;
@@ -99,7 +92,7 @@ public class Tour {
 
     /**
      * Adds a new delivery request to the Tour.
-     * @param deliveryRequest - The delivery request to add to the Tour.
+     * @param deliveryRequest The delivery request to add to the Tour.
      */
     public void addDeliveryRequest(DeliveryRequest deliveryRequest) {
         this.deliveryRequests.add(deliveryRequest);
@@ -107,7 +100,7 @@ public class Tour {
 
     /**
      * Removes DeliveryRequest from the Tour.
-     * @param indexDeliveryRequest - The delivery request index in the Tour List.
+     * @param indexDeliveryRequest The delivery request index in the Tour List.
      */
     public void removeDeliveryRequest(int indexDeliveryRequest) {
         this.deliveryRequests.remove(indexDeliveryRequest);
@@ -115,8 +108,8 @@ public class Tour {
 
     /**
      * Removes DeliveryRequest from the Tour.
-     * @param newTimeWindow - The new time window of the delivery request
-     * @param indexDeliveryRequest - The delivery request index in the Tour List.
+     * @param newTimeWindow The new time window of the delivery request
+     * @param indexDeliveryRequest The delivery request index in the Tour List.
      */
     public void updateDeliveryRequest(TimeWindow newTimeWindow, int indexDeliveryRequest) {
         this.deliveryRequests.get(indexDeliveryRequest).setTimeWindow(newTimeWindow);
@@ -124,7 +117,7 @@ public class Tour {
 
     /**
      * Adds a new intersection at the end of the Tour.
-     * @param newIntersection - The intersection to add to the Tour.
+     * @param newIntersection The intersection to add to the Tour.
      */
     public void addIntersection(Intersection newIntersection) {
         this.intersections.add(newIntersection);

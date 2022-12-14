@@ -14,7 +14,7 @@ import java.awt.*;
 public class Window extends JFrame {
 
   /** The map for the GUI */
-  private MapViewer mapViewer;
+  private final MapViewer mapViewer;
 
   /** The graphical view of the GUI */
   private final DeliveryRequestView deliveryRequestView;
@@ -26,7 +26,7 @@ public class Window extends JFrame {
   private final JMenuBar menuBar;
 
   /** The button listener of the GUI */
-  private ButtonListener buttonListener;
+  private final ButtonListener buttonListener;
 
 
   public final static String LOAD_MAP = "Load a Map";

@@ -3,6 +3,9 @@ package com.pld.agile.observer;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * The design patten
+ */
 public class Observable {
     private Collection<Observer> observers;
 

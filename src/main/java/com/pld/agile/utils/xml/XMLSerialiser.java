@@ -16,15 +16,13 @@ import java.io.File;
 import java.util.List;
 
 public class XMLSerialiser {
+
+    /** The document */
     private static Document document;
 
     /**
      * Open an XML file and write an XML description of the plan in it
      * @param optimalTours the list of tours to serialise
-     * @throws ParserConfigurationException
-     * @throws TransformerFactoryConfigurationError
-     * @throws TransformerException
-     * @throws ExceptionXML
      */
     public static void save(List<Tour> optimalTours) throws ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException, ExceptionXML{
         File xml = XMLFileOpener.getInstance().open(false, "src/main/java/com/pld/agile/utils/tours");
@@ -79,6 +77,13 @@ public class XMLSerialiser {
         former.setOutputProperty(OutputKeys.INDENT, "yes");
         former.transform(source, result);
     }
+
+    /**
+     * Creates an attribute.
+     * @param root The root element.
+     * @param name The name of the attribute.
+     * @param value The value of the attribute.
+     */
     private static void createAttribute(Element root, String name, String value){
         Attr attribute = document.createAttribute(name);
         root.setAttributeNode(attribute);

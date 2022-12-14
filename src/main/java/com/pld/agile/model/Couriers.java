@@ -3,10 +3,17 @@ package com.pld.agile.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A list of couriers.
+ * */
 public class Couriers {
 
+    /** The list of couriers */
     public static List<Courier> courierList;
 
+    /**
+     * Default constructor.
+     */
     public Couriers(){
         courierList = new ArrayList<>();
         addCourier();

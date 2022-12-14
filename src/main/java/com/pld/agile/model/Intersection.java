@@ -7,10 +7,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * An intersection on the map.
+ */
 public class Intersection {
+    /** The intersection ID */
     private Long id;
+    /** The intersection latitude */
     private double latitude;
+    /** The intersection longitude */
     private double longitude;
+    /** All the outgoing RoadSegments from the intersection */
     private List<RoadSegment> outgoingSegments= new ArrayList<>();
 
     /**
@@ -25,36 +32,60 @@ public class Intersection {
         this.longitude=longitude;
     }
 
+    /**
+     *
+     * @return The ID.
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     *
+     * @param id The ID.
+     */
     public void setId(long id) {
         this.id = id;
     }
 
+    /**
+     *
+     * @return The latitude.
+     */
     public double getLatitude() {
         return latitude;
     }
 
+    /**
+     *
+     * @param latitude The latitude.
+     */
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
+    /**
+     *
+     * @return The longitude.
+     */
     public double getLongitude() {
         return longitude;
     }
 
+    /**
+     *
+     * @param longitude The longitude.
+     */
     public void setLongitude(double longitude){
         this.longitude=longitude;
     }
 
+    /**
+     *
+     * @return The list of outgoing RoadSegment.
+     */
     public List<RoadSegment> getOutgoingSegments() {
         return outgoingSegments;
-    }
-
-    public void setOutgoingSegments(List<RoadSegment> outgoingSegments) {
-        this.outgoingSegments = outgoingSegments;
     }
 
     /**
@@ -75,6 +106,11 @@ public class Intersection {
         return intersection.outgoingSegments.size();
     }
 
+    /**
+     * Compares with another Intersection.
+     * @param o The other Intersection.
+     * @return True if they have the same ID and the same coordinates
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -91,6 +127,10 @@ public class Intersection {
         return new GeoPosition(this.latitude, this.longitude);
     }
 
+    /**
+     *
+     * @return "Intersection: <i>x</i>"
+     */
     @Override
     public String toString() {
         return "Intersection: "+ id;

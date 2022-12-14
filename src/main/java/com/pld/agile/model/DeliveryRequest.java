@@ -2,6 +2,9 @@ package com.pld.agile.model;
 
 import com.pld.agile.model.enums.TimeWindow;
 
+/**
+ * A delivery request.
+ */
 public class DeliveryRequest {
     /**
      * The TimeWindow of the delivery request
@@ -18,8 +21,8 @@ public class DeliveryRequest {
 
     /**
      * DeliveryRequest constructor.
-     * @param deliveryTimeWindow - The valid TimeWindow for the delivery request.
-     * @param deliveryAddress    - The address of the delivery request.
+     * @param deliveryTimeWindow The valid TimeWindow for the delivery request.
+     * @param deliveryAddress    The address of the delivery request.
      */
     public DeliveryRequest(TimeWindow deliveryTimeWindow, Intersection deliveryAddress) {
         timeWindow = deliveryTimeWindow;
@@ -28,9 +31,9 @@ public class DeliveryRequest {
     }
     /**
      * DeliveryRequest constructor.
-     * @param deliveryTimeWindow - The valid TimeWindow for the delivery request.
-     * @param deliveryAddress    - The address of the delivery request.
-     * @param deliveryArrivalTime    - The arrival time of the delivery request.
+     * @param deliveryTimeWindow  The valid TimeWindow for the delivery request.
+     * @param deliveryAddress     The address of the delivery request.
+     * @param deliveryArrivalTime The arrival time of the delivery request.
      */
     public DeliveryRequest(TimeWindow deliveryTimeWindow, Intersection deliveryAddress, Double deliveryArrivalTime) {
         timeWindow = deliveryTimeWindow;
@@ -39,7 +42,7 @@ public class DeliveryRequest {
     }
 
     /**
-     * @return - The valid TimeWindow of the delivery request.
+     * @return The valid TimeWindow of the delivery request.
      */
     public TimeWindow getTimeWindow() {
         return timeWindow;
@@ -47,7 +50,7 @@ public class DeliveryRequest {
 
     /**
      * TimeWindow setter
-     * @param - The new TimeWindow of the delivery request.
+     * @param newTimeWindow The new TimeWindow of the delivery request.
      */
     public void setTimeWindow(TimeWindow newTimeWindow) {
         this.timeWindow = newTimeWindow;
@@ -55,7 +58,7 @@ public class DeliveryRequest {
 
     /**
      * Address getter
-     * @return - The address of the delivery request.
+     * @return The address of the delivery request.
      */
     public Intersection getAddress() {
         return address;
@@ -63,7 +66,7 @@ public class DeliveryRequest {
 
     /**
      * ArrivalTime getter
-     * @return - The time when the courier will deliver for this delivery request.
+     * @return The time when the courier will deliver for this delivery request.
      */
     public double getArrivalTime() {
         return arrivalTime;
@@ -71,12 +74,16 @@ public class DeliveryRequest {
 
     /**
      * ArrivalTime setter
-     * @param - The arrival time of the delivery request
+     * @param arrivalTime The arrival time of the delivery request
      */
     public void setArrivalTime(Double arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
 
+    /**
+     * Returns The arrival time.
+     * @return The arrival time formatted : "<i>x</i>h<i>y</i>min<i>z</i>s"
+     */
     public String getFormattedArrivalTime() {
         double temp = this.arrivalTime;
         int hours = (int) temp;
@@ -87,6 +94,10 @@ public class DeliveryRequest {
         return hours + "h" + minutes + "min" + seconds + "s";
     }
 
+    /**
+     *
+     * @return String describing the delivery request.
+     */
     @Override
     public String toString() {
         return "DeliveryRequest{" +

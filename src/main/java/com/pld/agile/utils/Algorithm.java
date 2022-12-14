@@ -8,6 +8,9 @@ import com.pld.agile.model.enums.TimeWindow;
 
 import java.util.*;
 
+/**
+ * The algorithm calculating the optimatl tour.
+ */
 public class Algorithm {
 
     /**
@@ -34,10 +37,9 @@ public class Algorithm {
     /**
      * Method that executes the TSP algorithm.
      *
-     * @param warehouse
-     * @param deliveryRequests
+     * @param warehouse The warehouse
+     * @param deliveryRequests The list of delivery requests.
      * @return the computed tour with TSP algorithm
-     * @throws InaccessibleDestinationException
      */
     public static Tour ExecuteAlgorithm(Intersection warehouse, List<DeliveryRequest> deliveryRequests) throws InaccessibleDestinationException {
         // Instantiation of attributes
@@ -110,7 +112,7 @@ public class Algorithm {
     /**
      * Method used by Dijkstra algorithm
      *
-     * @param unsettledVertices
+     * @param unsettledVertices The vertices that are unsettled.
      * @return the Intersection that has the lowest distance.
      */
     private static Intersection getLowestDistanceIntersection(HashMap<Intersection, Double> unsettledVertices) {
@@ -130,11 +132,11 @@ public class Algorithm {
      * added to the cost between vertex i and vertex j is lower than the actual distance to vertex j.
      * The previousIntersection structure is also updated.
      *
-     * @param vi
-     * @param vj
-     * @param distIJ
-     * @param unsettledVertices
-     * @param previousIntersection
+     * @param vi The vertex i.
+     * @param vj The vertex j.
+     * @param distIJ The distance between vertex i and vertex j.
+     * @param unsettledVertices The unsettled vertices.
+     * @param previousIntersection The structure containing the previous intersection for every intersection.
      */
     private static void release(Intersection vi, Intersection vj, Double distIJ, HashMap<Intersection, Double> unsettledVertices, HashMap<Intersection, Intersection> previousIntersection) {
         Double di = unsettledVertices.get(vi);
@@ -153,8 +155,8 @@ public class Algorithm {
      * tspCost structure for having the distance between every delivery request including the warehouse and the rest
      * of delivery requests.
      *
-     * @param source
-     * @param destinations
+     * @param source The source.
+     * @param destinations The list of destinations.
      */
     private static void dijkstra(DeliveryRequest source, List<DeliveryRequest> destinations) {
         HashMap<Intersection, Intersection> previousIntersection = new HashMap<>();
@@ -229,8 +231,8 @@ public class Algorithm {
      * Else, we search for the next time window from source such as the start of next time window
      * is greater or equal than the end of the source time window, and is the smallest.
      *
-     * @param sourceTimeWindow
-     * @param destinations
+     * @param sourceTimeWindow The source TimeWindow.
+     * @param destinations The list of destinations.
      * @return the next time window.
      */
     private static TimeWindow getNextTimeWindow(TimeWindow sourceTimeWindow, List<DeliveryRequest> destinations) {
@@ -256,8 +258,8 @@ public class Algorithm {
     /**
      * Method that searches for the last time window in the list of destinations
      *
-     * @param sourceTimeWindow
-     * @param destinations
+     * @param sourceTimeWindow The source TimeWindow.
+     * @param destinations The list of destinations.
      * @return the last time window.
      */
     private static TimeWindow getLastTimeWindow(TimeWindow sourceTimeWindow, List<DeliveryRequest> destinations) {
@@ -277,9 +279,9 @@ public class Algorithm {
      * Otherwise, the source and the destination should have the same time window, or the destination should have
      * the next time window of source time window.
      *
-     * @param source
-     * @param destination
-     * @param destinations
+     * @param source The source.
+     * @param destination The destination.
+     * @param destinations The list of destinations.
      * @return true if it is valid to go from source to destination, and false otherwise.
      */
     private static boolean isArc(DeliveryRequest source, DeliveryRequest destination, List<DeliveryRequest> destinations) {
@@ -301,7 +303,6 @@ public class Algorithm {
      * @param unvisited         the list of unvisited vertices
      * @return a lower bound of the cost of paths in the graph of delivery locations starting from <code>lastVisitedVertex</code>, visiting
      * every vertex in <code>unvisited</code> exactly once, and returning to <code>warehouse</code>.
-     * @throws InaccessibleDestinationException
      */
     private static Double bound(DeliveryRequest lastVisitedVertex, List<DeliveryRequest> unvisited) throws InaccessibleDestinationException {
         double lowerBound = Double.MAX_VALUE;
@@ -328,7 +329,6 @@ public class Algorithm {
      * @param visited     the sequence of vertices that have been already visited
      * @param unvisited   the set of vertex that have not yet been visited
      * @param currentCost the tspCost of the path corresponding to <code>visited</code>
-     * @throws InaccessibleDestinationException
      */
     private static void branchAndBound(LinkedList<DeliveryRequest> visited, LinkedList<DeliveryRequest> unvisited, Double currentCost) throws InaccessibleDestinationException {
         int visitedSize = visited.size();
@@ -368,6 +368,9 @@ public class Algorithm {
         }
     }
 
+    /**
+     * Reinitialize all the Algorithm attributes.
+     */
     public static void reInitializeMapAttributes() {
         if(tspCost != null)
             tspCost.clear();

@@ -4,22 +4,36 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.*;
 
-
+/**
+ *
+ */
 public class XMLFileOpener extends FileFilter {
 
+  /** The instance of XMLFileOpener */
   private static XMLFileOpener instance = null;
 
-  // create the singleton
+  /** Create the singleton */
   XMLFileOpener() {
   }
 
-  // retrieve the instance of the XMLFileOpener class
+
+  /**
+   * Retrieve the instance of the XMLFileOpener class.
+   * @return The XMLFileOpener instance.
+   */
   public static XMLFileOpener getInstance(){
     if (instance == null) instance = new XMLFileOpener();
     return instance;
   }
 
-  // open only .xml files
+  //
+
+  /**
+   * Open only .xml files.
+   * @param read if opening in read mode
+   * @param defaultPath The path to the default folder.
+   * @return The xml File.
+   */
   public File open(boolean read, String defaultPath) throws ExceptionXML{
     int returnVal;
     JFileChooser jFileChooserXML;
@@ -41,7 +55,13 @@ public class XMLFileOpener extends FileFilter {
     return new File(jFileChooserXML.getSelectedFile().getAbsolutePath());
   }
 
-  // we only accept .xml as the type of file here
+  //
+
+  /**
+   *
+   * @param f the File to test
+   * @return true if the File extension is xml.
+   */
   @Override
   public boolean accept(File f) {
     if (f == null) return false;
@@ -51,13 +71,20 @@ public class XMLFileOpener extends FileFilter {
     return extension.contentEquals("xml");
   }
 
-  // all the files are of type XML here
+  /**
+   *
+   * @return "XML file"
+   */
   @Override
   public String getDescription() {
     return "XML file";
   }
 
-  // get the extension of the file in parameter
+  /**
+   * Returns the extension of a file.
+   * @param f The File instance.
+   * @return The extension in a String.
+   */
   private String getExtension(File f) {
     String filename = f.getName();
     int i = filename.lastIndexOf('.');
