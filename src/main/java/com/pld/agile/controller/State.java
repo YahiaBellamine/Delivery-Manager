@@ -47,13 +47,7 @@ public interface State {
                 controller.setCurrentState(controller.initialState);
                 window.displayMessage("Error while loading the map"+e);
                 throw new RuntimeException(e);
-            } catch (ParserConfigurationException e) {
-                window.displayMessage("System error in parse XML");
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                window.displayMessage("System error in parse XML");
-                throw new RuntimeException(e);
-            } catch (SAXException e) {
+            } catch (ParserConfigurationException | IOException | SAXException e) {
                 window.displayMessage("System error in parse XML");
                 throw new RuntimeException(e);
             } catch (NumberFormatException e){
@@ -110,6 +104,7 @@ public interface State {
      * @param indexDeliveryRequest - The index of the delivery request in the list of delivery requests of the previous courier
      */
     public default void updateDeliveryRequest(CityMap cityMap, TimeWindow newTimeWindow, Courier newCourier, Courier previousCourier, int indexDeliveryRequest) {};
+
 }
 
 

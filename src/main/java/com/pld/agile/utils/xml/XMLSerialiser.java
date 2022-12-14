@@ -13,16 +13,10 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 public class XMLSerialiser {
-    private Element shapeRoot;
     private static Document document;
-    private static XMLSerialiser instance = null;
-
 
     /**
      * Open an XML file and write an XML description of the plan in it
@@ -55,7 +49,7 @@ public class XMLSerialiser {
                 tw+=Integer.toString(de.getTimeWindow().getEnd());
                 createAttribute(delivery,"time_window",tw);
                 createAttribute(delivery,"id_intersection",Long.toString(de.getAddress().getId()));
-                String time="";
+                String time;
                 double decimal=de.getArrivalTime()%1;
                 double h= de.getArrivalTime()-decimal;
                 double min=decimal*60-decimal*60%1;
@@ -81,9 +75,9 @@ public class XMLSerialiser {
         document.appendChild(tours);
 
         DOMSource source = new DOMSource(document);
-        Transformer xformer = TransformerFactory.newInstance().newTransformer();
-        xformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        xformer.transform(source, result);
+        Transformer former = TransformerFactory.newInstance().newTransformer();
+        former.setOutputProperty(OutputKeys.INDENT, "yes");
+        former.transform(source, result);
     }
     private static void createAttribute(Element root, String name, String value){
         Attr attribute = document.createAttribute(name);

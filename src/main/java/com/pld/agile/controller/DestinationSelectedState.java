@@ -7,7 +7,6 @@ import com.pld.agile.utils.InaccessibleDestinationException;
 import com.pld.agile.utils.xml.ExceptionXML;
 import com.pld.agile.utils.xml.XMLDeserialiser;
 import com.pld.agile.view.Window;
-import com.pld.agile.view.map.Marker;
 import org.jxmapviewer.viewer.GeoPosition;
 import org.xml.sax.SAXException;
 
@@ -35,6 +34,7 @@ public class DestinationSelectedState implements State {
     this.selectedIntersection = selectedIntersection;
     window.updateSelectedPoint(selectedIntersection);
   }
+
 
   /**
    * This method add a new request with the selected destination point

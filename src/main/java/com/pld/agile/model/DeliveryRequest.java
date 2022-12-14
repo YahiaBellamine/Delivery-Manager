@@ -18,7 +18,6 @@ public class DeliveryRequest {
 
     /**
      * DeliveryRequest constructor.
-     *
      * @param deliveryTimeWindow - The valid TimeWindow for the delivery request.
      * @param deliveryAddress    - The address of the delivery request.
      */
@@ -27,7 +26,12 @@ public class DeliveryRequest {
         address = deliveryAddress;
         arrivalTime = 0.0;
     }
-
+    /**
+     * DeliveryRequest constructor.
+     * @param deliveryTimeWindow - The valid TimeWindow for the delivery request.
+     * @param deliveryAddress    - The address of the delivery request.
+     * @param deliveryArrivalTime    - The arrival time of the delivery request.
+     */
     public DeliveryRequest(TimeWindow deliveryTimeWindow, Intersection deliveryAddress, Double deliveryArrivalTime) {
         timeWindow = deliveryTimeWindow;
         address = deliveryAddress;
@@ -42,6 +46,7 @@ public class DeliveryRequest {
     }
 
     /**
+     * TimeWindow setter
      * @param - The new TimeWindow of the delivery request.
      */
     public void setTimeWindow(TimeWindow newTimeWindow) {
@@ -49,6 +54,7 @@ public class DeliveryRequest {
     }
 
     /**
+     * Address getter
      * @return - The address of the delivery request.
      */
     public Intersection getAddress() {
@@ -56,12 +62,17 @@ public class DeliveryRequest {
     }
 
     /**
+     * ArrivalTime getter
      * @return - The time when the courier will deliver for this delivery request.
      */
     public double getArrivalTime() {
         return arrivalTime;
     }
 
+    /**
+     * ArrivalTime setter
+     * @param - The arrival time of the delivery request
+     */
     public void setArrivalTime(Double arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
