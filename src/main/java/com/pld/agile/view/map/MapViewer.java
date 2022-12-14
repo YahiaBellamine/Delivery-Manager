@@ -108,6 +108,7 @@ public class MapViewer implements Observer {
      * @param arg - the object with undergoing changes
      */
     public void update(Observable o, Object arg) {
+        clearRequestMarker();
         if (arg != null) {
             if (arg instanceof Intersection) {
                 Intersection wh = cityMap.getWarehouse();
