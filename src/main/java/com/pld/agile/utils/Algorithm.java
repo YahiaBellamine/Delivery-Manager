@@ -40,7 +40,8 @@ public class Algorithm {
      * @throws InaccessibleDestinationException
      */
     public static Tour ExecuteAlgorithm(Intersection warehouse, List<DeliveryRequest> deliveryRequests) throws InaccessibleDestinationException {
-
+        System.out.println(tspCost);
+        System.out.println(shortestPath);
         // Instantiation of attributes
         optimalTour = new Tour();
         if(tspCost == null)
@@ -344,8 +345,10 @@ public class Algorithm {
         if (unvisitedSize == 0) {
             Long lastVisitedIntersectionId = visited.get(visitedSize - 1).getAddress().getId();
             Long warehouseIntersectionId = visited.get(0).getAddress().getId();
+            if(tspCost.get(lastVisitedIntersectionId).get(warehouseIntersectionId) == null) {
+                throw new InaccessibleDestinationException();
+            }
             currentCost += tspCost.get(lastVisitedIntersectionId).get(warehouseIntersectionId);
-
             if (currentCost < bestSolCost) {
                 bestSolCost = currentCost;
                 bestSol = new LinkedList<>(visited);
@@ -372,6 +375,13 @@ public class Algorithm {
                 unvisited.add(vertex);
             }
         }
+    }
+
+    public static void reInitializeMapAttributes() {
+        if(tspCost != null)
+            tspCost.clear();
+        if(shortestPath != null)
+            shortestPath.clear();
     }
 
 }

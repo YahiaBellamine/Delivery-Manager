@@ -1,6 +1,7 @@
 package com.pld.agile.controller;
 
 import com.pld.agile.model.*;
+import com.pld.agile.model.enums.TimeWindow;
 import com.pld.agile.view.Window;
 import org.jxmapviewer.viewer.GeoPosition;
 
@@ -50,8 +51,8 @@ public class Controller {
    * Update a delivery request
    * @param
    */
-  public void updateDeliveryRequest(Courier courier, int indexDeliveryRequest){
-    currentState.updateDeliveryRequest(cityMap, this, window, courier, indexDeliveryRequest);
+  public void updateDeliveryRequest(TimeWindow newTimeWindow, Courier newCourier, Courier previousCourier, int indexDeliveryRequest){
+    currentState.updateDeliveryRequest(cityMap, newTimeWindow, newCourier, previousCourier, indexDeliveryRequest);
   }
 
   /**
@@ -94,6 +95,7 @@ public class Controller {
   public void addCourier() {
     Couriers.addCourier();
     window.getDeliveryRequestView().updateCouriers();
+    cityMap.addTour();
   }
 
 }

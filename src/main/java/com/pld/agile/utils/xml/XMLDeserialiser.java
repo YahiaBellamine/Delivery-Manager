@@ -58,7 +58,6 @@ public class XMLDeserialiser {
 
       //build RoadSegments
       NodeList RoadSegmentsList = document.getElementsByTagName("segment");
-      System.out.println(RoadSegmentsList.getLength());
       for (int i = 0; i < RoadSegmentsList.getLength(); i++) {
         createRoadSegment((Element) RoadSegmentsList.item(i),cityMap.getIntersections());
       }
@@ -105,18 +104,16 @@ public class XMLDeserialiser {
     double latitude = Double.parseDouble(e.getAttribute("latitude"));
     double longitude = Double.parseDouble(e.getAttribute("longitude"));
     long id = Long.parseLong(e.getAttribute("id"));
-    List<RoadSegment> outgoingSegments = new ArrayList<RoadSegment>();
-    System.out.println(id);
     if (id < 0) {
       throw new ExceptionXML("Invalid Intersection ID");
     }
-
     if(latitude<-90||latitude>90){
       throw new ExceptionXML(("Invalid latitude"));
     }
     if(longitude<-180||longitude>180){
       throw new ExceptionXML("Invalid longitude");
     }
+    
     return new Intersection(id, latitude,longitude);
   }
 
@@ -195,16 +192,12 @@ public class XMLDeserialiser {
     Intersection intersection=cityMap.getIntersections().get(id);
 
     String time=element.getAttribute("delivery_time");
-    System.out.println(time);
     String h=time.substring(0,2);
     String min=time.substring(3,5);
     String s=time.substring(6,8);
-    System.out.println(h+' '+min+' '+s);
 
     double arrival_time=Integer.parseInt(h)+Double.parseDouble(min)/60+Double.parseDouble(s)/3600;
-    System.out.println("arrival timeeeeeeee" + arrival_time);
 
-    System.out.println();
     if (id < 0) {
       throw new ExceptionXML("Invalid Intersection ID");
     }

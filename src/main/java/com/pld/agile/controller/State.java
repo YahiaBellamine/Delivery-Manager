@@ -2,6 +2,8 @@ package com.pld.agile.controller;
 
 import com.pld.agile.model.CityMap;
 import com.pld.agile.model.Courier;
+import com.pld.agile.model.enums.TimeWindow;
+import com.pld.agile.utils.Algorithm;
 import com.pld.agile.utils.xml.ExceptionXML;
 import com.pld.agile.utils.xml.XMLDeserialiser;
 import com.pld.agile.view.Window;
@@ -32,6 +34,7 @@ public interface State {
             // set the label to the path of the selected file
             path = j.getSelectedFile().toURI().getPath();
             try {
+                window.getMapViewer().clearMap();
                 XMLDeserialiser.loadMap(path, cityMap);
                 controller.setCurrentState(controller.loadedMapState);
 
@@ -52,6 +55,7 @@ public interface State {
                 window.displayMessage("Number format error");
             }
         }
+        Algorithm.reInitializeMapAttributes();
     }
 
     public default void selectDestinationPoint(Controller controller, Window window, GeoPosition pos, CityMap cityMap) {};
@@ -64,7 +68,7 @@ public interface State {
 
     public default void deleteDeliveryRequest(CityMap cityMap, Courier courier, int indexDeliveryRequest) {};
 
-    public default void updateDeliveryRequest(CityMap cityMap, Controller controller, Window w, Courier courier, int indexDeliveryRequest) {};
+    public default void updateDeliveryRequest(CityMap cityMap, TimeWindow newTimeWindow, Courier newCourier, Courier previousCourier, int indexDeliveryRequest) {};
 }
 
 

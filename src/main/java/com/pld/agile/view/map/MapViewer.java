@@ -119,6 +119,19 @@ public class MapViewer implements Observer {
             } else if (arg instanceof Tour tour) {
                 updateRoute(tour);
             }
+        }else{
+            clearMap();
+            Intersection wh = cityMap.getWarehouse();
+            System.out.println(wh);
+            if (wh != null) {
+                warehouse = new Marker(wh.getGeoPosition(), ImageUtil.getWarehouseImage(Color.BLACK));
+                mapViewer.setAddressLocation(wh.getGeoPosition());
+            }else{
+                warehouse = null;
+            }
+            for(Tour t : cityMap.getTourList()){
+                if(t != null ) updateRoute(t);
+            }
         }
         updateMap();
     }
@@ -141,6 +154,19 @@ public class MapViewer implements Observer {
             routes.add(new Route(ImageUtil.getColor()));
         }
         routes.get(tour.getCourier().getCourierId()).updateRouteSegments(tour);
+    }
+
+
+    /**
+     * reinitializes the map
+     */
+    public void clearMap(){
+        routes.clear();
+        ImageUtil.restartColorGenerator();
+        requestMarker = null;
+        warehouse = null;
+        setCenter(new GeoPosition(45.7640,4.8357));
+        recenter();
     }
 
     /**

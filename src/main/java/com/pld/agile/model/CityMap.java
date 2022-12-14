@@ -96,4 +96,8 @@ public class CityMap extends Observable {
         System.out.println("CityMap reinitialized");
         notifyObservers();
     }
+
+    public void addTour() {
+        this.tourList.add(null);
+    }
 }
