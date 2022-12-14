@@ -201,7 +201,7 @@ public class DeliveriesView extends JPanel implements Observer {
                     deliveryTimeWindow.setBorder(padding);
                     deliveryTimeWindow.setName("detailsTimeWindow");
 
-                    JLabel deliveryCourier = new JLabel("Courier (id): " + cityMap.getTourList().get(tourNumber).getCourier().getCourierId());
+                    JLabel deliveryCourier = new JLabel("Courier : " + cityMap.getTourList().get(tourNumber).getCourier());
                     deliveryCourier.setBorder(padding);
                     deliveryCourier.setName("detailsCourier");
 

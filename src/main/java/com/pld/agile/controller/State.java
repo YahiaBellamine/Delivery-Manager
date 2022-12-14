@@ -2,6 +2,8 @@ package com.pld.agile.controller;
 
 import com.pld.agile.model.CityMap;
 import com.pld.agile.model.Courier;
+import com.pld.agile.model.enums.TimeWindow;
+import com.pld.agile.utils.Algorithm;
 import com.pld.agile.utils.xml.ExceptionXML;
 import com.pld.agile.utils.xml.XMLDeserialiser;
 import com.pld.agile.view.Window;
@@ -52,17 +54,7 @@ public interface State {
                 window.displayMessage("Number format error");
             }
         }
-        // previous version for updating the view
-        // will be implemented using Observer pattern
-        /*window.getMapViewer().clearAll();
-        deliveryRequests.clear();
-        this.window.getDeliveriesView().displayRequests(deliveryRequests);
-        // Define the warehouse marker on the map
-        GeoPosition warehousePosition = new GeoPosition(cityMap.getWarehouse().getLatitude(),
-                cityMap.getWarehouse().getLongitude());
-        this.window.getMapViewer().addPoint(warehousePosition, cityMap.getWarehouse().getId(), Marker.Type.WAREHOUSE);
-        this.window.getMapViewer().recenter();*/
-
+        Algorithm.reInitializeMapAttributes();
     }
 
     public default void selectDestinationPoint(Controller controller, Window window, GeoPosition pos, CityMap cityMap) {};
@@ -75,7 +67,7 @@ public interface State {
 
     public default void deleteDeliveryRequest(CityMap cityMap, Controller c, Courier courier, int indexDeliveryRequest) {};
 
-    public default void updateDeliveryRequest(CityMap cityMap, Controller controller, Window w, Courier courier, int indexDeliveryRequest) {};
+    public default void updateDeliveryRequest(CityMap cityMap, TimeWindow newTimeWindow, Courier newCourier, Courier previousCourier, int indexDeliveryRequest) {};
 }
 
 

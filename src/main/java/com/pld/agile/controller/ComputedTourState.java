@@ -20,6 +20,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
+import java.sql.Time;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -98,10 +99,7 @@ public class ComputedTourState implements State{
     }
 
     @Override
-    public void updateDeliveryRequest(CityMap cityMap, Controller controller, Window window, Courier previousCourier, int indexDeliveryRequest) {
-        TimeWindow newTimeWindow = (TimeWindow) window.getDeliveryRequestView().comboBoxTimeWindow.getSelectedItem();
-        Courier newCourier = (Courier) window.getDeliveryRequestView().comboBoxCourier.getSelectedItem();
-
+    public void updateDeliveryRequest(CityMap cityMap, TimeWindow newTimeWindow, Courier newCourier, Courier previousCourier, int indexDeliveryRequest) {
         Tour tour = cityMap.getTour(previousCourier);
 
         if(tour != null && tour.getDeliveryRequests().size() > indexDeliveryRequest) {
