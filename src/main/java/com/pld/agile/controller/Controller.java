@@ -57,7 +57,6 @@ public class Controller {
 
   /**
    * Restore tours from a file
-   * @param
    */
   public void loadTours(){
     currentState.loadTours(cityMap, this, window);
@@ -66,7 +65,6 @@ public class Controller {
 
   /**
    * Save tours to a file
-   * @param
    */
   public void saveTours(){
     currentState.saveTours(cityMap, window);
@@ -74,7 +72,6 @@ public class Controller {
 
   /**
    * Load a map from a file
-   * @param
    */
   public void loadMap() {
     currentState.loadMap(this, window, cityMap);
