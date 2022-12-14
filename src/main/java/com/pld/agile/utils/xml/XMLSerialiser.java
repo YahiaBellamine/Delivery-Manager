@@ -33,7 +33,7 @@ public class XMLSerialiser {
      * @throws ExceptionXML
      */
     public static void save(List<Tour> optimalTours) throws ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException, ExceptionXML{
-        File xml = XMLFileOpener.getInstance().open(false);
+        File xml = XMLFileOpener.getInstance().open(false, "src/main/java/com/pld/agile/utils/tours");
         StreamResult result = new StreamResult(xml);
         // StreamResult result = new StreamResult(new FileOutputStream(url));
         document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();

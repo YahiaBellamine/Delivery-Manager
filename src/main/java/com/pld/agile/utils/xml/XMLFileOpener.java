@@ -20,11 +20,18 @@ public class XMLFileOpener extends FileFilter {
   }
 
   // open only .xml files
-  public File open(boolean read) throws ExceptionXML{
+  public File open(boolean read, String defaultPath) throws ExceptionXML{
     int returnVal;
-    JFileChooser jFileChooserXML = new JFileChooser();
+    JFileChooser jFileChooserXML;
+    if(defaultPath != ""){
+      jFileChooserXML = new JFileChooser(defaultPath);
+    }
+    else{
+      jFileChooserXML = new JFileChooser();
+    }
     jFileChooserXML.setFileFilter(this);
     jFileChooserXML.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
     if (read)
       returnVal = jFileChooserXML.showOpenDialog(null);
     else

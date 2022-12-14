@@ -52,9 +52,12 @@ public class ComputedTourState implements State{
     public void saveTours(CityMap cityMap, Controller c, Window w) {
         try{
             XMLSerialiser.save(cityMap.getTourList());
-        } catch (TransformerException | ExceptionXML | ParserConfigurationException e) {
+        } catch (TransformerException  | ParserConfigurationException e) {
             w.displayMessage("System error in saving Tours");
             throw new RuntimeException(e);
+        }
+        catch (ExceptionXML e){
+            w.displayMessage(e.toString());
         }
     };
 
