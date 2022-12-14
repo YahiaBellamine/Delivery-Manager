@@ -38,11 +38,16 @@ public class ComputedTourState implements State{
         if(tour != null && tour.getDeliveryRequests().size() > indexDeliveryRequest) {
             tour.removeDeliveryRequest(indexDeliveryRequest);
             Tour optimalTour = tour;
-            try {
-                optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
-                optimalTour.setCourier(courier);
-            } catch (Exception e) {
-                e.printStackTrace();
+
+            if (tour.getDeliveryRequests().isEmpty()) {
+                tour.clearIntersections();
+            } else {
+                try {
+                    optimalTour = Algorithm.ExecuteAlgorithm(cityMap.getWarehouse(), tour.getDeliveryRequests());
+                    optimalTour.setCourier(courier);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             cityMap.updateTourList(optimalTour);
         }

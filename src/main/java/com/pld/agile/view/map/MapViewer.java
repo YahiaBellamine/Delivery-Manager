@@ -150,6 +150,7 @@ public class MapViewer implements Observer {
      * @param tour - the Tour object to be updated
      */
     public void updateRoute(Tour tour) {
+        System.out.println(tour);
         while (routes.size() <= tour.getCourier().getCourierId()) {
             routes.add(new Route(ImageUtil.getColor()));
         }

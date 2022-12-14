@@ -133,4 +133,8 @@ public class Tour {
                 ", tourDuration=" + tourDuration +
                 '}';
     }
+
+    public void clearIntersections() {
+        this.intersections.clear();
+    }
 }
