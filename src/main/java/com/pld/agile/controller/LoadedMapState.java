@@ -48,6 +48,14 @@ public class LoadedMapState implements State{
         }
     }
 
+    /**
+     * This method select a destination point on the map
+     * and set the current state of the controller to DestinationSeletedState
+     * @param cityMap the city map
+     * @param c the controller
+     * @param position the geo position of the selected intersection
+     * @param window the main window
+     */
     @Override
     public void selectDestinationPoint(Controller c, Window window, GeoPosition position, CityMap cityMap) {
         c.setCurrentState(c.destinationSelectedState);
