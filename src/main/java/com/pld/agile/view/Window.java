@@ -5,7 +5,6 @@ import com.pld.agile.model.CityMap;
 import com.pld.agile.model.Intersection;
 import com.pld.agile.view.listener.ButtonListener;
 import com.pld.agile.view.map.MapViewer;
-import org.jxmapviewer.viewer.GeoPosition;
 import javax.swing.*;
 import java.awt.*;
 
@@ -99,12 +98,8 @@ public class Window extends JFrame {
 
     textualView.add(deliveryRequestView);
     textualView.add(deliveriesView);
-    gui.add(mapViewer.mainPanel);
+    gui.add(mapViewer.getMapViewer());
     gui.add(textualView);
-
-    // Deliveries view
-    this.deliveriesView = new DeliveriesView(cityMap, this);
-    this.deliveriesView.setSize(new Dimension(this.getContentPane().getWidth() / 4, this.getContentPane().getHeight()));
 
     // Constraints
     GridBagConstraints constraints = new GridBagConstraints();
@@ -145,7 +140,7 @@ public class Window extends JFrame {
 
   public void updateSelectedPoint(Intersection intersection) {
     this.mapViewer.setRequestMarker(intersection.getGeoPosition());
-    this.mapViewer.update();
+    this.mapViewer.updateMap();
   }
 
   public ButtonListener getButtonListener() {
