@@ -44,26 +44,8 @@ public class Controller {
    * @param
    */
   public void deleteDeliveryRequest(Courier courier, int indexDeliveryRequest){
-    currentState.deleteDeliveryRequest(cityMap, this, courier, indexDeliveryRequest);
+    currentState.deleteDeliveryRequest(cityMap, courier, indexDeliveryRequest);
   }
-
-  // public void saveTour() throws ExceptionXML, ParserConfigurationException, TransformerException {
-//    for(DeliveryRequest d: deliveryRequests){
-//      System.out.println(d.getAddress());
-//    }
-     // if(deliveryRequests.size()==0) {
-     //   this.window.displayMessage("Add at least one delivery request before saving the tour");
-       // return;
-     // }
-    // TODO: when we have several delivery men, the index should be modified  and call function save in a loop
-    // Tour optimalTour = CityMap.getTour(0);
-    // if(optimalTour==null) {
-     // this.window.displayMessage("No tour to save");
-     // return;
-   // }
-   // XMLSerialiser.save(optimalTour);
-
-  // }
 
   /**
    * Update a delivery request
@@ -87,7 +69,7 @@ public class Controller {
    * @param
    */
   public void saveTours(){
-    currentState.saveTours(cityMap, this, window);
+    currentState.saveTours(cityMap, window);
   }
 
   /**

@@ -142,6 +142,8 @@ public class XMLDeserialiser {
         String idCourierString = tour.getAttributes().getNamedItem("id_courier").getNodeValue();
         Integer idCourierInteger = Integer.parseInt(idCourierString);
         cityTour.setCourier(new Courier(idCourierInteger));
+        Double duration=Double.parseDouble(tour.getAttributes().getNamedItem("duration").getNodeValue());
+        cityTour.setTourDuration(duration);
         for(Node node=tour.getFirstChild();node!=null;node=node.getNextSibling()){
           Element element = null;
           if(node instanceof Element)  element=(Element)node;

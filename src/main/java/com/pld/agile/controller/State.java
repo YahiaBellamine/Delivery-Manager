@@ -64,9 +64,9 @@ public interface State {
 
     public default void loadTours(CityMap cityMap, Controller controller, Window window) {};
 
-    public default void saveTours(CityMap cityMap, Controller c, Window window) {};
+    public default void saveTours(CityMap cityMap, Window w) {};
 
-    public default void deleteDeliveryRequest(CityMap cityMap, Controller c, Courier courier, int indexDeliveryRequest) {};
+    public default void deleteDeliveryRequest(CityMap cityMap, Courier courier, int indexDeliveryRequest) {};
 
     public default void updateDeliveryRequest(CityMap cityMap, TimeWindow newTimeWindow, Courier newCourier, Courier previousCourier, int indexDeliveryRequest) {};
 }
