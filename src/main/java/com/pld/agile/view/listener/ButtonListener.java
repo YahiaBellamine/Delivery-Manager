@@ -42,11 +42,11 @@ public class ButtonListener implements ActionListener {
         break;
 
       case Window.SAVE_TOURS:
-        controller.saveTours()/*System.out.println("Save tours call")*/;
+        controller.saveTours();
         break;
 
       case Window.LOAD_TOURS:
-        controller.loadTours()/*System.out.println("Load tours call")*/;
+        controller.loadTours();
         break;
 
       case Window.RECENTER_MAP:
@@ -111,7 +111,7 @@ public class ButtonListener implements ActionListener {
    * @return The id of the delivery.
    */
   private int getOriginDelivery(JComponent source) {
-    Container sourceParent = source.getParent();
+    Container sourceParent = source.getParent().getParent();
     Component[] components = sourceParent.getComponents();
     int deliveryNumber = -1;
     for(Component component : components) {
@@ -138,26 +138,19 @@ public class ButtonListener implements ActionListener {
    * @return The id of the courier.
    */
   private int getOriginCourier(JComponent source) {
-    Container sourceParent = source.getParent();
+    Container sourceParent = source.getParent().getParent();
     Component[] components = sourceParent.getComponents();
     int courierId = -1;
     for(Component component : components) {
       if(Objects.equals(component.getName(), "detailsCourier")) {
-        Pattern stringToNumber = Pattern.compile("Courier \\(id\\): \\d+");
-        Matcher nameMatcher = stringToNumber.matcher(((JLabel) component).getText());
+        Pattern numberToInt = Pattern.compile("\\d+");
+        Matcher courierMatcher = numberToInt.matcher(((JLabel) component).getText());
 
-        if(nameMatcher.find()) {
-          Pattern numberToInt = Pattern.compile("\\s\\d+");
-          Matcher deliveryMatcher = numberToInt.matcher(nameMatcher.group(0));
-          System.out.println(nameMatcher.group(0));
-
-          if (deliveryMatcher.find()) {
-            courierId = Integer.parseInt(deliveryMatcher.group(0));
-          }
+        if(courierMatcher.find()) {
+          courierId = Integer.parseInt(courierMatcher.group(0));
         }
       }
     }
-    System.out.println(courierId);
     return courierId;
   }
 }

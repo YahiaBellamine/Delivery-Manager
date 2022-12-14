@@ -209,11 +209,13 @@ public class DeliveriesView extends JPanel implements Observer {
                     buttonsPanel.setLayout(new FlowLayout());
 
                     JButton update = new JButton("Update");
+                    update.setName("UpdateButton");
                     update.setActionCommand(UPDATE_DELIVERY_REQUEST);
                     Window parent = (Window)(this.getParent().getParent().getParent().getParent().getParent().getParent());
                     update.addActionListener(parent.getButtonListener());
 
                     JButton delete = new JButton("Delete");
+                    delete.setName("DeleteButton");
                     delete.setActionCommand(DELETE_DELIVERY_REQUEST);
                     delete.addActionListener(parent.getButtonListener());
 
