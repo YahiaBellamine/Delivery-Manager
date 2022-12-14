@@ -18,8 +18,15 @@ import java.util.List;
 
 public class LoadedMapState implements State{
 
+    /**
+     * This method load tours from an XML file
+     * @param cityMap - The city map
+     * @param c - The controller
+     * @param w - The window
+     */
     @Override
     public void loadTours(CityMap cityMap, Controller c,Window w) {
+        String path;
         JFileChooser j = new JFileChooser("src/main/java/com/pld/agile/utils/tours");
         j.setAcceptAllFileFilterUsed(false);
         j.setDialogTitle("Select a tour file (.xml)");
@@ -29,12 +36,8 @@ public class LoadedMapState implements State{
 
         // invoke the showsOpenDialog function to show the save dialog
         int r = j.showOpenDialog(null);
-
-        // if the user selects a file
-        String path;
         if (r == JFileChooser.APPROVE_OPTION) {
-            // set the label to the path of the selected file
-            path = j.getSelectedFile().toURI().getPath();
+            path = j.getSelectedFile().getAbsolutePath();
             try {
                 List<Tour> tours = new LinkedList<>();
                 XMLDeserialiser.loadTours(path, tours, cityMap);

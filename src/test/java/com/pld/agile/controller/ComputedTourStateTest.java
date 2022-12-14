@@ -78,18 +78,8 @@ public class ComputedTourStateTest {
   }
 
   @Test
-  public void saveToursTest() {
-    // computedTourState.saveTours(cityMap, window);
-  }
-
-  @Test
-  public void loadToursTest() {
-//    computedTourState.loadTours(cityMap, controller, window);
-  }
-
-  @Test
   public void updateDeliveryRequestTest() {
-    // computedTourState.updateDeliveryRequest(cityMap, controller, window, courier, 0);
-    // assertEquals(TimeWindow.TW_9_10, tour.getDeliveryRequests().get(0).getTimeWindow());
+    computedTourState.updateDeliveryRequest(cityMap, TimeWindow.TW_8_9, courier, courier, 0);
+    assertEquals(TimeWindow.TW_8_9, tour.getDeliveryRequests().get(0).getTimeWindow());
   }
 }
