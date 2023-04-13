@@ -13,7 +13,12 @@ public class Intersection {
     private double longitude;
     private List<RoadSegment> outgoingSegments= new ArrayList<>();
 
-    // constructor
+    /**
+     * Intersection constructor.
+     * @param id - The id of the Intersection
+     * @param latitude - The latitude of the RoadSegment
+     * @param longitude - The longitude of the RoadSegment
+     */
     public Intersection(Long id,double latitude, double longitude) {
         this.id = id;
         this.latitude=latitude;
@@ -52,12 +57,20 @@ public class Intersection {
         this.outgoingSegments = outgoingSegments;
     }
 
-    // add a new outgoing segment in the list
+    /**
+     * Add an outgoing segment to the list of outgoing segments of the intersection
+     * @param temp - The RoadSegment that will be added to the outgoing segments of the intersection
+     */
     public void addOutgoingSegment(RoadSegment temp)  {
         RoadSegment outgoingSegment=temp;
         outgoingSegments.add(outgoingSegment);
     }
 
+    /**
+     * Number of outgoing segments of the intersection.
+     * @param intersection - The intersection for which we want to know the number of outgoing segments
+     * @return - The number of outgoing segments of the intersection
+     */
     public static int sizeOutgoingSegment(Intersection intersection){
         return intersection.outgoingSegments.size();
     }
@@ -70,6 +83,10 @@ public class Intersection {
         return getId() == that.getId() && getLatitude()==that.getLatitude() && getLongitude()==that.getLongitude();
     }
 
+    /**
+     * Create GeoPosition from latitude and longitude
+     * @return - The GeoPosition corresponding to a latitude and longitude
+     */
     public GeoPosition getGeoPosition(){
         return new GeoPosition(this.latitude, this.longitude);
     }

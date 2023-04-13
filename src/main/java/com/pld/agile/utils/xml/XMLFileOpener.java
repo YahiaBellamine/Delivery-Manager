@@ -23,7 +23,7 @@ public class XMLFileOpener extends FileFilter {
   public File open(boolean read, String defaultPath) throws ExceptionXML{
     int returnVal;
     JFileChooser jFileChooserXML;
-    if(defaultPath != ""){
+    if(!defaultPath.isEmpty()){
       jFileChooserXML = new JFileChooser(defaultPath);
     }
     else{

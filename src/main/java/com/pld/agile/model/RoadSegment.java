@@ -7,7 +7,12 @@ public class RoadSegment {
     private double length;
     private Intersection destination;
 
-    // constructor
+    /**
+     * RoadSegment constructor.
+     * @param name - The name of the RoadSegment
+     * @param length - The length of the RoadSegment
+     * @param destination - The destination of the RoadSegment
+     */
     public RoadSegment(String name, double length, Intersection destination) {
         this.name = name;
         this.length = length;

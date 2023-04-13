@@ -18,7 +18,7 @@ public class Tour {
 
     /**
      * Default Tour constructor.
-     * The delivery requests list and the intersections list start empty.
+     * The delivery requests list and the intersections list start empty
      */
     public Tour() {
         courier = null;
@@ -28,7 +28,7 @@ public class Tour {
     }
 
     /**
-     *
+     * Courier getter
      * @return - The Courier of the tour
      */
     public Courier getCourier() {
@@ -36,15 +36,16 @@ public class Tour {
     }
 
     /**
-     *
-     * @param courier
+     * Courier setter
+     * @param courier - The Courier of the tour
+     * @return
      */
     public void setCourier(Courier courier) {
         this.courier = courier;
     }
 
     /**
-     *
+     * DeliveryRequests getter
      * @return - The list of all delivery requests in the Tour.
      */
     public List<DeliveryRequest> getDeliveryRequests() {
@@ -53,7 +54,7 @@ public class Tour {
 
 
     /**
-     *
+     * DeliveryRequests setter
      * @return - The list of all delivery requests in the Tour.
      */
     public void setDeliveryRequests(LinkedList<DeliveryRequest> deliveryRequests) {
@@ -61,7 +62,7 @@ public class Tour {
     }
 
     /**
-     *
+     * Intersections getter
      * @return - The list of all intersections that compose the Tour.
      */
     public List<Intersection> getIntersections() {
@@ -69,7 +70,7 @@ public class Tour {
     }
 
     /**
-     *
+     * Tour duration getter
      * @return - The duration of this tour.
      */
     public Double getTourDuration() {
@@ -82,6 +83,10 @@ public class Tour {
      */
     public void setTourDuration(Double tourDuration) { this.tourDuration = tourDuration; }
 
+    /**
+     * Format the tour duration
+     * @return - The formatted version of the tour duration
+     */
     public String getFormattedTourDuration() {
         double temp = this.tourDuration;
         int hours = (int)temp;
@@ -110,6 +115,7 @@ public class Tour {
 
     /**
      * Removes DeliveryRequest from the Tour.
+     * @param newTimeWindow - The new time window of the delivery request
      * @param indexDeliveryRequest - The delivery request index in the Tour List.
      */
     public void updateDeliveryRequest(TimeWindow newTimeWindow, int indexDeliveryRequest) {
@@ -134,6 +140,9 @@ public class Tour {
                 '}';
     }
 
+    /**
+     * Clear all the intersections of the delivery request
+     */
     public void clearIntersections() {
         this.intersections.clear();
     }
